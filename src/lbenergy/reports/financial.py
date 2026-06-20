@@ -1,8 +1,8 @@
 """Financial report — energy savings the predictive controller delivered.
 
-Reads `outputs/backtest_heating.csv` (or any backtest CSV with the same
-schema) and renders a 2-page PDF summarising kWh used with/without the model,
-total savings, and cost avoided at a given electricity tariff.
+Renders a PDF summarising kWh used with/without the model, total savings,
+and cost avoided at a given electricity tariff. Caller supplies the events
+as a pre-loaded DataFrame (see scripts/generate_report.py).
 """
 
 from __future__ import annotations
@@ -22,15 +22,15 @@ class FinancialReport(ReportBuilder):
     def __init__(
         self,
         output_path: Path,
-        backtest_csv: Path,
+        df: pd.DataFrame,
         unit_cost_eur_per_kwh: float = 0.30,
     ):
         super().__init__(output_path)
-        self.backtest_csv = Path(backtest_csv)
+        self.df = df
         self.unit_cost = unit_cost_eur_per_kwh
 
     def body(self) -> list[Flowable]:
-        df = pd.read_csv(self.backtest_csv, parse_dates=["event_start"])
+        df = self.df
         totals = self._summarize(df)
 
         return [
@@ -45,7 +45,7 @@ class FinancialReport(ReportBuilder):
                     f"{totals['kwh_saved']:.0f} kWh "
                     f"({totals['pct_saved']:.0f}%)"),
                 ("Cost avoided",
-                    f"€{totals['eur_saved']:.0f}"),
+                    f"€ {totals['eur_saved']:.0f}"),
             ]),
             self.spacer(10),
             self.section_heading("Per-event breakdown"),

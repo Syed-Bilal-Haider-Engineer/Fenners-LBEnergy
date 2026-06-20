@@ -25,8 +25,7 @@ from reportlab.platypus import (
 
 from lbenergy.reports import branding as B
 
-MAX_PAGES = 2
-MAX_KPIS = 4
+MAX_PAGES = 4
 
 
 def _styles() -> dict[str, ParagraphStyle]:
@@ -131,8 +130,6 @@ class ReportBuilder:
         return Paragraph(text, self.styles["body"])
 
     def kpi_row(self, kpis: list[tuple[str, str]]) -> Flowable:
-        if len(kpis) > MAX_KPIS:
-            raise ValueError(f"kpi_row supports at most {MAX_KPIS} entries (got {len(kpis)}).")
         cells = [
             [Paragraph(label, self.styles["kpi_label"]),
              Paragraph(value, self.styles["kpi_value"])]
