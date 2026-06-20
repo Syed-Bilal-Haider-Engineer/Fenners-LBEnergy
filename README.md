@@ -108,13 +108,28 @@ Fenners-LBEnergy/
 │   └── cooling_2026-05-25_to_2026-05-31/
 ├── docs/
 │   ├── PDR.md                     # Project Definition Report (full technical spec)
-│   ├── MODEL_DESIGN.md            # model architecture deep-dive
-│   ├── IHL_optimal_start_guide.md # optimal-start algorithm guide
-│   └── callenge_discription.pdf   # original hackathon brief
+│   ├── callenge_discription.pdf   # original hackathon brief
+│   └── beststart_prediction/      # best-start model docs
+│       ├── MODEL_DESIGN.md        # model architecture deep-dive
+│       ├── IHL_optimal_start_guide.md
+│       └── comparisson.md
 ├── src/
-│   └── explore_and_fit.py         # EDA + RC system identification
+│   └── lbenergy/                  # importable model package
+│       ├── config.py              # repo-relative paths + model constants
+│       ├── data.py                # loading: snapshots / power / events
+│       ├── pipeline.py            # ingest → features → (optional) persist
+│       ├── rc_model.py            # RC fit + forward simulation (physics core)
+│       ├── preheat.py             # optimal preheat start-time prediction
+│       ├── residual.py            # LightGBM residual corrector (scaffold)
+│       ├── evaluate.py            # cross-window validation + metrics
+│       └── plots.py               # diagnostic plotting
+├── scripts/                       # thin CLI entrypoints
+│   ├── train.py                   # calibrate {β,τ} → models/rc_params.json
+│   └── run_diagnostics.py         # full analysis → outputs/
+├── models/                        # fitted artifacts (rc_params.json)
+├── notebooks/                     # exploratory notebooks
 ├── outputs/                       # diagnostic plots
-└── plot_csvs.ipynb                # exploratory notebook
+└── requirements.txt
 ```
 
 ---
@@ -123,13 +138,13 @@ Fenners-LBEnergy/
 
 ```bash
 # 1. Install dependencies
-pip install numpy pandas scipy lightgbm matplotlib
+pip install -r requirements.txt
 
-# 2. Run the EDA + RC calibration
-python src/explore_and_fit.py
+# 2. Calibrate the RC model  (writes models/rc_params.json)
+python scripts/train.py
 
-# 3. Explore interactively
-jupyter notebook plot_csvs.ipynb
+# 3. Run the full diagnostics  (writes plots to outputs/)
+python scripts/run_diagnostics.py
 ```
 
 The dataset lives under `data/` — see [`data/README.md`](data/README.md) for the full column schema, time windows, and heat-pump error-register decoding.
@@ -151,8 +166,8 @@ The dataset lives under `data/` — see [`data/README.md`](data/README.md) for t
 ## Documentation
 
 - 📄 **[Project Definition Report](docs/PDR.md)** — full problem statement, dataset analysis, technical approach, evaluation plan, and 48-hour roadmap.
-- 🧠 **[Model Design](docs/MODEL_DESIGN.md)** — architecture deep-dive.
-- 🚀 **[Optimal Start Guide](docs/IHL_optimal_start_guide.md)** — the preheat-timing algorithm.
+- 🧠 **[Model Design](docs/beststart_prediction/MODEL_DESIGN.md)** — architecture deep-dive.
+- 🚀 **[Optimal Start Guide](docs/beststart_prediction/IHL_optimal_start_guide.md)** — the preheat-timing algorithm.
 
 ---
 

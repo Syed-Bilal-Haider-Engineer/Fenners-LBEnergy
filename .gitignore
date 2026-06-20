@@ -15,3 +15,6 @@ env/
 
 # Jupyter
 *.ipynb_checkpoints
+
+# Fetched weather/API cache (regenerated on demand)
+data/_external_cache/
