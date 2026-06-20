@@ -108,9 +108,11 @@ Fenners-LBEnergy/
 │   └── cooling_2026-05-25_to_2026-05-31/
 ├── docs/
 │   ├── PDR.md                     # Project Definition Report (full technical spec)
-│   ├── MODEL_DESIGN.md            # model architecture deep-dive
-│   ├── IHL_optimal_start_guide.md # optimal-start algorithm guide
-│   └── callenge_discription.pdf   # original hackathon brief
+│   ├── callenge_discription.pdf   # original hackathon brief
+│   └── beststart_prediction/      # best-start model docs
+│       ├── MODEL_DESIGN.md        # model architecture deep-dive
+│       ├── IHL_optimal_start_guide.md
+│       └── comparisson.md
 ├── src/
 │   └── explore_and_fit.py         # EDA + RC system identification
 ├── outputs/                       # diagnostic plots
@@ -151,8 +153,8 @@ The dataset lives under `data/` — see [`data/README.md`](data/README.md) for t
 ## Documentation
 
 - 📄 **[Project Definition Report](docs/PDR.md)** — full problem statement, dataset analysis, technical approach, evaluation plan, and 48-hour roadmap.
-- 🧠 **[Model Design](docs/MODEL_DESIGN.md)** — architecture deep-dive.
-- 🚀 **[Optimal Start Guide](docs/IHL_optimal_start_guide.md)** — the preheat-timing algorithm.
+- 🧠 **[Model Design](docs/beststart_prediction/MODEL_DESIGN.md)** — architecture deep-dive.
+- 🚀 **[Optimal Start Guide](docs/beststart_prediction/IHL_optimal_start_guide.md)** — the preheat-timing algorithm.
 
 ---
 
