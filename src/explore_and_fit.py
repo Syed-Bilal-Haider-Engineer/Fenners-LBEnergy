@@ -37,10 +37,13 @@ warnings.filterwarnings("ignore")
 
 # ─── Configuration ────────────────────────────────────────────────────────────
 
-DATA_ROOT   = Path(r"C:\Users\LENOVO\Downloads\ihl_research_dataset (1)")
+# Repo-relative paths so the script runs on any machine after `git clone`.
+# This file lives in <repo>/src/, so the repo root is its parent's parent.
+REPO_ROOT   = Path(__file__).resolve().parent.parent
+DATA_ROOT   = REPO_ROOT / "data"
 HEATING_DIR = DATA_ROOT / "heating_2026-03-30_to_2026-04-05"
 COOLING_DIR = DATA_ROOT / "cooling_2026-05-25_to_2026-05-31"
-OUTPUT_DIR  = Path(r"C:\Projects\Fenners-LBEnergy")
+OUTPUT_DIR  = REPO_ROOT / "outputs"
 
 RESAMPLE_MIN   = 5          # resample to 5-minute grid
 DT_HOURS       = RESAMPLE_MIN / 60.0
