@@ -35,7 +35,7 @@ export function CardHeader({
   return (
     <div className="mb-4 flex items-start justify-between">
       <div>
-        <h3 className="text-[15px] font-semibold text-graphite-900">{title}</h3>
+        <h3 className="text-[15px] font-bold text-graphite-900">{title}</h3>
         {subtitle && <p className="mt-0.5 text-xs text-graphite-600/70">{subtitle}</p>}
       </div>
       {action}

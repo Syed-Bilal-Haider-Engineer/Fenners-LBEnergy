@@ -1,10 +1,10 @@
 import { Card, CardHeader } from "../../components/ui/card";
 
 const SEGMENTS = [
-  { label: "Active", value: 11, pct: 37.9, color: "#22C55E" },
-  { label: "Idle", value: 16, pct: 55.2, color: "#3B82F6" },
-  { label: "Warning", value: 2, pct: 6.9, color: "#F59E0B" },
-  { label: "Offline", value: 0, pct: 0, color: "#EF4444" },
+  { label: "Active", value: 11, pct: 37.9, color: "#1fa971" },
+  { label: "Idle", value: 16, pct: 55.2, color: "#19567b" },
+  { label: "Warning", value: 2, pct: 6.9, color: "#f59e0b" },
+  { label: "Offline", value: 0, pct: 0, color: "#f24227" },
 ];
 
 function Donut() {

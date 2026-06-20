@@ -1,49 +1,153 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: var(--font-inter), system-ui, sans-serif;
+  --font-sans: var(--font-barlow), system-ui, sans-serif;
   --font-mono: var(--font-mono), ui-monospace, monospace;
 
-  --color-graphite-950: #0b0d10;
-  --color-graphite-900: #0f1115;
-  --color-graphite-800: #161a20;
-  --color-graphite-700: #1f242c;
-  --color-graphite-600: #2b323c;
+  /* Ink scale — brand near-black for text + dark surfaces */
+  --color-graphite-950: #0f0f0f;
+  --color-graphite-900: #191919; /* brand Ink — headings & body */
+  --color-graphite-800: #20242b;
+  --color-graphite-700: #2b313a;
+  --color-graphite-600: #5b6470; /* secondary text */
 
-  --color-canvas: #f6f7f9;
-  --color-line: #e7e9ed;
+  --color-canvas: #f6f7f8;
+  --color-line: #e4e6ea;
 
+  /* Brand palette */
+  --color-coral-50: #fff1ee;
+  --color-coral-500: #ff6148; /* PRIMARY — brand Coral */
+  --color-coral-600: #f24227; /* Ember — press / warm gradient pole */
+
+  --color-ocean-500: #19567b; /* brand Ocean */
+  --color-ocean-600: #134055;
+  --color-navy-500: #1e4268; /* brand Navy */
+
+  /* Functional status (KPIs / data-viz) — harmonized with the brand */
   --color-ember-50: #eaf7ef;
-  --color-ember-500: #22c55e;
-  --color-ember-600: #16a34a;
+  --color-ember-500: #1fa971; /* success green */
+  --color-ember-600: #15875a;
 
   --color-amber-50: #fef6e7;
-  --color-amber-500: #f59e0b;
+  --color-amber-500: #f59e0b; /* warning */
 
-  --color-sky-50: #eaf1fe;
-  --color-sky-500: #3b82f6;
+  --color-sky-50: #e7f0f7;
+  --color-sky-500: #0b75b7; /* brand Sky / info */
 
-  --color-coral-50: #fdeeee;
-  --color-coral-500: #ef4444;
-
-  --color-mist-400: #8b94a3;
+  --color-mist-400: #8f8f9d; /* muted */
   --color-mist-300: #aab2bf;
 
-  --shadow-panel: 0 1px 2px 0 rgba(16, 24, 32, 0.04), 0 1px 1px 0 rgba(16, 24, 32, 0.02);
+  --shadow-panel: 0 1px 2px 0 rgba(16, 24, 32, 0.05), 0 1px 1px 0 rgba(16, 24, 32, 0.03);
+  --shadow-card: 0 10px 30px -12px rgba(25, 25, 25, 0.18);
 }
 
 :root {
-  --font-inter: "Inter", system-ui, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  --brand-gradient: linear-gradient(45deg, #19567b, #ff6148);
+  --headline-gradient: linear-gradient(45deg, #0b75b7, #f24227);
 }
 
 body {
-  background-color: #f6f7f9;
+  background-color: #f6f7f8;
+  font-family: var(--font-sans);
+  color: #191919;
 }
 
 .tabular {
   font-variant-numeric: tabular-nums;
   font-feature-settings: "tnum" 1;
+}
+
+/* ── Brand utilities (DESIGN.md) ─────────────────────────────────────── */
+
+/* Ocean → Coral signature gradient */
+.bg-brand-gradient {
+  background-image: var(--brand-gradient);
+}
+
+/* Sky → Ember emphasis word (clipped to text) */
+.text-gradient {
+  background-image: var(--headline-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* Soft radial halos for hero depth */
+.glow-coral,
+.glow-ocean {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(24px);
+  pointer-events: none;
+  z-index: 0;
+}
+.glow-coral {
+  background: radial-gradient(closest-side, rgba(255, 97, 72, 0.55), transparent 72%);
+}
+.glow-ocean {
+  background: radial-gradient(closest-side, rgba(25, 86, 123, 0.5), transparent 72%);
+}
+
+/* 45° spark diamond — the logo motif */
+.spark {
+  display: inline-block;
+  width: 0.7rem;
+  height: 0.7rem;
+  background: #ff6148;
+  transform: rotate(45deg);
+}
+
+/* Primary CTA — solid coral, sharp 0px corners, Barlow 700 uppercase */
+.btn-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: #ff6148;
+  color: #ffffff;
+  border: 1px solid #ff6148;
+  border-radius: 0;
+  padding: 0.875rem 2rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+.btn-cta:hover {
+  background: #f24227;
+  border-color: #f24227;
+}
+.btn-cta:active {
+  background: #d8381f;
+  border-color: #d8381f;
+}
+
+/* Ghost CTA — coral outline */
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: transparent;
+  color: #ff6148;
+  border: 1px solid #ff6148;
+  border-radius: 0;
+  padding: 0.875rem 2rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+.btn-ghost:hover {
+  background: #ff6148;
+  color: #ffffff;
 }
 
 /* Pulse line used behind the energy chart's live series */

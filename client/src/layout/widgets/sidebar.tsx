@@ -25,14 +25,13 @@ export function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="flex h-screen w-[260px] shrink-0 flex-col justify-between bg-[#0A0A0A] px-4 py-6 text-white">
+    <aside className="flex h-screen w-[260px] shrink-0 flex-col justify-between bg-graphite-900 px-4 py-6 text-white">
       <div>
-        <div className="mb-8 flex items-center gap-2 px-2">
-          <div className="flex h-7 w-7 items-center justify-center rounded-md bg-gradient-to-r from-[#0EA56D] to-[#047857] text-white">
-            N
-          </div>
-          <Link href="/dashboard" > <span className="text-sm font-semibold tracking-tight">IB Engergy</span> </Link>
-        </div>
+        <Link href="/dashboard" className="mb-8 flex items-center gap-2.5 px-2">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/brand/lb-energy-logo-white.svg" alt="LB Energy" className="h-8 w-auto" />
+          <span className="text-sm font-bold tracking-wide">LB ENERGY</span>
+        </Link>
 
         <nav className="flex flex-col gap-1">
           {NAV_ITEMS.map(({ href, label, icon: Icon, badge }) => {
@@ -41,10 +40,10 @@ export function Sidebar() {
               <Link
                 key={href}
                 href={href}
-                className={`flex items-center justify-between rounded-lg px-3 py-2.5 text-sm transition-colors ${
+                className={`flex items-center justify-between px-3 py-2.5 text-sm transition-colors ${
                   active
-                    ? "bg-white/10 text-white"
-                    : "text-white/55 hover:bg-white/5 hover:text-white/80"
+                    ? "bg-coral-500 font-semibold text-white"
+                    : "text-white/55 hover:bg-white/5 hover:text-white/90"
                 }`}
               >
                 <span className="flex items-center gap-3">
@@ -52,7 +51,11 @@ export function Sidebar() {
                   {label}
                 </span>
                 {badge ? (
-                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[11px] font-semibold text-white">
+                  <span
+                    className={`flex h-5 w-5 items-center justify-center rounded-full text-[11px] font-bold text-white ${
+                      active ? "bg-white/25" : "bg-coral-600"
+                    }`}
+                  >
                     {badge}
                   </span>
                 ) : null}
@@ -62,11 +65,11 @@ export function Sidebar() {
         </nav>
       </div>
 
-      <div className="rounded-xl bg-white/5 p-4">
-        <div className="mb-2 flex items-center gap-1.5 text-emerald-400">
+      <div className="bg-white/5 p-4">
+        <div className="mb-2 flex items-center gap-1.5 text-coral-500">
           <MapPin size={14} />
         </div>
-        <p className="text-sm font-semibold leading-tight">Building of the Future</p>
+        <p className="text-sm font-bold leading-tight">Building of the Future</p>
         <p className="mt-1 text-xs leading-snug text-white/45">
           Intelligent Control of Mobile Structures
         </p>

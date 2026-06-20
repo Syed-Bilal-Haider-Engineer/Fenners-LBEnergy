@@ -27,7 +27,7 @@ export function ScenarioSimulator() {
           <select
             value={action}
             onChange={(e) => setAction(e.target.value)}
-            className="w-52 rounded-lg border border-line bg-white px-3 py-2 text-sm text-graphite-900 outline-none focus:border-ember-500"
+            className="w-52 rounded-lg border border-line bg-white px-3 py-2 text-sm text-graphite-900 outline-none focus:border-coral-500"
           >
             {ACTIONS.map((a) => (
               <option key={a}>{a}</option>
@@ -53,7 +53,7 @@ export function ScenarioSimulator() {
           <select
             value={scope}
             onChange={(e) => setScope(e.target.value)}
-            className="w-40 rounded-lg border border-line bg-white px-3 py-2 text-sm text-graphite-900 outline-none focus:border-ember-500"
+            className="w-40 rounded-lg border border-line bg-white px-3 py-2 text-sm text-graphite-900 outline-none focus:border-coral-500"
           >
             {SCOPES.map((s) => (
               <option key={s}>{s}</option>
@@ -101,7 +101,7 @@ export function ScenarioSimulator() {
 
           <button
             onClick={() => setRunning(true)}
-            className="ml-auto rounded-lg bg-graphite-900 px-4 py-2.5 text-sm font-medium text-white transition-opacity hover:opacity-90"
+            className="ml-auto bg-coral-500 px-5 py-2.5 text-sm font-bold uppercase tracking-wide text-white transition-colors hover:bg-coral-600"
           >
             {running ? "Running…" : "Run Scenario"}
           </button>
