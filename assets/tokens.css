@@ -1,0 +1,183 @@
+/* ==========================================================================
+   LB Energy — Brand Design Tokens (CSS custom properties)
+   Source: scraped from https://lbenergy.tech production CSS (colors, gradients,
+   Barlow font, button/heading grammar). Sizes/spacing standardized — see DESIGN.md.
+   Usage:  <link rel="stylesheet" href="assets/tokens.css">  then use var(--lb-*).
+   ========================================================================== */
+
+/* Barlow — the brand typeface (Light 300 / Regular 400 / Bold 700) */
+@import url('https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;700&display=swap');
+
+:root {
+  /* ---- Brand & accent ---- */
+  --lb-coral:        #ff6148;  /* PRIMARY action color */
+  --lb-ember:        #f24227;  /* pressed coral / warm gradient pole */
+  --lb-ocean:        #19567b;  /* cool gradient pole */
+  --lb-navy:         #1e4268;  /* deep blue (labels on light chips) */
+  --lb-sky:          #0b75b7;  /* bright blue (headline gradient pole) */
+
+  /* ---- Ink & text ---- */
+  --lb-ink:          #191919;  /* headings & body on light */
+  --lb-muted:        #8f8f9d;  /* secondary copy (cool gray) */
+  --lb-muted-warm:   #8f8f8f;  /* neutral gray captions */
+  --lb-on-primary:   #ffffff;  /* text on coral */
+  --lb-on-dark:      #ffffff;  /* text on dark/photographic */
+
+  /* ---- Surfaces ---- */
+  --lb-canvas:       #ffffff;
+  --lb-mist:         #f1f1f1;  /* alternating section / card fill */
+  --lb-surface-ink:  #191919;  /* footer / dark band */
+  --lb-black:        #000000;
+
+  /* ---- Hairlines ---- */
+  --lb-hairline:        #cacaca;
+  --lb-hairline-soft:   #d8d8d8;
+  --lb-hairline-soft-2: #d5d5d5;
+
+  /* ---- Signature gradients ---- */
+  --lb-gradient-brand:    linear-gradient(45deg, #19567b, #ff6148);  /* Ocean -> Coral */
+  --lb-gradient-headline: linear-gradient(45deg, #0b75b7, #f24227);  /* Sky -> Ember (clip to text) */
+  --lb-glow-coral:        radial-gradient(#ff6148 0%, transparent 60%);
+  --lb-glow-ocean:        radial-gradient(#19567b 0%, transparent 60%);
+
+  /* ---- Typography ---- */
+  --lb-font: 'Barlow', system-ui, -apple-system, Segoe UI, sans-serif;
+  --lb-fw-light: 300;
+  --lb-fw-regular: 400;
+  --lb-fw-bold: 700;
+
+  --lb-text-hero:    3.5rem;   /* 56px */
+  --lb-text-display: 2.5rem;   /* 40px */
+  --lb-text-section: 2rem;     /* 32px */
+  --lb-text-subhead: 1.5rem;   /* 24px */
+  --lb-text-lead:    1.25rem;  /* 20px */
+  --lb-text-body:    1rem;     /* 16px */
+  --lb-text-caption: 0.875rem; /* 14px */
+  --lb-text-fine:    0.75rem;  /* 12px */
+
+  /* ---- Radius (0 corners are a brand signal) ---- */
+  --lb-radius-none: 0px;
+  --lb-radius-sm:   5px;
+  --lb-radius-md:   6px;
+  --lb-radius-lg:   12px;
+  --lb-radius-pill: 9999px;
+
+  /* ---- Spacing (8px base) ---- */
+  --lb-space-xxs: 4px;
+  --lb-space-xs:  8px;
+  --lb-space-sm:  12px;
+  --lb-space-md:  16px;
+  --lb-space-lg:  24px;
+  --lb-space-xl:  32px;
+  --lb-space-xxl: 48px;
+  --lb-space-section: 96px;
+
+  /* ---- Elevation ---- */
+  --lb-shadow-card: 0 8px 24px rgba(25, 25, 25, 0.10);
+}
+
+/* ==========================================================================
+   Ready-to-use helpers
+   ========================================================================== */
+
+body.lb { font-family: var(--lb-font); color: var(--lb-ink); background: var(--lb-canvas); }
+
+/* Headlines: Barlow Bold, tight line-height */
+.lb-h1 { font: var(--lb-fw-bold) var(--lb-text-hero)/1.1 var(--lb-font); margin: 0 0 var(--lb-space-md); }
+.lb-h2 { font: var(--lb-fw-bold) var(--lb-text-display)/1.2 var(--lb-font); margin: 0 0 var(--lb-space-md); }
+.lb-h3 { font: var(--lb-fw-bold) var(--lb-text-subhead)/1.2 var(--lb-font); margin: 0 0 var(--lb-space-sm); }
+.lb-lead { font: var(--lb-fw-light) var(--lb-text-lead)/1.5 var(--lb-font); color: var(--lb-ink); }
+.lb-body { font: var(--lb-fw-regular) var(--lb-text-body)/1.6 var(--lb-font); }
+
+/* The signature: emphasized word filled with the Sky->Ember gradient */
+.lb-gradient-text {
+  background: var(--lb-gradient-headline);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  text-transform: uppercase;
+  font-weight: var(--lb-fw-bold);
+}
+
+/* Eyebrow / kicker label */
+.lb-eyebrow {
+  font: var(--lb-fw-bold) var(--lb-text-caption)/1.2 var(--lb-font);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* Primary CTA — solid coral, sharp 0px corners, uppercase Barlow 700 */
+.lb-btn {
+  display: inline-block;
+  background: var(--lb-coral);
+  color: var(--lb-on-primary);
+  border: 1px solid var(--lb-coral);
+  border-radius: var(--lb-radius-none);
+  padding: 14px 32px;
+  font: var(--lb-fw-bold) var(--lb-text-body)/1 var(--lb-font);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color .15s ease;
+}
+.lb-btn:active { background: var(--lb-ember); border-color: var(--lb-ember); }
+
+/* Ghost CTA — coral outline */
+.lb-btn-ghost {
+  display: inline-block;
+  background: transparent;
+  color: var(--lb-coral);
+  border: 1px solid var(--lb-coral);
+  border-radius: var(--lb-radius-none);
+  padding: 14px 32px;
+  font: var(--lb-fw-bold) var(--lb-text-body)/1 var(--lb-font);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* On-image CTA — white fill, navy label */
+.lb-btn-on-image {
+  display: inline-block;
+  background: var(--lb-canvas);
+  color: var(--lb-navy);
+  border-radius: var(--lb-radius-sm);
+  padding: 14px 32px;
+  font: var(--lb-fw-bold) var(--lb-text-body)/1 var(--lb-font);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+/* Brand-gradient panel (hero) */
+.lb-panel-gradient { background: var(--lb-gradient-brand); color: var(--lb-on-dark); }
+
+/* Spark diamond — the logo motif, 45deg rotated coral square */
+.lb-diamond {
+  display: inline-block;
+  width: 14px; height: 14px;
+  background: var(--lb-coral);
+  transform: rotate(45deg);
+}
+
+/* Soft hero glow backdrop (place behind a positioned subject) */
+.lb-glow {
+  position: absolute;
+  width: 60vw; height: 60vw;
+  background: var(--lb-glow-coral);
+  filter: blur(8px);
+  opacity: 0.5;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Card */
+.lb-card {
+  background: var(--lb-canvas);
+  border-radius: var(--lb-radius-lg);
+  padding: var(--lb-space-lg);
+  box-shadow: var(--lb-shadow-card);
+}

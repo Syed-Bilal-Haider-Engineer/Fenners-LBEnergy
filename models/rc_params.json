@@ -1,0 +1,10 @@
+{
+  "window": "heating",
+  "beta1": 0.046590195928497696,
+  "beta2": 0.0,
+  "beta3": 0.10369858612527086,
+  "T_supply_eff": 37.5,
+  "ramp_rmse_degC": 0.1663785016118396,
+  "n_ramps": 7,
+  "tau_cool_hours": 12.02740320191937
+}
