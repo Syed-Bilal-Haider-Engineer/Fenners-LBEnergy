@@ -11,10 +11,3 @@ lightgbm
 
 # Parquet persistence (pipeline.persist_parquet)
 pyarrow
-
-# Backend API
-fastapi
-uvicorn[standard]
-
-# Frontend dashboard
-streamlit

@@ -126,8 +126,6 @@ Fenners-LBEnergy/
 ├── scripts/                       # thin CLI entrypoints
 │   ├── train.py                   # calibrate {β,τ} → models/rc_params.json
 │   └── run_diagnostics.py         # full analysis → outputs/
-├── backend/                       # FastAPI service (/predict/preheat_start)
-├── frontend/                      # Streamlit demo dashboard
 ├── models/                        # fitted artifacts (rc_params.json)
 ├── notebooks/                     # exploratory notebooks
 ├── outputs/                       # diagnostic plots
@@ -147,10 +145,6 @@ python scripts/train.py
 
 # 3. Run the full diagnostics  (writes plots to outputs/)
 python scripts/run_diagnostics.py
-
-# 4. (optional) Serve predictions
-uvicorn backend.main:app --reload        # API at http://127.0.0.1:8000/docs
-streamlit run frontend/app.py            # dashboard at http://localhost:8501
 ```
 
 The dataset lives under `data/` — see [`data/README.md`](data/README.md) for the full column schema, time windows, and heat-pump error-register decoding.
