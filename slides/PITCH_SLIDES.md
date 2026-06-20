@@ -1,182 +1,149 @@
-# Pitch Deck — Team Feners
+# Team Feners — Project Slides
 
 ### LBenergy GmbH × TUM Hackathon — "Building of the Future: Intelligent Control of Mobile Structures"
 
-> **Working title (not final):** *PreHeatIQ* / *ThermoPilot* / *AdaptHeat* — a self-calibrating physics model that tells each building exactly when to start heating.
->
-> **Deck status:** Day 2 of 3 — jury preview of what we will pitch & present.
-> **One-liner for the jury:** *One physics model. Any building type. It learns from the building's own sensors and picks the perfect moment to start heating — no over-heating, no cold rooms.*
+> **Purpose of this deck:** show the jury *what we are building* and *what we plan to build by tomorrow* — not a sales pitch, a status of the work.
+> **Project name (not final):** *PreHeatIQ* / *ThermoPilot* / *AdaptHeat* — pick one before submission.
 
 ---
 
-## Slide 0 — Team
+## Slide 0 — Opening
 
 **Team Feners**
 
-- Who we are (names / roles — fill in)
-- One sentence on why we took this challenge: *temporary buildings waste energy because nobody knows their physics — so we made the building tell us.*
+**[Project Name — TBD]**
 
-*Speaker note:* keep this to 20 seconds. Energy in the room, not a CV reading.
+*Adaptive predictive preheat control for mobile & temporary structures.*
 
 ---
 
-## Slide 1 — The Problem
+## Slide 1 — The Problem We're Tackling
 
-**Predicting when to heat or cool a building is already hard. LBenergy makes it dynamic.**
+**Knowing the optimal moment to heat or cool a building is hard. LBenergy makes it dynamic.**
 
-- Predicting the *optimal* moment to pre-heat or pre-cool a building is already a non-trivial problem.
-- At LBenergy it becomes **dynamic**: many *types* of structures — tents, isolated halls, insulated containers — each with different physics.
+- The core task: for each upcoming room booking, find the **latest moment preheat must start** so the room hits its setpoint (21 °C) exactly when occupants arrive — no earlier (wasted energy), no later (cold room).
+- At LBenergy it's harder because the structures are **different types** — tents, isolated halls, insulated containers — each with different walls, air-trapping, and thermal mass.
 
-**Visual — buildings side by side, with their key differences:**
-
-| | Thin tent (canvas) | Prefab container | Lecture hall |
+| | Thin tent | Prefab container | Lecture hall |
 |---|---|---|---|
-| Wall thickness / insulation | very low | medium | high |
-| Air-trapping / thermal mass | tiny | moderate | large |
+| Insulation | very low | medium | high |
+| Thermal mass | tiny | moderate | large |
 | Time to heat (τ) | minutes | 1–4 h | 2–12 h |
 
-- **The twist:** these buildings are *temporary*. They go up and come down on varying timeframes. So there is **no recorded history** of a specific structure's size or thermal behaviour — every deployment is effectively a cold start.
+- These buildings are **temporary** — up and down on varying timeframes — so there's **no recorded history** of any specific structure. Every deployment is a cold start.
 
-**The concrete failure (real data, TUM campus, 2026-03-30):**
-> The current IHL system switched preheat ON a hard-coded **2h25min** before the first lecture. At event start the room was **2.2 °C too cold** (18.8 °C vs 21 °C target). It didn't reach 21 °C until **~9 hours later** — under sub-zero outside temps.
-
-*Speaker note:* lead with this story, not the equations. It's measured, not hypothetical.
+**What the data shows (TUM campus, 2026-03-30):** the current system preheated a hard-coded **2h25min** ahead — the room was still **2.2 °C too cold** at event start and didn't reach 21 °C until **~9 hours later**.
 
 ---
 
-## Slide 2 — Our Approach
+## Slide 2 — What We're Building: The Model
 
-**A self-calibrating physics model — built, tested and validated.**
+**A self-calibrating grey-box (physics) thermal model.**
 
-- We approach this by **building, testing and validating a physics (grey-box) thermal model**, with parameters we **derive automatically from the sensors** already inside the heat pumps / AC units — plus useful external data.
-- **Key idea — separate the universal from the specific:**
-  - The *physics* (the RC thermal equation) is **the same for every building**.
-  - Only **3 parameters** `{β₁, β₂, β₃}` differ per building — they encode insulation, heating effectiveness, and ambient gains.
-  - The model **fits those 3 numbers from the building's own telemetry** → one model structure serves a tent or a lecture hall.
-
-**Visual — where the data comes from:**
+- We build, test and validate a physics model whose parameters are **derived from the sensors already in the heat pumps**, plus external weather data.
+- **The design choice:** separate the *universal physics* from the *building-specific parameters*.
+  - The thermal equation is **the same for every building**.
+  - Only **3 parameters** `{β₁, β₂, β₃}` differ — they encode insulation, heating effectiveness, and ambient gains, and are **fitted from each building's own telemetry**.
 
 ```
-IHL sensors (heat pump):           External:
- • room temperature                 • weather forecast (Open-Meteo)
- • outside temperature                – outside temp, solar, wind
- • supply-air temperature           Calendar:
- • compressor state / power          • room booking events
-        │                                   │
-        └──────────► self-calibration ◄─────┘
-                  fit β₁, β₂, β₃  → optimal preheat start time t*
+IHL heat-pump sensors            External
+ • room temperature               • weather forecast (Open-Meteo)
+ • outside temperature            • power-grid stress / carbon intensity
+ • supply-air temperature         Calendar
+ • compressor / power             • room booking events
+        └────► self-calibrate β₁,β₂,β₃ ────► optimal preheat start time t*
 ```
 
-- The core equation (show, don't dwell):
-  `dT_room/dt = β₁·(T_supply − T_room) + β₂·(T_room − T_out) + β₃`
-  where `τ = −1/β₂` **is the building's insulation time constant.**
+- **Grid-aware sustainability:** we also bring in **power-grid stress levels / carbon intensity** as external data. Within the available preheat window we can **shift heating toward cleaner, less-stressed grid hours** — so the same comfort is delivered with lower CO₂ and less load on the grid at peak times, not just lower kWh.
 
-**Why physics, not pure ML:** a pure ML model trained on a tent would massively mis-predict a container. Physics **extrapolates by design** — even on a freak −15 °C morning outside the training data, the heat-loss term stays correct.
+- Core equation: `dT_room/dt = β₁·(T_supply−T_room) + β₂·(T_room−T_out) + β₃`, where `τ = −1/β₂` is the building's insulation time constant.
+- **Why physics over pure ML:** physics extrapolates by design — a model trained on a tent would mis-predict a container, but the same equation with different β values works for both.
 
-*Speaker note:* the punchline of this slide — *"a model trained on a container is not a different model from one trained on a tent. It's the same model with different numbers, found the same way."*
-
----
-
-## Slide 3 — From Model to Stakeholder Value
-
-**A physics model is cool. Increasing stakeholder value is cooler.**
-
-*(stakeholder meme goes here)*
-
-We turn the model into **three intelligent insights** that stakeholders actually feel:
-
-| Insight | What it does | Proof from our backtest |
-|---|---|---|
-| 💰 **Cost / energy** | Start the *cheap* hot-water coil early so the *expensive* electric boost never fires | **~71% less preheat-window electrical energy** (~558 kWh / €167 / 223 kg CO₂ over 7 mornings) |
-| 🛠️ **Error / fault detection** | Watch the gap between predicted and measured temperature; sustained drift = fault | Door-open, filter blockage, refrigerant loss, compressor fault (stretch — pipeline ready) |
-| 🌱 **Sustainability** | Same kWh saved → CO₂ avoided, plus "what-if" scenarios (lower setpoint, fewer units) | 223 kg CO₂ avoided in 7 mornings, on one room |
-
-**The savings mechanism (the discovery in the data):** there are **two heating modes** —
-- **Mode 1:** fan + hot-water coil, ~4.7 kW electrical, **cheap**.
-- **Mode 2:** electric boost, 53–73 kW, **~15× more expensive**.
-
-The current system fires the expensive boost *and still misses comfort*. We start Mode 1 ~4 h earlier and **never trigger Mode 2** — using only setpoint timing, the one control lever we actually have.
-
-*Speaker note:* this is the "cooler" payoff. The physics is the engine; these three insights are the product.
+**Status:** ✅ calibration + trajectory simulator built — **0.17 °C** ramp fit; **~4.1 h** preheat lead time derived.
 
 ---
 
-## Slide 4 — Who Cares, and How They Interact
+## Slide 3 — What We're Building: The Insights
 
-**Before the insights matter, ask: to whom, and how do they touch them?**
+**On top of the model, three insights for stakeholders.**
 
-| Stakeholder | The insight that matters to them | How they interact with it |
+| Insight | What it does | Status |
 |---|---|---|
-| **Facility / building manager** | Comfort guaranteed at event start; no manual setup per building | Calendar in → preheat scheduled automatically; dashboard alerts on faults |
-| **LBenergy (the product)** | One model that scales to *any* new structure in ~3 days | Generalisation = a product advantage, not per-site tuning |
-| **Finance / operator** | € saved, peak-demand boost avoided | What-if slider: setpoint, unit count, season |
+| 💰 **Cost / energy** | Start the cheap hot-water coil early so the expensive electric boost never fires | ✅ backtested — **~71%** less preheat-window energy |
+| 🛠️ **Fault detection** | Watch the gap between predicted and measured temperature; sustained drift = fault | ⏳ building tomorrow — pipeline ready |
+| 🌱 **Sustainability** | Convert kWh saved to CO₂ avoided + what-if scenarios | ✅ ~558 kWh / €167 / 223 kg CO₂ over 7 mornings |
+
+**The mechanism we found in the data — two heating modes:**
+- **Mode 1:** fan + hot-water coil, ~4.7 kW electrical — **cheap**.
+- **Mode 2:** electric boost, 53–73 kW — **~15× more expensive**.
+
+The current system fires Mode 2 *and still misses comfort*. We start Mode 1 ~4 h earlier and never trigger Mode 2 — using only setpoint timing, the one control lever available.
+
+---
+
+## Slide 4 — Who the Insights Are For
+
+**Each insight changes a decision for a specific stakeholder.**
+
+| Stakeholder | Insight that matters | How they interact with it |
+|---|---|---|
+| **Facility manager** | Comfort guaranteed, no per-building setup | Calendar in → preheat scheduled automatically; fault alerts |
+| **LBenergy** | One model scales to any new structure in ~3 days | Generalisation instead of per-site tuning |
+| **Operator / finance** | € saved, peak-demand boost avoided | What-if slider (setpoint, unit count, season) |
 | **Sustainability / ESG** | kWh & CO₂ avoided, reportable | Seasonal savings summary |
-| **Occupants (students)** | Walk into a 21 °C room, on time | Invisible — they just stop being cold |
-
-*Speaker note:* the model only earns its keep when it changes a decision someone makes. Name the someone.
+| **Occupants** | A 21 °C room, on time | Invisible — they just aren't cold |
 
 ---
 
-## Slide 5 — Proof / Results (the money slide)
+## Slide 5 — Results So Far
 
-**Same day, same data — replayed through our model.**
+**Same day, same data, replayed through our model.**
 
-| Metric | Current IHL system | Team Feners model |
+| Metric | Current IHL system | Our model |
 |---|---|---|
-| On-time comfort (≥ 20.5 °C at event start) | **0 / 7 mornings** | **7 / 7 mornings** |
+| On-time comfort (≥20.5 °C at event start) | **0 / 7 mornings** | **7 / 7 mornings** |
 | Mean room temp at event start | 18.5 °C | 20.5 °C |
 | Heat-up ramp fit (RMSE) | — | **0.17 °C** |
-| Preheat lead time | blind 2h25min | calibrated **~4.1 h** (Mode 1 only) |
+| Preheat lead time | blind 2h25min | calibrated **~4.1 h**, Mode 1 only |
 | Preheat-window electrical energy | baseline | **~71% less** |
 
-**Visual:** the March-30 trajectory — observed (misses 21 °C, late boost) vs simulated (starts the cheap coil ~4 h early, hits 21 °C right at 04:30 event).
+**Visual:** March-30 trajectory — observed (misses 21 °C, late boost) vs simulated (cheap coil starts ~4 h early, hits 21 °C at the 04:30 event).
 
-> *"Start the cheap hot-water coil ~4 hours early — never fire the expensive electric boost. The room arrives at 21 °C exactly when students do. 7/7 instead of 0/7, at ~71% less energy."*
-
-*Speaker note:* be honest like the PDR is — B1 comfort/energy are *observed*, B3 comfort is the controller's *prediction*. Judges respect the honesty.
+*Honesty note (keep it):* current-system numbers are *observed*; our comfort figure is the controller's *prediction*; savings are electrical, preheat-window only.
 
 ---
 
-## Slide 6 — Generalisation (the scalability claim)
+## Slide 6 — What We Plan to Build Tomorrow
 
-**Same model, same code, different parameters — tent, container, or lecture hall.**
+**Day 3 work, in priority order:**
 
-- The insulation term `β₂ = −1/τ` is an **envelope property** — it doesn't change with the season.
-- **Our cross-window test:** fit on the *heating* window (March, −0.3–26 °C, setpoint 21 °C), validate on the *cooling* window (May, 7–33 °C, setpoints 15–24 °C). A 55-day gap, different temps, different setpoints — same β should explain both.
-- **New building:** initialise β from the nearest building-type prior → after ~3 days of its own telemetry, it re-fits itself. **No manual configuration.**
+1. **Cross-window generalisation test** — fit β on the heating window, validate on the cooling window (55-day gap, different temps & setpoints). The insulation term β₂ shouldn't change seasonally.
+2. **Cooling-window precool controller** — symmetric to the heating one, to complete the cooling backtest (currently pending).
+3. **Anomaly / fault early-warning** — CUSUM on the prediction residual; test on a synthetic fault.
+4. **ML residual corrector (LightGBM)** — learn what the physics misses (solar, occupancy); disabled-safe so the RC model always stands alone.
+5. **Demo dashboard (Streamlit)** — trajectory plot, savings, what-if slider.
+6. **Uncertainty + safe-margin scheduling** — confidence interval on t*; fall back to fixed offset if calibration fails.
 
-*Honesty note (keep it):* single-building dataset, so we demonstrate generalisation via heating↔cooling as two regimes + the parameter framework; cooling-window precool backtest is still in progress.
-
----
-
-## Slide 7 — Demo
-
-**What we'll show live:**
-1. The March-30 ramp: observed vs simulated trajectory (0.17 °C fit).
-2. The counterfactual: "start ~4 h early in cheap Mode 1 → 21 °C at event start, no boost."
-3. The backtest: 0/7 → 7/7 on-time, ~71% energy, kWh / € / CO₂.
-4. (Stretch) what-if slider + anomaly flag on residuals.
-
-**Guaranteed-demo fallback:** even if the ML residual layer isn't ready, the **RC model alone** delivers the whole story — physics evidence, counterfactual, savings.
+**Guaranteed demo:** even if items 2–5 slip, the RC model alone tells the full story (0.17 °C fit, ~4 h-early counterfactual, 0/7→7/7, ~71% energy).
 
 ---
 
-## Slide 8 — Close / The Ask
+## Slide 7 — Open Questions for LBenergy
 
-- **What we built:** a physics-informed, self-calibrating preheat controller that works across building types, learns in ~3 days, and uses only the control lever LBenergy actually has (setpoint timing).
-- **Verified impact:** 0/7 → 7/7 comfort, ~71% less preheat energy, on real campus data.
-- **Why it scales:** one model structure → every mobile structure → a product advantage for IHL.
-- **Open questions for LBenergy** (shows we read the data): building footprint / wall type? what drove the 02:05 setpoint switch? is the 43 kW spike real? rated COP?
-
-> *Team Feners — making the building tell us its physics, so it's warm exactly when it needs to be.*
+Shows we read the data, and sharpens the next steps:
+1. Building footprint (m²), wall construction, glazing ratio — to validate calibrated β / τ.
+2. What drove the setpoint switch to 21 °C at 02:05 UTC when the exported config says 0 min preheat?
+3. Is the 43 kW power spike a real peak event or a measurement artefact?
+4. Rated COP / refrigerant type — to sharpen energy-savings numbers.
+5. In production, is each heat pump a separate zone or one space_id per hall?
 
 ---
 
-## Appendix — Numbers cheat-sheet (for Q&A, not slides)
+## Appendix — Numbers cheat-sheet (Q&A, not a slide)
 
 - Dataset: 4 heat pumps, 1 room, ~90 s telemetry; heating 2026-03-30→04-05, cooling 2026-05-25→05-31.
 - Equation: `dT/dt = β₁·(T_supply−T_room) + β₂·(T_room−T_out) + β₃`, `τ = −1/β₂`.
-- Two modes: Mode 1 ~4.7 kW (cheap coil, COP≫1), Mode 2 53–73 kW (electric boost, ~15×).
+- Two modes: Mode 1 ~4.7 kW (cheap coil, COP≫1); Mode 2 53–73 kW (electric boost, ~15×).
 - Calibration: trajectory fit (scipy L-BFGS-B), 0.17 °C ramp RMSE; OLS retained as diagnostic.
 - Assumptions (labelled): €0.30–0.35/kWh, 0.400 kg CO₂/kWh (DE grid 2026).
 - Stack: pandas → RC sim (forward-Euler) → binary-search t* → LightGBM residual (stretch) → Streamlit demo.
