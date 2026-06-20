@@ -11,7 +11,7 @@ import numpy as np
 import pandas as pd
 from scipy.linalg import lstsq
 
-from .config import DT_HOURS
+from .config import DT_HOURS, BOOST_KW_THRESHOLD
 
 
 def fit_rc_ols(df: pd.DataFrame) -> dict:
@@ -26,8 +26,14 @@ def fit_rc_ols(df: pd.DataFrame) -> dict:
     STAGE 2 — β₁ from active-heating periods, with τ fixed from Stage 1:
           dT/dt − β₂·(T_room−T_out) = β₁·(T_supply−T_room) + β₃
 
-    COMBINED — full joint OLS on heating-only rows for cross-check:
-          dT/dt = β₁·(T_supply−T_room) + β₂·(T_room−T_out) + β₃
+    BOOST NUISANCE TERM — the Mode-2 electric boost (~70 kW) adds heat that does
+    NOT raise T_supply (it stays ~59 °C in both modes), so without accounting for
+    it OLS wrongly attributes that warming to β₁/β₃ and the fit collapses
+    (observed R² ≈ 0.11). We add a binary `is_boost` regressor (β₄) purely to
+    soak up that variance during fitting:
+          dT/dt = β₁·(T_supply−T_room) + β₂·(T_room−T_out) + β₃ + β₄·is_boost
+    β₄ is a *nuisance* parameter: our optimised controller runs Mode-1 only
+    (boost OFF, is_boost=0), so simulation/control use the clean {β₁,β₂,β₃}.
     """
     clean_all = df.dropna(subset=["dT_dt", "delta_Tsup_room", "delta_Troom_out"])
     clean_all = clean_all[clean_all["dT_dt"].abs() <= 5.0]
@@ -57,14 +63,20 @@ def fit_rc_ols(df: pd.DataFrame) -> dict:
     if len(heating) < 10:
         heating = clean_all[clean_all["T_supply"] >= 40.0]  # fallback
 
+    if "is_boost" in heating:                       # provided by build_prediction_frame
+        is_boost = heating["is_boost"].values.astype(float)
+    else:                                            # fallback if fed a bare frame
+        is_boost = (heating["P_total_kw"].values >= BOOST_KW_THRESHOLD).astype(float)
+
     Xh = np.column_stack([
         heating["delta_Tsup_room"].values,
         heating["delta_Troom_out"].values,
+        is_boost,                          # β₄ — boost nuisance regressor
         np.ones(len(heating)),
     ])
     yh = heating["dT_dt"].values
     th_h, _, _, _ = lstsq(Xh, yh)
-    beta1_heat, beta2_heat, beta3_heat = th_h
+    beta1_heat, beta2_heat, beta4_boost, beta3_heat = th_h
 
     yh_pred = Xh @ th_h
     ss_res  = np.sum((yh - yh_pred) ** 2)
@@ -72,35 +84,29 @@ def fit_rc_ols(df: pd.DataFrame) -> dict:
     r2_heat = 1 - ss_res / ss_tot if ss_tot > 0 else float("nan")
     rmse_h  = np.sqrt(np.mean((yh - yh_pred) ** 2))
 
-    # ── Preferred τ: Stage 1 (from cooling) if valid, else Stage 2 ──────────
-    if not np.isnan(tau_stage1):
-        tau_final  = tau_stage1
-        beta2_final = beta2_stage1
-    else:
-        tau_final  = -1.0 / beta2_heat if beta2_heat < 0 else float("nan")
-        beta2_final = beta2_heat
+    # ── Control parameters: use the HEATING-regime joint fit ────────────────
+    # SELECTION RULE (validated by trajectory, not by dT/dt R²):
+    # The controller simulates active fan-coil heating, so the heating-regime
+    # dynamics are the correct ones to deploy. Empirically these track the real
+    # Mar-30 preheat ramp to ~0.7 °C trajectory RMSE, whereas forcing the
+    # standby-cooling τ (≈8 h) onto the heating regime gives ~1.8 °C RMSE and
+    # the WRONG SIGN (predicts the room cooling during a heat-up). The Stage-1
+    # standby τ is retained only as a diagnostic (tau_stage1 in the output).
+    beta1_final = beta1_heat
+    beta2_final = beta2_heat
+    beta3_final = beta3_heat
+    tau_final   = -1.0 / beta2_heat if beta2_heat < 0 else float("nan")
 
-    # ── Stage 2b: re-estimate β₁ with τ fixed from Stage 1 ──────────────────
-    if not np.isnan(tau_stage1) and len(heating) >= 5:
-        y_adj   = yh - beta2_stage1 * heating["delta_Troom_out"].values
-        Xh2     = np.column_stack([
-            heating["delta_Tsup_room"].values,
-            np.ones(len(heating)),
-        ])
-        th_h2, _, _, _ = lstsq(Xh2, y_adj)
-        beta1_final  = th_h2[0]
-        beta3_final  = th_h2[1]
-    else:
-        beta1_final  = beta1_heat
-        beta3_final  = beta3_heat
-
-    # ── Final combined prediction quality on all-data check ──────────────────
+    # ── Final quality check on the MODE-1 regime the controller operates in ──
+    # The controller simulates boost-OFF preheat, so we score {β₁,β₂,β₃} on the
+    # non-boost rows only — the honest metric for what we actually deploy.
+    mode1 = clean_all[clean_all["P_total_kw"] < BOOST_KW_THRESHOLD]
     X_all = np.column_stack([
-        clean_all["delta_Tsup_room"].values,
-        clean_all["delta_Troom_out"].values,
-        np.ones(len(clean_all)),
+        mode1["delta_Tsup_room"].values,
+        mode1["delta_Troom_out"].values,
+        np.ones(len(mode1)),
     ])
-    y_all      = clean_all["dT_dt"].values
+    y_all      = mode1["dT_dt"].values
     theta_best = np.array([beta1_final, beta2_final, beta3_final])
     y_pred_all = X_all @ theta_best
     rmse_all   = float(np.sqrt(np.mean((y_all - y_pred_all) ** 2)))
@@ -112,6 +118,7 @@ def fit_rc_ols(df: pd.DataFrame) -> dict:
         "beta1":           beta1_final,
         "beta2":           beta2_final,
         "beta3":           beta3_final,
+        "beta4_boost":     beta4_boost,    # nuisance term (boost OFF in control)
         "tau_hours":       tau_final,
         "tau_stage1_h":    tau_stage1,
         "beta2_stage1":    beta2_stage1,

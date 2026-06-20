@@ -10,6 +10,7 @@ from __future__ import annotations
 import numpy as np
 import pandas as pd
 
+from .config import PRED_DT_HOURS
 from .rc_model import simulate_trajectory
 
 
@@ -35,6 +36,7 @@ def validate_on_cooling(beta: tuple, df_cooling: pd.DataFrame) -> dict:
             sub["T_supply"].values,
             sub["T_out"].values,
             beta,
+            dt_h=PRED_DT_HOURS,        # match the prediction-frame grid (15-min)
         )
         rmse_traj = float(np.sqrt(np.mean((traj - sub["T_room"].values) ** 2)))
     else:

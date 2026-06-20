@@ -13,7 +13,7 @@ from pathlib import Path
 import pandas as pd
 
 from .config import HEATING_DIR, COOLING_DIR
-from .data import build_dataset, load_events
+from .data import build_dataset, build_anomaly_frame, load_events
 
 # Named windows the pipeline knows how to build.
 WINDOWS = {
@@ -36,6 +36,17 @@ def run_pipeline(window: str = "heating") -> tuple[pd.DataFrame, pd.DataFrame]:
     df = build_dataset(directory)
     events = load_events(directory)
     return df, events
+
+
+def run_anomaly_pipeline(window: str = "heating") -> pd.DataFrame:
+    """
+    Build the device-level, native-resolution (~90 s) frame for anomaly
+    detection. Separate from run_pipeline because the two pipelines have
+    deliberately different shapes (see DATA_CONTRACT.md).
+    """
+    if window not in WINDOWS:
+        raise ValueError(f"Unknown window {window!r}. Options: {list(WINDOWS)}")
+    return build_anomaly_frame(WINDOWS[window])
 
 
 def persist_parquet(df: pd.DataFrame, out_path: Path) -> Path:

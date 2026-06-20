@@ -26,12 +26,25 @@ def ensure_dirs() -> None:
 
 
 # ─── Model constants ──────────────────────────────────────────────────────────
-RESAMPLE_MIN     = 5            # resample telemetry to a 5-minute grid
+RESAMPLE_MIN     = 5            # controller forward-sim Euler step (fine = accurate)
 DT_HOURS         = RESAMPLE_MIN / 60.0
+
+# ── Pipeline resolutions (two pipelines, two grids) ──────────────────────────
+# Prediction: room-level, coarse grid — coarser dT/dt is less noisy → better fit
+# (verified: 15-min beats 5-min on R² and trajectory RMSE).
+PRED_RESAMPLE_MIN = 15
+PRED_DT_HOURS     = PRED_RESAMPLE_MIN / 60.0
+# Anomaly: device-level, NATIVE resolution (~90 s) — no resampling, since the
+# sensors report every ~90 s and a finer grid would just interpolate. We only
+# bucket lightly to compute cross-device agreement.
+ANOMALY_REF_BUCKET = "2min"
+
 T_SUPPLY_PREHEAT = 59.0         # °C: hot-water coil steady-state supply temperature
 T_SETPOINT       = 21.0         # °C: occupied setpoint
 T_UNOCCUPIED     = 11.0         # °C: night setback
 SAFETY_MARGIN    = 0.5          # °C: preheat to T_setpoint - margin
+BOOST_KW_THRESHOLD = 20.0       # kW total: above this = Mode-2 electric boost is active
+P_STANDBY_KW       = 4.7        # kW total: Mode-1 fan/coil baseline (verified from data)
 
 # Building-type priors for the generalisation sweep (β₁, β₂, τ estimate).
 BUILDING_TYPES = {
