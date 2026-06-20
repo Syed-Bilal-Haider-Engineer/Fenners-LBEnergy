@@ -20,18 +20,18 @@ export function DetailTopbar({
       <div>
         <Link
           href={backHref}
-          className="inline-flex items-center gap-1 text-sm text-slate-400 hover:text-slate-600"
+          className="inline-flex items-center gap-1 text-sm text-graphite-600 hover:text-graphite-900"
         >
           <ChevronLeft size={15} />
           {backLabel}
         </Link>
 
-        <h1 className="mt-1 text-xl font-semibold tracking-tight text-slate-900">
+        <h1 className="mt-1 text-xl font-semibold tracking-tight text-graphite-900">
           {title}
         </h1>
 
         {subtitle && (
-          <p className="mt-0.5 text-sm text-slate-400">{subtitle}</p>
+          <p className="mt-0.5 text-sm text-graphite-600">{subtitle}</p>
         )}
       </div>
 

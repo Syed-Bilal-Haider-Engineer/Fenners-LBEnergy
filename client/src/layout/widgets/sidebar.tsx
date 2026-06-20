@@ -4,9 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   Calendar,
-  BarChart3,
   AlertTriangle,
-  RotateCcw,
   FileText,
   Settings,
   MapPin,
@@ -14,18 +12,16 @@ import {
 
 const NAV_ITEMS = [
   { href: "/dashboard/schedule", label: "Schedule", icon: Calendar },
-  { href: "/dashboard/analytics", label: "Analytics", icon: BarChart3 },
   { href: "/dashboard/alerts", label: "Alerts", icon: AlertTriangle, badge: 3 },
-  { href: "/dashboard/scenarios", label: "Scenarios", icon: RotateCcw },
   { href: "/dashboard/reports", label: "Reports", icon: FileText },
-  { href: "/dashboard/settings", label: "Settings", icon: Settings },
+  { href: "/dashboard/configuration", label: "Configuration", icon: Settings },
 ];
 
 export function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="flex h-screen w-[260px] shrink-0 flex-col justify-between bg-graphite-900 px-4 py-6 text-white">
+    <aside className="flex h-screen w-[260px] shrink-0 flex-col justify-between bg-[#191919] px-4 py-6 text-white">
       <div>
         <Link href="/dashboard" className="mb-8 flex items-center gap-2.5 px-2">
           {/* eslint-disable-next-line @next/next/no-img-element */}

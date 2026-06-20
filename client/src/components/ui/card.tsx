@@ -12,7 +12,7 @@ export function Card({ className, padded = true, children, ...props }: CardProps
   return (
     <div
       className={cn(
-        "rounded-xl border border-line bg-white shadow-panel",
+        "rounded-xl border border-line bg-white shadow-panel dark:bg-graphite-800",
         padded && "p-5",
         className
       )}

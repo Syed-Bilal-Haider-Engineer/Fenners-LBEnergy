@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --font-sans: var(--font-barlow), system-ui, sans-serif;
   --font-mono: var(--font-mono), ui-monospace, monospace;
@@ -49,9 +51,18 @@
 }
 
 body {
-  background-color: #f6f7f8;
+  background-color: var(--color-canvas);
   font-family: var(--font-sans);
-  color: #191919;
+  color: var(--color-graphite-900);
+}
+
+/* Dark theme — flips text, page canvas & borders via tokens.
+   Surfaces (cards/panels) opt in with dark:* utilities. */
+.dark {
+  --color-canvas: #0f1115;
+  --color-line: #2b313a;
+  --color-graphite-900: #f1f3f5; /* primary text */
+  --color-graphite-600: #aab2bf; /* muted text */
 }
 
 .tabular {
@@ -148,6 +159,56 @@ body {
 .btn-ghost:hover {
   background: #ff6148;
   color: #ffffff;
+}
+
+/* ── Floating orange/blue background blobs (lava-lamp) ────────────────── */
+.blob {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(70px);
+  pointer-events: none;
+  will-change: transform;
+}
+.blob-coral {
+  background: radial-gradient(closest-side, rgba(255, 97, 72, 0.75), transparent 70%);
+}
+.blob-ember {
+  background: radial-gradient(closest-side, rgba(242, 66, 39, 0.7), transparent 70%);
+}
+.blob-ocean {
+  background: radial-gradient(closest-side, rgba(25, 86, 123, 0.7), transparent 70%);
+}
+.blob-sky {
+  background: radial-gradient(closest-side, rgba(11, 117, 183, 0.6), transparent 70%);
+}
+
+@keyframes blob-a {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(8vw, 6vh) scale(1.15); }
+  66% { transform: translate(-6vw, 10vh) scale(0.9); }
+}
+@keyframes blob-b {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  30% { transform: translate(-9vw, 8vh) scale(1.2); }
+  70% { transform: translate(7vw, -6vh) scale(0.95); }
+}
+@keyframes blob-c {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  40% { transform: translate(10vw, -8vh) scale(1.1); }
+  75% { transform: translate(-8vw, -4vh) scale(1.05); }
+}
+@keyframes blob-d {
+  0%, 100% { transform: translate(0, 0) scale(1.05); }
+  50% { transform: translate(-7vw, -9vh) scale(0.9); }
+}
+
+.anim-a { animation: blob-a 22s ease-in-out infinite; }
+.anim-b { animation: blob-b 27s ease-in-out infinite; }
+.anim-c { animation: blob-c 24s ease-in-out infinite; }
+.anim-d { animation: blob-d 30s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .anim-a, .anim-b, .anim-c, .anim-d { animation: none; }
 }
 
 /* Pulse line used behind the energy chart's live series */
