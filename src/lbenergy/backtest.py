@@ -98,8 +98,8 @@ def evaluate_event(
         on_time = lambda T: T <= T_target          # noqa: E731
 
     T_pred_deadline = float(traj[-1])
-    feasible   = lead_h < lookback_h - 1e-3        # reached target within the window
-    on_time_B3 = on_time(T_pred_deadline)
+    feasible   = on_time(T_pred_deadline)          # reached target within the window
+    on_time_B3 = feasible
     # Mode-1 only (no boost) ⇒ flat standby-level electrical draw across the window.
     E_B3 = standby_kw * lookback_h
 

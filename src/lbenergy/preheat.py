@@ -32,14 +32,21 @@ def _predict_start(
     heating wants the room AT LEAST as warm as target, cooling AT MOST as cool.
     More lead is monotonically more conditioning in both cases.
     """
-    def reached(lead_h: float) -> bool:
-        n = max(2, int(lead_h / dt_h) + 1)
+    def simulate(lead_h: float) -> np.ndarray:
+        n = max(1, int(lead_h / dt_h) + 1)
         T_sup = np.full(n, T_supply_nom)
         T_out = np.full(n, T_out_const)
-        T_at_event = simulate_trajectory(T_room_now, T_sup, T_out, beta, dt_h)[-1]
+        return simulate_trajectory(T_room_now, T_sup, T_out, beta, dt_h)
+
+    def reached(lead_h: float) -> bool:
+        T_at_event = simulate(lead_h)[-1]
         return T_at_event >= T_target if direction == "heat" else T_at_event <= T_target
 
-    lo, hi = 0.0, max_lead_h
+    search_limit = max(0.0, min(hours_to_event, max_lead_h))
+    if not reached(search_limit):
+        return search_limit, simulate(search_limit)
+
+    lo, hi = 0.0, search_limit
     for _ in range(24):              # 2^24 steps → sub-second precision
         mid = (lo + hi) / 2.0
         if reached(mid):
@@ -48,11 +55,7 @@ def _predict_start(
             lo = mid
 
     optimal = hi
-    n_steps = max(2, int(optimal / dt_h) + 1)
-    T_sup   = np.full(n_steps, T_supply_nom)
-    T_out_a = np.full(n_steps, T_out_const)
-    traj    = simulate_trajectory(T_room_now, T_sup, T_out_a, beta, dt_h)
-    return optimal, traj
+    return optimal, simulate(optimal)
 
 
 def predict_preheat_start(

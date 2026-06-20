@@ -23,7 +23,13 @@ if sys.stdout.encoding and sys.stdout.encoding.lower() not in ("utf-8", "utf8"):
 # Make the src/ package importable when run as a plain script.
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from lbenergy import config, run_pipeline, fit_rc_ols, fit_heatup_trajectory  # noqa: E402
+from lbenergy import (  # noqa: E402
+    config,
+    run_pipeline,
+    fit_rc_ols,
+    fit_heatup_trajectory,
+    fit_cooldown_trajectory,
+)
 
 
 def main() -> None:
@@ -36,9 +42,9 @@ def main() -> None:
     print(f"[train] Building '{args.window}' pipeline ...")
     df, _events = run_pipeline(args.window)
 
-    # Deployable control params: trajectory-calibrated heat-up model.
-    print(f"[train] Trajectory-calibrating heat-up model on {len(df)} rows ...")
-    hp = fit_heatup_trajectory(df)
+    fit_name = "cool-down" if args.window == "cooling" else "heat-up"
+    print(f"[train] Trajectory-calibrating {fit_name} model on {len(df)} rows ...")
+    hp = fit_cooldown_trajectory(df) if args.window == "cooling" else fit_heatup_trajectory(df)
     # Diagnostics: OLS fit (passive-cooling τ etc.).
     ols = fit_rc_ols(df)
 

@@ -32,6 +32,7 @@ _RENAME = {
     "status_temperature_supply_in_celsius":  "T_supply",
     "status_temperature_return_in_celsius":  "T_return",
     "status_is_heating_required":            "heating_req",
+    "status_is_cooling_required":            "cooling_req",
     "status_target_temperature_in_celsius":  "setpoint",
     "status_is_compressor_active":           "compressor",
     "status_humidity_in_percent":            "humidity",
@@ -42,8 +43,10 @@ _RENAME = {
     "status_air_flow_return_in_percent":     "flow_return",
     "status_is_defrost_active":              "defrost",
     "status_is_alarm_active":                "alarm",
+    "status_error_registers":                "error_registers",
     "status_is_enabled":                     "enabled",
     "status_has_network_error":              "net_error",
+    "status_network_error_count":            "net_error_count",
     "status_system_uptime_in_seconds":       "uptime_s",
 }
 
@@ -96,6 +99,8 @@ def clean(df: pd.DataFrame, *, drop_alarms: bool = True, drop_defrost: bool = Tr
         out = out[out["enabled"] != 0]
     if "net_error" in out:
         out = out[out["net_error"].fillna(0) == 0]
+    if "net_error_count" in out:
+        out = out[out["net_error_count"].fillna(0) == 0]
     if "uptime_s" in out:
         out = out[out["uptime_s"].fillna(1e9) >= 300]      # >5 min since boot
     for col in ("T_room", "T_out"):
@@ -103,9 +108,21 @@ def clean(df: pd.DataFrame, *, drop_alarms: bool = True, drop_defrost: bool = Tr
             out = out[out[col].between(-30, 60)]
     if drop_alarms and "alarm" in out:
         out = out[out["alarm"].fillna(0) == 0]
+    if drop_alarms and "error_registers" in out:
+        out = out[~_error_register_nonzero(out["error_registers"])]
     if drop_defrost and "defrost" in out:
         out = out[out["defrost"].fillna(0) == 0]
     return out
+
+
+def _error_register_nonzero(values: pd.Series) -> pd.Series:
+    """True when any comma-separated Modbus error register contains a bit."""
+    text = values.fillna("0").astype(str).str.strip()
+    return text.apply(
+        lambda raw: any(
+            int(float(part or "0")) != 0 for part in raw.split(",") if part.strip() != ""
+        )
+    )
 
 
 # ─── Pipeline 1: prediction (room-level, 15-min) ─────────────────────────────

@@ -1,0 +1,1829 @@
+{
+  "summary": {
+    "rows_scored": 29079,
+    "devices": 4,
+    "rows_with_fault_flags": 8518,
+    "alert_count": 61,
+    "critical_count": 1,
+    "high_count": 51,
+    "medium_count": 9,
+    "residual_rmse_degC": 0.03806064086609516,
+    "window": "cooling",
+    "beta1": 0.10209960937499972,
+    "beta2": -0.014921874999999928,
+    "beta3": -0.43457031249999806,
+    "ramp_rmse_degC": 0.050369906105646706
+  },
+  "alerts": [
+    {
+      "id": "hardware_alarm-1c893f75-20260525000047",
+      "type": "hardware_alarm",
+      "severity": "critical",
+      "title": "Controller alarm or error register set",
+      "message": "Device telemetry reports an active alarm/error bit.",
+      "deviceId": "1c893f75-4599-4402-9d4c-1017aa858fa8",
+      "createdAt": "2026-05-25T00:00:47",
+      "resolvedAt": "2026-05-31T23:58:33",
+      "durationMinutes": 10077.8,
+      "temperature": 20.74,
+      "setpoint": 18.0,
+      "evidence": {
+        "rows": 7270,
+        "maxAbsResidualDegC": 0.46,
+        "maxPeerDeviationDegC": 0.23,
+        "meanRoomTempDegC": 21.4,
+        "meanSetpointDegC": 16.65
+      },
+      "likelyCause": "Controller fault or communication error register is active.",
+      "probableComponent": "Controller / communications",
+      "partsToPick": [
+        "Controller interface module",
+        "communication harness",
+        "service laptop"
+      ],
+      "recommendedAction": "Read the Modbus register, inspect controller wiring, then clear and observe.",
+      "confidence": 0.98,
+      "evidenceSummary": "Error register active across 7270 samples."
+    },
+    {
+      "id": "rc_negative_shift-1c893f75-20260527082814",
+      "type": "rc_negative_shift",
+      "severity": "high",
+      "title": "Sharp negative thermal residual",
+      "message": "The room is colder than expected from the physics model.",
+      "deviceId": "1c893f75-4599-4402-9d4c-1017aa858fa8",
+      "createdAt": "2026-05-27T08:28:14",
+      "resolvedAt": "2026-05-27T08:31:14",
+      "durationMinutes": 3.0,
+      "temperature": 21.56,
+      "setpoint": 20.0,
+      "evidence": {
+        "rows": 3,
+        "maxAbsResidualDegC": 0.25,
+        "maxPeerDeviationDegC": 0.12,
+        "meanRoomTempDegC": 21.34,
+        "meanSetpointDegC": 20.0
+      },
+      "likelyCause": "Door/ventilation event, defrost dip, or sudden capacity loss.",
+      "probableComponent": "Envelope / airflow path",
+      "partsToPick": [
+        "Filter set",
+        "seal inspection kit"
+      ],
+      "recommendedAction": "Confirm whether this coincides with defrost; if sustained, inspect airflow and envelope leakage.",
+      "confidence": 0.74,
+      "evidenceSummary": "Residual evidence peaked at 0.25 degC across 3 samples."
+    },
+    {
+      "id": "rc_negative_shift-930f3621-20260527082814",
+      "type": "rc_negative_shift",
+      "severity": "high",
+      "title": "Sharp negative thermal residual",
+      "message": "The room is colder than expected from the physics model.",
+      "deviceId": "930f3621-05df-4574-9270-9d994c5b716c",
+      "createdAt": "2026-05-27T08:28:14",
+      "resolvedAt": "2026-05-27T08:31:14",
+      "durationMinutes": 3.0,
+      "temperature": 21.56,
+      "setpoint": 20.0,
+      "evidence": {
+        "rows": 3,
+        "maxAbsResidualDegC": 0.23,
+        "maxPeerDeviationDegC": 0.12,
+        "meanRoomTempDegC": 21.34,
+        "meanSetpointDegC": 20.0
+      },
+      "likelyCause": "Door/ventilation event, defrost dip, or sudden capacity loss.",
+      "probableComponent": "Envelope / airflow path",
+      "partsToPick": [
+        "Filter set",
+        "seal inspection kit"
+      ],
+      "recommendedAction": "Confirm whether this coincides with defrost; if sustained, inspect airflow and envelope leakage.",
+      "confidence": 0.74,
+      "evidenceSummary": "Residual evidence peaked at 0.23 degC across 3 samples."
+    },
+    {
+      "id": "rc_negative_shift-bdaf0e14-20260527082814",
+      "type": "rc_negative_shift",
+      "severity": "high",
+      "title": "Sharp negative thermal residual",
+      "message": "The room is colder than expected from the physics model.",
+      "deviceId": "bdaf0e14-2cd1-43c8-b9ea-b3c90309f773",
+      "createdAt": "2026-05-27T08:28:14",
+      "resolvedAt": "2026-05-27T08:31:14",
+      "durationMinutes": 3.0,
+      "temperature": 21.56,
+      "setpoint": 20.0,
+      "evidence": {
+        "rows": 3,
+        "maxAbsResidualDegC": 0.24,
+        "maxPeerDeviationDegC": 0.12,
+        "meanRoomTempDegC": 21.34,
+        "meanSetpointDegC": 20.0
+      },
+      "likelyCause": "Door/ventilation event, defrost dip, or sudden capacity loss.",
+      "probableComponent": "Envelope / airflow path",
+      "partsToPick": [
+        "Filter set",
+        "seal inspection kit"
+      ],
+      "recommendedAction": "Confirm whether this coincides with defrost; if sustained, inspect airflow and envelope leakage.",
+      "confidence": 0.74,
+      "evidenceSummary": "Residual evidence peaked at 0.24 degC across 3 samples."
+    },
+    {
+      "id": "rc_negative_shift-e72fea56-20260527082814",
+      "type": "rc_negative_shift",
+      "severity": "high",
+      "title": "Sharp negative thermal residual",
+      "message": "The room is colder than expected from the physics model.",
+      "deviceId": "e72fea56-abe7-4d3f-a0ed-1e6b6c462157",
+      "createdAt": "2026-05-27T08:28:14",
+      "resolvedAt": "2026-05-27T08:31:14",
+      "durationMinutes": 3.0,
+      "temperature": 21.56,
+      "setpoint": 20.0,
+      "evidence": {
+        "rows": 3,
+        "maxAbsResidualDegC": 0.23,
+        "maxPeerDeviationDegC": 0.12,
+        "meanRoomTempDegC": 21.34,
+        "meanSetpointDegC": 20.0
+      },
+      "likelyCause": "Door/ventilation event, defrost dip, or sudden capacity loss.",
+      "probableComponent": "Envelope / airflow path",
+      "partsToPick": [
+        "Filter set",
+        "seal inspection kit"
+      ],
+      "recommendedAction": "Confirm whether this coincides with defrost; if sustained, inspect airflow and envelope leakage.",
+      "confidence": 0.74,
+      "evidenceSummary": "Residual evidence peaked at 0.23 degC across 3 samples."
+    },
+    {
+      "id": "setpoint_miss-1c893f75-20260527095605",
+      "type": "setpoint_miss",
+      "severity": "high",
+      "title": "Setpoint not reached",
+      "message": "Room temperature remains far from setpoint while conditioning is required.",
+      "deviceId": "1c893f75-4599-4402-9d4c-1017aa858fa8",
+      "createdAt": "2026-05-27T09:56:05",
+      "resolvedAt": "2026-05-27T10:27:15",
+      "durationMinutes": 31.2,
+      "temperature": 22.1,
+      "setpoint": 20.0,
+      "evidence": {
+        "rows": 22,
+        "maxAbsResidualDegC": 0.15,
+        "maxPeerDeviationDegC": 0.07,
+        "meanRoomTempDegC": 22.3,
+        "meanSetpointDegC": 20.0
+      },
+      "likelyCause": "Extended conditioning could not reach target; likely envelope loss, refrigerant low, or undersizing.",
+      "probableComponent": "Envelope / capacity",
+      "partsToPick": [
+        "Filter set",
+        "refrigerant service kit",
+        "thermal inspection kit"
+      ],
+      "recommendedAction": "Check whether preheat was long enough, then inspect capacity, refrigerant, filters, and envelope leakage.",
+      "confidence": 0.88,
+      "evidenceSummary": "Setpoint miss persisted for 22 samples with max residual 0.15 degC."
+    },
+    {
+      "id": "setpoint_miss-930f3621-20260527095715",
+      "type": "setpoint_miss",
+      "severity": "high",
+      "title": "Setpoint not reached",
+      "message": "Room temperature remains far from setpoint while conditioning is required.",
+      "deviceId": "930f3621-05df-4574-9270-9d994c5b716c",
+      "createdAt": "2026-05-27T09:57:15",
+      "resolvedAt": "2026-05-27T10:27:15",
+      "durationMinutes": 30.0,
+      "temperature": 22.13,
+      "setpoint": 20.0,
+      "evidence": {
+        "rows": 21,
+        "maxAbsResidualDegC": 0.16,
+        "maxPeerDeviationDegC": 0.07,
+        "meanRoomTempDegC": 22.31,
+        "meanSetpointDegC": 20.0
+      },
+      "likelyCause": "Extended conditioning could not reach target; likely envelope loss, refrigerant low, or undersizing.",
+      "probableComponent": "Envelope / capacity",
+      "partsToPick": [
+        "Filter set",
+        "refrigerant service kit",
+        "thermal inspection kit"
+      ],
+      "recommendedAction": "Check whether preheat was long enough, then inspect capacity, refrigerant, filters, and envelope leakage.",
+      "confidence": 0.88,
+      "evidenceSummary": "Setpoint miss persisted for 21 samples with max residual 0.16 degC."
+    },
+    {
+      "id": "setpoint_miss-bdaf0e14-20260527095715",
+      "type": "setpoint_miss",
+      "severity": "high",
+      "title": "Setpoint not reached",
+      "message": "Room temperature remains far from setpoint while conditioning is required.",
+      "deviceId": "bdaf0e14-2cd1-43c8-b9ea-b3c90309f773",
+      "createdAt": "2026-05-27T09:57:15",
+      "resolvedAt": "2026-05-27T10:27:15",
+      "durationMinutes": 30.0,
+      "temperature": 22.13,
+      "setpoint": 20.0,
+      "evidence": {
+        "rows": 21,
+        "maxAbsResidualDegC": 0.16,
+        "maxPeerDeviationDegC": 0.07,
+        "meanRoomTempDegC": 22.31,
+        "meanSetpointDegC": 20.0
+      },
+      "likelyCause": "Extended conditioning could not reach target; likely envelope loss, refrigerant low, or undersizing.",
+      "probableComponent": "Envelope / capacity",
+      "partsToPick": [
+        "Filter set",
+        "refrigerant service kit",
+        "thermal inspection kit"
+      ],
+      "recommendedAction": "Check whether preheat was long enough, then inspect capacity, refrigerant, filters, and envelope leakage.",
+      "confidence": 0.88,
+      "evidenceSummary": "Setpoint miss persisted for 21 samples with max residual 0.16 degC."
+    },
+    {
+      "id": "setpoint_miss-e72fea56-20260527095715",
+      "type": "setpoint_miss",
+      "severity": "high",
+      "title": "Setpoint not reached",
+      "message": "Room temperature remains far from setpoint while conditioning is required.",
+      "deviceId": "e72fea56-abe7-4d3f-a0ed-1e6b6c462157",
+      "createdAt": "2026-05-27T09:57:15",
+      "resolvedAt": "2026-05-27T10:27:15",
+      "durationMinutes": 30.0,
+      "temperature": 22.13,
+      "setpoint": 20.0,
+      "evidence": {
+        "rows": 21,
+        "maxAbsResidualDegC": 0.16,
+        "maxPeerDeviationDegC": 0.07,
+        "meanRoomTempDegC": 22.31,
+        "meanSetpointDegC": 20.0
+      },
+      "likelyCause": "Extended conditioning could not reach target; likely envelope loss, refrigerant low, or undersizing.",
+      "probableComponent": "Envelope / capacity",
+      "partsToPick": [
+        "Filter set",
+        "refrigerant service kit",
+        "thermal inspection kit"
+      ],
+      "recommendedAction": "Check whether preheat was long enough, then inspect capacity, refrigerant, filters, and envelope leakage.",
+      "confidence": 0.88,
+      "evidenceSummary": "Setpoint miss persisted for 21 samples with max residual 0.16 degC."
+    },
+    {
+      "id": "setpoint_miss-1c893f75-20260527115916",
+      "type": "setpoint_miss",
+      "severity": "high",
+      "title": "Setpoint not reached",
+      "message": "Room temperature remains far from setpoint while conditioning is required.",
+      "deviceId": "1c893f75-4599-4402-9d4c-1017aa858fa8",
+      "createdAt": "2026-05-27T11:59:16",
+      "resolvedAt": "2026-05-27T12:39:46",
+      "durationMinutes": 40.5,
+      "temperature": 23.07,
+      "setpoint": 20.0,
+      "evidence": {
+        "rows": 26,
+        "maxAbsResidualDegC": 0.21,
+        "maxPeerDeviationDegC": 0.11,
+        "meanRoomTempDegC": 22.64,
+        "meanSetpointDegC": 20.0
+      },
+      "likelyCause": "Extended conditioning could not reach target; likely envelope loss, refrigerant low, or undersizing.",
+      "probableComponent": "Envelope / capacity",
+      "partsToPick": [
+        "Filter set",
+        "refrigerant service kit",
+        "thermal inspection kit"
+      ],
+      "recommendedAction": "Check whether preheat was long enough, then inspect capacity, refrigerant, filters, and envelope leakage.",
+      "confidence": 0.88,
+      "evidenceSummary": "Setpoint miss persisted for 26 samples with max residual 0.21 degC."
+    },
+    {
+      "id": "setpoint_miss-930f3621-20260527115916",
+      "type": "setpoint_miss",
+      "severity": "high",
+      "title": "Setpoint not reached",
+      "message": "Room temperature remains far from setpoint while conditioning is required.",
+      "deviceId": "930f3621-05df-4574-9270-9d994c5b716c",
+      "createdAt": "2026-05-27T11:59:16",
+      "resolvedAt": "2026-05-27T12:39:46",
+      "durationMinutes": 40.5,
+      "temperature": 23.07,
+      "setpoint": 20.0,
+      "evidence": {
+        "rows": 25,
+        "maxAbsResidualDegC": 0.19,
+        "maxPeerDeviationDegC": 0.11,
+        "meanRoomTempDegC": 22.63,
+        "meanSetpointDegC": 20.0
+      },
+      "likelyCause": "Extended conditioning could not reach target; likely envelope loss, refrigerant low, or undersizing.",
+      "probableComponent": "Envelope / capacity",
+      "partsToPick": [
+        "Filter set",
+        "refrigerant service kit",
+        "thermal inspection kit"
+      ],
+      "recommendedAction": "Check whether preheat was long enough, then inspect capacity, refrigerant, filters, and envelope leakage.",
+      "confidence": 0.88,
+      "evidenceSummary": "Setpoint miss persisted for 25 samples with max residual 0.19 degC."
+    },
+    {
+      "id": "setpoint_miss-bdaf0e14-20260527115916",
+      "type": "setpoint_miss",
+      "severity": "high",
+      "title": "Setpoint not reached",
+      "message": "Room temperature remains far from setpoint while conditioning is required.",
+      "deviceId": "bdaf0e14-2cd1-43c8-b9ea-b3c90309f773",
+      "createdAt": "2026-05-27T11:59:16",
+      "resolvedAt": "2026-05-27T12:39:46",
+      "durationMinutes": 40.5,
+      "temperature": 23.07,
+      "setpoint": 20.0,
+      "evidence": {
+        "rows": 25,
+        "maxAbsResidualDegC": 0.2,
+        "maxPeerDeviationDegC": 0.11,
+        "meanRoomTempDegC": 22.63,
+        "meanSetpointDegC": 20.0
+      },
+      "likelyCause": "Extended conditioning could not reach target; likely envelope loss, refrigerant low, or undersizing.",
+      "probableComponent": "Envelope / capacity",
+      "partsToPick": [
+        "Filter set",
+        "refrigerant service kit",
+        "thermal inspection kit"
+      ],
+      "recommendedAction": "Check whether preheat was long enough, then inspect capacity, refrigerant, filters, and envelope leakage.",
+      "confidence": 0.88,
+      "evidenceSummary": "Setpoint miss persisted for 25 samples with max residual 0.2 degC."
+    },
+    {
+      "id": "setpoint_miss-e72fea56-20260527115916",
+      "type": "setpoint_miss",
+      "severity": "high",
+      "title": "Setpoint not reached",
+      "message": "Room temperature remains far from setpoint while conditioning is required.",
+      "deviceId": "e72fea56-abe7-4d3f-a0ed-1e6b6c462157",
+      "createdAt": "2026-05-27T11:59:16",
+      "resolvedAt": "2026-05-27T12:39:46",
+      "durationMinutes": 40.5,
+      "temperature": 23.07,
+      "setpoint": 20.0,
+      "evidence": {
+        "rows": 25,
+        "maxAbsResidualDegC": 0.19,
+        "maxPeerDeviationDegC": 0.11,
+        "meanRoomTempDegC": 22.63,
+        "meanSetpointDegC": 20.0
+      },
+      "likelyCause": "Extended conditioning could not reach target; likely envelope loss, refrigerant low, or undersizing.",
+      "probableComponent": "Envelope / capacity",
+      "partsToPick": [
+        "Filter set",
+        "refrigerant service kit",
+        "thermal inspection kit"
+      ],
+      "recommendedAction": "Check whether preheat was long enough, then inspect capacity, refrigerant, filters, and envelope leakage.",
+      "confidence": 0.88,
+      "evidenceSummary": "Setpoint miss persisted for 25 samples with max residual 0.19 degC."
+    },
+    {
+      "id": "setpoint_miss-1c893f75-20260527140547",
+      "type": "setpoint_miss",
+      "severity": "high",
+      "title": "Setpoint not reached",
+      "message": "Room temperature remains far from setpoint while conditioning is required.",
+      "deviceId": "1c893f75-4599-4402-9d4c-1017aa858fa8",
+      "createdAt": "2026-05-27T14:05:47",
+      "resolvedAt": "2026-05-27T14:35:32",
+      "durationMinutes": 29.8,
+      "temperature": 22.1,
+      "setpoint": 20.0,
+      "evidence": {
+        "rows": 21,
+        "maxAbsResidualDegC": 0.17,
+        "maxPeerDeviationDegC": 0.02,
+        "meanRoomTempDegC": 22.26,
+        "meanSetpointDegC": 20.0
+      },
+      "likelyCause": "Extended conditioning could not reach target; likely envelope loss, refrigerant low, or undersizing.",
+      "probableComponent": "Envelope / capacity",
+      "partsToPick": [
+        "Filter set",
+        "refrigerant service kit",
+        "thermal inspection kit"
+      ],
+      "recommendedAction": "Check whether preheat was long enough, then inspect capacity, refrigerant, filters, and envelope leakage.",
+      "confidence": 0.88,
+      "evidenceSummary": "Setpoint miss persisted for 21 samples with max residual 0.17 degC."
+    },
+    {
+      "id": "setpoint_miss-930f3621-20260527140547",
+      "type": "setpoint_miss",
+      "severity": "high",
+      "title": "Setpoint not reached",
+      "message": "Room temperature remains far from setpoint while conditioning is required.",
+      "deviceId": "930f3621-05df-4574-9270-9d994c5b716c",
+      "createdAt": "2026-05-27T14:05:47",
+      "resolvedAt": "2026-05-27T14:35:32",
+      "durationMinutes": 29.8,
+      "temperature": 22.1,
+      "setpoint": 20.0,
+      "evidence": {
+        "rows": 21,
+        "maxAbsResidualDegC": 0.18,
+        "maxPeerDeviationDegC": 0.02,
+        "meanRoomTempDegC": 22.26,
+        "meanSetpointDegC": 20.0
+      },
+      "likelyCause": "Extended conditioning could not reach target; likely envelope loss, refrigerant low, or undersizing.",
+      "probableComponent": "Envelope / capacity",
+      "partsToPick": [
+        "Filter set",
+        "refrigerant service kit",
+        "thermal inspection kit"
+      ],
+      "recommendedAction": "Check whether preheat was long enough, then inspect capacity, refrigerant, filters, and envelope leakage.",
+      "confidence": 0.88,
+      "evidenceSummary": "Setpoint miss persisted for 21 samples with max residual 0.18 degC."
+    },
+    {
+      "id": "setpoint_miss-bdaf0e14-20260527140547",
+      "type": "setpoint_miss",
+      "severity": "high",
+      "title": "Setpoint not reached",
+      "message": "Room temperature remains far from setpoint while conditioning is required.",
+      "deviceId": "bdaf0e14-2cd1-43c8-b9ea-b3c90309f773",
+      "createdAt": "2026-05-27T14:05:47",
+      "resolvedAt": "2026-05-27T14:35:32",
+      "durationMinutes": 29.8,
+      "temperature": 22.1,
+      "setpoint": 20.0,
+      "evidence": {
+        "rows": 21,
+        "maxAbsResidualDegC": 0.18,
+        "maxPeerDeviationDegC": 0.02,
+        "meanRoomTempDegC": 22.26,
+        "meanSetpointDegC": 20.0
+      },
+      "likelyCause": "Extended conditioning could not reach target; likely envelope loss, refrigerant low, or undersizing.",
+      "probableComponent": "Envelope / capacity",
+      "partsToPick": [
+        "Filter set",
+        "refrigerant service kit",
+        "thermal inspection kit"
+      ],
+      "recommendedAction": "Check whether preheat was long enough, then inspect capacity, refrigerant, filters, and envelope leakage.",
+      "confidence": 0.88,
+      "evidenceSummary": "Setpoint miss persisted for 21 samples with max residual 0.18 degC."
+    },
+    {
+      "id": "setpoint_miss-e72fea56-20260527140547",
+      "type": "setpoint_miss",
+      "severity": "high",
+      "title": "Setpoint not reached",
+      "message": "Room temperature remains far from setpoint while conditioning is required.",
+      "deviceId": "e72fea56-abe7-4d3f-a0ed-1e6b6c462157",
+      "createdAt": "2026-05-27T14:05:47",
+      "resolvedAt": "2026-05-27T14:35:32",
+      "durationMinutes": 29.8,
+      "temperature": 22.1,
+      "setpoint": 20.0,
+      "evidence": {
+        "rows": 21,
+        "maxAbsResidualDegC": 0.18,
+        "maxPeerDeviationDegC": 0.02,
+        "meanRoomTempDegC": 22.26,
+        "meanSetpointDegC": 20.0
+      },
+      "likelyCause": "Extended conditioning could not reach target; likely envelope loss, refrigerant low, or undersizing.",
+      "probableComponent": "Envelope / capacity",
+      "partsToPick": [
+        "Filter set",
+        "refrigerant service kit",
+        "thermal inspection kit"
+      ],
+      "recommendedAction": "Check whether preheat was long enough, then inspect capacity, refrigerant, filters, and envelope leakage.",
+      "confidence": 0.88,
+      "evidenceSummary": "Setpoint miss persisted for 21 samples with max residual 0.18 degC."
+    },
+    {
+      "id": "setpoint_miss-1c893f75-20260527150528",
+      "type": "setpoint_miss",
+      "severity": "high",
+      "title": "Setpoint not reached",
+      "message": "Room temperature remains far from setpoint while conditioning is required.",
+      "deviceId": "1c893f75-4599-4402-9d4c-1017aa858fa8",
+      "createdAt": "2026-05-27T15:05:28",
+      "resolvedAt": "2026-05-27T15:25:28",
+      "durationMinutes": 20.0,
+      "temperature": 22.09,
+      "setpoint": 20.0,
+      "evidence": {
+        "rows": 21,
+        "maxAbsResidualDegC": 0.09,
+        "maxPeerDeviationDegC": 0.03,
+        "meanRoomTempDegC": 22.19,
+        "meanSetpointDegC": 20.0
+      },
+      "likelyCause": "Extended conditioning could not reach target; likely envelope loss, refrigerant low, or undersizing.",
+      "probableComponent": "Envelope / capacity",
+      "partsToPick": [
+        "Filter set",
+        "refrigerant service kit",
+        "thermal inspection kit"
+      ],
+      "recommendedAction": "Check whether preheat was long enough, then inspect capacity, refrigerant, filters, and envelope leakage.",
+      "confidence": 0.87,
+      "evidenceSummary": "Setpoint miss persisted for 21 samples with max residual 0.09 degC."
+    },
+    {
+      "id": "setpoint_miss-930f3621-20260527150528",
+      "type": "setpoint_miss",
+      "severity": "high",
+      "title": "Setpoint not reached",
+      "message": "Room temperature remains far from setpoint while conditioning is required.",
+      "deviceId": "930f3621-05df-4574-9270-9d994c5b716c",
+      "createdAt": "2026-05-27T15:05:28",
+      "resolvedAt": "2026-05-27T15:25:28",
+      "durationMinutes": 20.0,
+      "temperature": 22.09,
+      "setpoint": 20.0,
+      "evidence": {
+        "rows": 21,
+        "maxAbsResidualDegC": 0.09,
+        "maxPeerDeviationDegC": 0.03,
+        "meanRoomTempDegC": 22.19,
+        "meanSetpointDegC": 20.0
+      },
+      "likelyCause": "Extended conditioning could not reach target; likely envelope loss, refrigerant low, or undersizing.",
+      "probableComponent": "Envelope / capacity",
+      "partsToPick": [
+        "Filter set",
+        "refrigerant service kit",
+        "thermal inspection kit"
+      ],
+      "recommendedAction": "Check whether preheat was long enough, then inspect capacity, refrigerant, filters, and envelope leakage.",
+      "confidence": 0.87,
+      "evidenceSummary": "Setpoint miss persisted for 21 samples with max residual 0.09 degC."
+    },
+    {
+      "id": "setpoint_miss-bdaf0e14-20260527150528",
+      "type": "setpoint_miss",
+      "severity": "high",
+      "title": "Setpoint not reached",
+      "message": "Room temperature remains far from setpoint while conditioning is required.",
+      "deviceId": "bdaf0e14-2cd1-43c8-b9ea-b3c90309f773",
+      "createdAt": "2026-05-27T15:05:28",
+      "resolvedAt": "2026-05-27T15:25:28",
+      "durationMinutes": 20.0,
+      "temperature": 22.09,
+      "setpoint": 20.0,
+      "evidence": {
+        "rows": 21,
+        "maxAbsResidualDegC": 0.09,
+        "maxPeerDeviationDegC": 0.03,
+        "meanRoomTempDegC": 22.19,
+        "meanSetpointDegC": 20.0
+      },
+      "likelyCause": "Extended conditioning could not reach target; likely envelope loss, refrigerant low, or undersizing.",
+      "probableComponent": "Envelope / capacity",
+      "partsToPick": [
+        "Filter set",
+        "refrigerant service kit",
+        "thermal inspection kit"
+      ],
+      "recommendedAction": "Check whether preheat was long enough, then inspect capacity, refrigerant, filters, and envelope leakage.",
+      "confidence": 0.87,
+      "evidenceSummary": "Setpoint miss persisted for 21 samples with max residual 0.09 degC."
+    },
+    {
+      "id": "setpoint_miss-e72fea56-20260527150528",
+      "type": "setpoint_miss",
+      "severity": "high",
+      "title": "Setpoint not reached",
+      "message": "Room temperature remains far from setpoint while conditioning is required.",
+      "deviceId": "e72fea56-abe7-4d3f-a0ed-1e6b6c462157",
+      "createdAt": "2026-05-27T15:05:28",
+      "resolvedAt": "2026-05-27T15:25:28",
+      "durationMinutes": 20.0,
+      "temperature": 22.09,
+      "setpoint": 20.0,
+      "evidence": {
+        "rows": 21,
+        "maxAbsResidualDegC": 0.09,
+        "maxPeerDeviationDegC": 0.03,
+        "meanRoomTempDegC": 22.19,
+        "meanSetpointDegC": 20.0
+      },
+      "likelyCause": "Extended conditioning could not reach target; likely envelope loss, refrigerant low, or undersizing.",
+      "probableComponent": "Envelope / capacity",
+      "partsToPick": [
+        "Filter set",
+        "refrigerant service kit",
+        "thermal inspection kit"
+      ],
+      "recommendedAction": "Check whether preheat was long enough, then inspect capacity, refrigerant, filters, and envelope leakage.",
+      "confidence": 0.87,
+      "evidenceSummary": "Setpoint miss persisted for 21 samples with max residual 0.09 degC."
+    },
+    {
+      "id": "cusum_positive_alarm-1c893f75-20260528072147",
+      "type": "cusum_positive_alarm",
+      "severity": "medium",
+      "title": "Sustained warmer-than-model residual",
+      "message": "Measured temperature is persistently above the RC model prediction.",
+      "deviceId": "1c893f75-4599-4402-9d4c-1017aa858fa8",
+      "createdAt": "2026-05-28T07:21:47",
+      "resolvedAt": "2026-05-28T07:30:07",
+      "durationMinutes": 8.3,
+      "temperature": 21.6,
+      "setpoint": 20.0,
+      "evidence": {
+        "rows": 3,
+        "maxAbsResidualDegC": 0.46,
+        "maxPeerDeviationDegC": 0.23,
+        "meanRoomTempDegC": 21.65,
+        "meanSetpointDegC": 20.0
+      },
+      "likelyCause": "Unexpected heat gain, sensor bias, or control overshoot.",
+      "probableComponent": "Controls / room sensor",
+      "partsToPick": [
+        "Temperature sensor",
+        "controller service kit"
+      ],
+      "recommendedAction": "Check setpoint history, sensor placement, and external heat gains.",
+      "confidence": 0.74,
+      "evidenceSummary": "Residual evidence peaked at 0.46 degC across 3 samples."
+    },
+    {
+      "id": "rc_negative_shift-930f3621-20260528072317",
+      "type": "rc_negative_shift",
+      "severity": "high",
+      "title": "Sharp negative thermal residual",
+      "message": "The room is colder than expected from the physics model.",
+      "deviceId": "930f3621-05df-4574-9270-9d994c5b716c",
+      "createdAt": "2026-05-28T07:23:17",
+      "resolvedAt": "2026-05-28T07:26:17",
+      "durationMinutes": 3.0,
+      "temperature": 21.37,
+      "setpoint": 20.0,
+      "evidence": {
+        "rows": 3,
+        "maxAbsResidualDegC": 0.23,
+        "maxPeerDeviationDegC": 0.23,
+        "meanRoomTempDegC": 21.21,
+        "meanSetpointDegC": 20.0
+      },
+      "likelyCause": "Door/ventilation event, defrost dip, or sudden capacity loss.",
+      "probableComponent": "Envelope / airflow path",
+      "partsToPick": [
+        "Filter set",
+        "seal inspection kit"
+      ],
+      "recommendedAction": "Confirm whether this coincides with defrost; if sustained, inspect airflow and envelope leakage.",
+      "confidence": 0.74,
+      "evidenceSummary": "Residual evidence peaked at 0.23 degC across 3 samples."
+    },
+    {
+      "id": "rc_negative_shift-bdaf0e14-20260528072317",
+      "type": "rc_negative_shift",
+      "severity": "high",
+      "title": "Sharp negative thermal residual",
+      "message": "The room is colder than expected from the physics model.",
+      "deviceId": "bdaf0e14-2cd1-43c8-b9ea-b3c90309f773",
+      "createdAt": "2026-05-28T07:23:17",
+      "resolvedAt": "2026-05-28T07:26:17",
+      "durationMinutes": 3.0,
+      "temperature": 21.37,
+      "setpoint": 20.0,
+      "evidence": {
+        "rows": 3,
+        "maxAbsResidualDegC": 0.23,
+        "maxPeerDeviationDegC": 0.23,
+        "meanRoomTempDegC": 21.21,
+        "meanSetpointDegC": 20.0
+      },
+      "likelyCause": "Door/ventilation event, defrost dip, or sudden capacity loss.",
+      "probableComponent": "Envelope / airflow path",
+      "partsToPick": [
+        "Filter set",
+        "seal inspection kit"
+      ],
+      "recommendedAction": "Confirm whether this coincides with defrost; if sustained, inspect airflow and envelope leakage.",
+      "confidence": 0.74,
+      "evidenceSummary": "Residual evidence peaked at 0.23 degC across 3 samples."
+    },
+    {
+      "id": "rc_negative_shift-e72fea56-20260528072317",
+      "type": "rc_negative_shift",
+      "severity": "high",
+      "title": "Sharp negative thermal residual",
+      "message": "The room is colder than expected from the physics model.",
+      "deviceId": "e72fea56-abe7-4d3f-a0ed-1e6b6c462157",
+      "createdAt": "2026-05-28T07:23:17",
+      "resolvedAt": "2026-05-28T07:26:17",
+      "durationMinutes": 3.0,
+      "temperature": 21.37,
+      "setpoint": 20.0,
+      "evidence": {
+        "rows": 3,
+        "maxAbsResidualDegC": 0.23,
+        "maxPeerDeviationDegC": 0.23,
+        "meanRoomTempDegC": 21.21,
+        "meanSetpointDegC": 20.0
+      },
+      "likelyCause": "Door/ventilation event, defrost dip, or sudden capacity loss.",
+      "probableComponent": "Envelope / airflow path",
+      "partsToPick": [
+        "Filter set",
+        "seal inspection kit"
+      ],
+      "recommendedAction": "Confirm whether this coincides with defrost; if sustained, inspect airflow and envelope leakage.",
+      "confidence": 0.74,
+      "evidenceSummary": "Residual evidence peaked at 0.23 degC across 3 samples."
+    },
+    {
+      "id": "setpoint_miss-1c893f75-20260528090818",
+      "type": "setpoint_miss",
+      "severity": "high",
+      "title": "Setpoint not reached",
+      "message": "Room temperature remains far from setpoint while conditioning is required.",
+      "deviceId": "1c893f75-4599-4402-9d4c-1017aa858fa8",
+      "createdAt": "2026-05-28T09:08:18",
+      "resolvedAt": "2026-05-28T09:39:04",
+      "durationMinutes": 30.8,
+      "temperature": 22.1,
+      "setpoint": 20.0,
+      "evidence": {
+        "rows": 22,
+        "maxAbsResidualDegC": 0.08,
+        "maxPeerDeviationDegC": 0.03,
+        "meanRoomTempDegC": 22.15,
+        "meanSetpointDegC": 20.0
+      },
+      "likelyCause": "Extended conditioning could not reach target; likely envelope loss, refrigerant low, or undersizing.",
+      "probableComponent": "Envelope / capacity",
+      "partsToPick": [
+        "Filter set",
+        "refrigerant service kit",
+        "thermal inspection kit"
+      ],
+      "recommendedAction": "Check whether preheat was long enough, then inspect capacity, refrigerant, filters, and envelope leakage.",
+      "confidence": 0.87,
+      "evidenceSummary": "Setpoint miss persisted for 22 samples with max residual 0.08 degC."
+    },
+    {
+      "id": "setpoint_miss-930f3621-20260528090818",
+      "type": "setpoint_miss",
+      "severity": "high",
+      "title": "Setpoint not reached",
+      "message": "Room temperature remains far from setpoint while conditioning is required.",
+      "deviceId": "930f3621-05df-4574-9270-9d994c5b716c",
+      "createdAt": "2026-05-28T09:08:18",
+      "resolvedAt": "2026-05-28T09:39:04",
+      "durationMinutes": 30.8,
+      "temperature": 22.1,
+      "setpoint": 20.0,
+      "evidence": {
+        "rows": 22,
+        "maxAbsResidualDegC": 0.08,
+        "maxPeerDeviationDegC": 0.03,
+        "meanRoomTempDegC": 22.15,
+        "meanSetpointDegC": 20.0
+      },
+      "likelyCause": "Extended conditioning could not reach target; likely envelope loss, refrigerant low, or undersizing.",
+      "probableComponent": "Envelope / capacity",
+      "partsToPick": [
+        "Filter set",
+        "refrigerant service kit",
+        "thermal inspection kit"
+      ],
+      "recommendedAction": "Check whether preheat was long enough, then inspect capacity, refrigerant, filters, and envelope leakage.",
+      "confidence": 0.87,
+      "evidenceSummary": "Setpoint miss persisted for 22 samples with max residual 0.08 degC."
+    },
+    {
+      "id": "setpoint_miss-bdaf0e14-20260528090818",
+      "type": "setpoint_miss",
+      "severity": "high",
+      "title": "Setpoint not reached",
+      "message": "Room temperature remains far from setpoint while conditioning is required.",
+      "deviceId": "bdaf0e14-2cd1-43c8-b9ea-b3c90309f773",
+      "createdAt": "2026-05-28T09:08:18",
+      "resolvedAt": "2026-05-28T09:39:04",
+      "durationMinutes": 30.8,
+      "temperature": 22.1,
+      "setpoint": 20.0,
+      "evidence": {
+        "rows": 22,
+        "maxAbsResidualDegC": 0.08,
+        "maxPeerDeviationDegC": 0.03,
+        "meanRoomTempDegC": 22.15,
+        "meanSetpointDegC": 20.0
+      },
+      "likelyCause": "Extended conditioning could not reach target; likely envelope loss, refrigerant low, or undersizing.",
+      "probableComponent": "Envelope / capacity",
+      "partsToPick": [
+        "Filter set",
+        "refrigerant service kit",
+        "thermal inspection kit"
+      ],
+      "recommendedAction": "Check whether preheat was long enough, then inspect capacity, refrigerant, filters, and envelope leakage.",
+      "confidence": 0.87,
+      "evidenceSummary": "Setpoint miss persisted for 22 samples with max residual 0.08 degC."
+    },
+    {
+      "id": "setpoint_miss-e72fea56-20260528090818",
+      "type": "setpoint_miss",
+      "severity": "high",
+      "title": "Setpoint not reached",
+      "message": "Room temperature remains far from setpoint while conditioning is required.",
+      "deviceId": "e72fea56-abe7-4d3f-a0ed-1e6b6c462157",
+      "createdAt": "2026-05-28T09:08:18",
+      "resolvedAt": "2026-05-28T09:39:04",
+      "durationMinutes": 30.8,
+      "temperature": 22.1,
+      "setpoint": 20.0,
+      "evidence": {
+        "rows": 22,
+        "maxAbsResidualDegC": 0.08,
+        "maxPeerDeviationDegC": 0.03,
+        "meanRoomTempDegC": 22.15,
+        "meanSetpointDegC": 20.0
+      },
+      "likelyCause": "Extended conditioning could not reach target; likely envelope loss, refrigerant low, or undersizing.",
+      "probableComponent": "Envelope / capacity",
+      "partsToPick": [
+        "Filter set",
+        "refrigerant service kit",
+        "thermal inspection kit"
+      ],
+      "recommendedAction": "Check whether preheat was long enough, then inspect capacity, refrigerant, filters, and envelope leakage.",
+      "confidence": 0.87,
+      "evidenceSummary": "Setpoint miss persisted for 22 samples with max residual 0.08 degC."
+    },
+    {
+      "id": "setpoint_miss-1c893f75-20260528100019",
+      "type": "setpoint_miss",
+      "severity": "high",
+      "title": "Setpoint not reached",
+      "message": "Room temperature remains far from setpoint while conditioning is required.",
+      "deviceId": "1c893f75-4599-4402-9d4c-1017aa858fa8",
+      "createdAt": "2026-05-28T10:00:19",
+      "resolvedAt": "2026-05-28T10:30:49",
+      "durationMinutes": 30.5,
+      "temperature": 22.13,
+      "setpoint": 20.0,
+      "evidence": {
+        "rows": 21,
+        "maxAbsResidualDegC": 0.1,
+        "maxPeerDeviationDegC": 0.04,
+        "meanRoomTempDegC": 22.24,
+        "meanSetpointDegC": 20.0
+      },
+      "likelyCause": "Extended conditioning could not reach target; likely envelope loss, refrigerant low, or undersizing.",
+      "probableComponent": "Envelope / capacity",
+      "partsToPick": [
+        "Filter set",
+        "refrigerant service kit",
+        "thermal inspection kit"
+      ],
+      "recommendedAction": "Check whether preheat was long enough, then inspect capacity, refrigerant, filters, and envelope leakage.",
+      "confidence": 0.87,
+      "evidenceSummary": "Setpoint miss persisted for 21 samples with max residual 0.1 degC."
+    },
+    {
+      "id": "setpoint_miss-930f3621-20260528100019",
+      "type": "setpoint_miss",
+      "severity": "high",
+      "title": "Setpoint not reached",
+      "message": "Room temperature remains far from setpoint while conditioning is required.",
+      "deviceId": "930f3621-05df-4574-9270-9d994c5b716c",
+      "createdAt": "2026-05-28T10:00:19",
+      "resolvedAt": "2026-05-28T10:30:49",
+      "durationMinutes": 30.5,
+      "temperature": 22.13,
+      "setpoint": 20.0,
+      "evidence": {
+        "rows": 21,
+        "maxAbsResidualDegC": 0.11,
+        "maxPeerDeviationDegC": 0.04,
+        "meanRoomTempDegC": 22.24,
+        "meanSetpointDegC": 20.0
+      },
+      "likelyCause": "Extended conditioning could not reach target; likely envelope loss, refrigerant low, or undersizing.",
+      "probableComponent": "Envelope / capacity",
+      "partsToPick": [
+        "Filter set",
+        "refrigerant service kit",
+        "thermal inspection kit"
+      ],
+      "recommendedAction": "Check whether preheat was long enough, then inspect capacity, refrigerant, filters, and envelope leakage.",
+      "confidence": 0.87,
+      "evidenceSummary": "Setpoint miss persisted for 21 samples with max residual 0.11 degC."
+    },
+    {
+      "id": "setpoint_miss-bdaf0e14-20260528100019",
+      "type": "setpoint_miss",
+      "severity": "high",
+      "title": "Setpoint not reached",
+      "message": "Room temperature remains far from setpoint while conditioning is required.",
+      "deviceId": "bdaf0e14-2cd1-43c8-b9ea-b3c90309f773",
+      "createdAt": "2026-05-28T10:00:19",
+      "resolvedAt": "2026-05-28T10:30:49",
+      "durationMinutes": 30.5,
+      "temperature": 22.13,
+      "setpoint": 20.0,
+      "evidence": {
+        "rows": 21,
+        "maxAbsResidualDegC": 0.1,
+        "maxPeerDeviationDegC": 0.04,
+        "meanRoomTempDegC": 22.24,
+        "meanSetpointDegC": 20.0
+      },
+      "likelyCause": "Extended conditioning could not reach target; likely envelope loss, refrigerant low, or undersizing.",
+      "probableComponent": "Envelope / capacity",
+      "partsToPick": [
+        "Filter set",
+        "refrigerant service kit",
+        "thermal inspection kit"
+      ],
+      "recommendedAction": "Check whether preheat was long enough, then inspect capacity, refrigerant, filters, and envelope leakage.",
+      "confidence": 0.87,
+      "evidenceSummary": "Setpoint miss persisted for 21 samples with max residual 0.1 degC."
+    },
+    {
+      "id": "setpoint_miss-e72fea56-20260528100019",
+      "type": "setpoint_miss",
+      "severity": "high",
+      "title": "Setpoint not reached",
+      "message": "Room temperature remains far from setpoint while conditioning is required.",
+      "deviceId": "e72fea56-abe7-4d3f-a0ed-1e6b6c462157",
+      "createdAt": "2026-05-28T10:00:19",
+      "resolvedAt": "2026-05-28T10:30:49",
+      "durationMinutes": 30.5,
+      "temperature": 22.13,
+      "setpoint": 20.0,
+      "evidence": {
+        "rows": 21,
+        "maxAbsResidualDegC": 0.11,
+        "maxPeerDeviationDegC": 0.04,
+        "meanRoomTempDegC": 22.24,
+        "meanSetpointDegC": 20.0
+      },
+      "likelyCause": "Extended conditioning could not reach target; likely envelope loss, refrigerant low, or undersizing.",
+      "probableComponent": "Envelope / capacity",
+      "partsToPick": [
+        "Filter set",
+        "refrigerant service kit",
+        "thermal inspection kit"
+      ],
+      "recommendedAction": "Check whether preheat was long enough, then inspect capacity, refrigerant, filters, and envelope leakage.",
+      "confidence": 0.87,
+      "evidenceSummary": "Setpoint miss persisted for 21 samples with max residual 0.11 degC."
+    },
+    {
+      "id": "setpoint_miss-1c893f75-20260528105635",
+      "type": "setpoint_miss",
+      "severity": "high",
+      "title": "Setpoint not reached",
+      "message": "Room temperature remains far from setpoint while conditioning is required.",
+      "deviceId": "1c893f75-4599-4402-9d4c-1017aa858fa8",
+      "createdAt": "2026-05-28T10:56:35",
+      "resolvedAt": "2026-05-28T11:25:10",
+      "durationMinutes": 28.6,
+      "temperature": 22.16,
+      "setpoint": 20.0,
+      "evidence": {
+        "rows": 20,
+        "maxAbsResidualDegC": 0.13,
+        "maxPeerDeviationDegC": 0.05,
+        "meanRoomTempDegC": 22.18,
+        "meanSetpointDegC": 20.0
+      },
+      "likelyCause": "Extended conditioning could not reach target; likely envelope loss, refrigerant low, or undersizing.",
+      "probableComponent": "Envelope / capacity",
+      "partsToPick": [
+        "Filter set",
+        "refrigerant service kit",
+        "thermal inspection kit"
+      ],
+      "recommendedAction": "Check whether preheat was long enough, then inspect capacity, refrigerant, filters, and envelope leakage.",
+      "confidence": 0.87,
+      "evidenceSummary": "Setpoint miss persisted for 20 samples with max residual 0.13 degC."
+    },
+    {
+      "id": "setpoint_miss-930f3621-20260528105635",
+      "type": "setpoint_miss",
+      "severity": "high",
+      "title": "Setpoint not reached",
+      "message": "Room temperature remains far from setpoint while conditioning is required.",
+      "deviceId": "930f3621-05df-4574-9270-9d994c5b716c",
+      "createdAt": "2026-05-28T10:56:35",
+      "resolvedAt": "2026-05-28T11:25:05",
+      "durationMinutes": 28.5,
+      "temperature": 22.16,
+      "setpoint": 20.0,
+      "evidence": {
+        "rows": 20,
+        "maxAbsResidualDegC": 0.13,
+        "maxPeerDeviationDegC": 0.05,
+        "meanRoomTempDegC": 22.18,
+        "meanSetpointDegC": 20.0
+      },
+      "likelyCause": "Extended conditioning could not reach target; likely envelope loss, refrigerant low, or undersizing.",
+      "probableComponent": "Envelope / capacity",
+      "partsToPick": [
+        "Filter set",
+        "refrigerant service kit",
+        "thermal inspection kit"
+      ],
+      "recommendedAction": "Check whether preheat was long enough, then inspect capacity, refrigerant, filters, and envelope leakage.",
+      "confidence": 0.87,
+      "evidenceSummary": "Setpoint miss persisted for 20 samples with max residual 0.13 degC."
+    },
+    {
+      "id": "setpoint_miss-bdaf0e14-20260528105635",
+      "type": "setpoint_miss",
+      "severity": "high",
+      "title": "Setpoint not reached",
+      "message": "Room temperature remains far from setpoint while conditioning is required.",
+      "deviceId": "bdaf0e14-2cd1-43c8-b9ea-b3c90309f773",
+      "createdAt": "2026-05-28T10:56:35",
+      "resolvedAt": "2026-05-28T11:25:10",
+      "durationMinutes": 28.6,
+      "temperature": 22.16,
+      "setpoint": 20.0,
+      "evidence": {
+        "rows": 20,
+        "maxAbsResidualDegC": 0.13,
+        "maxPeerDeviationDegC": 0.05,
+        "meanRoomTempDegC": 22.18,
+        "meanSetpointDegC": 20.0
+      },
+      "likelyCause": "Extended conditioning could not reach target; likely envelope loss, refrigerant low, or undersizing.",
+      "probableComponent": "Envelope / capacity",
+      "partsToPick": [
+        "Filter set",
+        "refrigerant service kit",
+        "thermal inspection kit"
+      ],
+      "recommendedAction": "Check whether preheat was long enough, then inspect capacity, refrigerant, filters, and envelope leakage.",
+      "confidence": 0.87,
+      "evidenceSummary": "Setpoint miss persisted for 20 samples with max residual 0.13 degC."
+    },
+    {
+      "id": "setpoint_miss-e72fea56-20260528105635",
+      "type": "setpoint_miss",
+      "severity": "high",
+      "title": "Setpoint not reached",
+      "message": "Room temperature remains far from setpoint while conditioning is required.",
+      "deviceId": "e72fea56-abe7-4d3f-a0ed-1e6b6c462157",
+      "createdAt": "2026-05-28T10:56:35",
+      "resolvedAt": "2026-05-28T11:25:05",
+      "durationMinutes": 28.5,
+      "temperature": 22.16,
+      "setpoint": 20.0,
+      "evidence": {
+        "rows": 20,
+        "maxAbsResidualDegC": 0.13,
+        "maxPeerDeviationDegC": 0.05,
+        "meanRoomTempDegC": 22.18,
+        "meanSetpointDegC": 20.0
+      },
+      "likelyCause": "Extended conditioning could not reach target; likely envelope loss, refrigerant low, or undersizing.",
+      "probableComponent": "Envelope / capacity",
+      "partsToPick": [
+        "Filter set",
+        "refrigerant service kit",
+        "thermal inspection kit"
+      ],
+      "recommendedAction": "Check whether preheat was long enough, then inspect capacity, refrigerant, filters, and envelope leakage.",
+      "confidence": 0.87,
+      "evidenceSummary": "Setpoint miss persisted for 20 samples with max residual 0.13 degC."
+    },
+    {
+      "id": "setpoint_miss-1c893f75-20260528131951",
+      "type": "setpoint_miss",
+      "severity": "high",
+      "title": "Setpoint not reached",
+      "message": "Room temperature remains far from setpoint while conditioning is required.",
+      "deviceId": "1c893f75-4599-4402-9d4c-1017aa858fa8",
+      "createdAt": "2026-05-28T13:19:51",
+      "resolvedAt": "2026-05-28T13:49:06",
+      "durationMinutes": 29.2,
+      "temperature": 22.08,
+      "setpoint": 20.0,
+      "evidence": {
+        "rows": 22,
+        "maxAbsResidualDegC": 0.13,
+        "maxPeerDeviationDegC": 0.02,
+        "meanRoomTempDegC": 22.22,
+        "meanSetpointDegC": 20.0
+      },
+      "likelyCause": "Extended conditioning could not reach target; likely envelope loss, refrigerant low, or undersizing.",
+      "probableComponent": "Envelope / capacity",
+      "partsToPick": [
+        "Filter set",
+        "refrigerant service kit",
+        "thermal inspection kit"
+      ],
+      "recommendedAction": "Check whether preheat was long enough, then inspect capacity, refrigerant, filters, and envelope leakage.",
+      "confidence": 0.87,
+      "evidenceSummary": "Setpoint miss persisted for 22 samples with max residual 0.13 degC."
+    },
+    {
+      "id": "setpoint_miss-930f3621-20260528131951",
+      "type": "setpoint_miss",
+      "severity": "high",
+      "title": "Setpoint not reached",
+      "message": "Room temperature remains far from setpoint while conditioning is required.",
+      "deviceId": "930f3621-05df-4574-9270-9d994c5b716c",
+      "createdAt": "2026-05-28T13:19:51",
+      "resolvedAt": "2026-05-28T13:49:06",
+      "durationMinutes": 29.2,
+      "temperature": 22.08,
+      "setpoint": 20.0,
+      "evidence": {
+        "rows": 22,
+        "maxAbsResidualDegC": 0.13,
+        "maxPeerDeviationDegC": 0.02,
+        "meanRoomTempDegC": 22.22,
+        "meanSetpointDegC": 20.0
+      },
+      "likelyCause": "Extended conditioning could not reach target; likely envelope loss, refrigerant low, or undersizing.",
+      "probableComponent": "Envelope / capacity",
+      "partsToPick": [
+        "Filter set",
+        "refrigerant service kit",
+        "thermal inspection kit"
+      ],
+      "recommendedAction": "Check whether preheat was long enough, then inspect capacity, refrigerant, filters, and envelope leakage.",
+      "confidence": 0.87,
+      "evidenceSummary": "Setpoint miss persisted for 22 samples with max residual 0.13 degC."
+    },
+    {
+      "id": "setpoint_miss-bdaf0e14-20260528131951",
+      "type": "setpoint_miss",
+      "severity": "high",
+      "title": "Setpoint not reached",
+      "message": "Room temperature remains far from setpoint while conditioning is required.",
+      "deviceId": "bdaf0e14-2cd1-43c8-b9ea-b3c90309f773",
+      "createdAt": "2026-05-28T13:19:51",
+      "resolvedAt": "2026-05-28T13:49:06",
+      "durationMinutes": 29.2,
+      "temperature": 22.08,
+      "setpoint": 20.0,
+      "evidence": {
+        "rows": 22,
+        "maxAbsResidualDegC": 0.13,
+        "maxPeerDeviationDegC": 0.02,
+        "meanRoomTempDegC": 22.22,
+        "meanSetpointDegC": 20.0
+      },
+      "likelyCause": "Extended conditioning could not reach target; likely envelope loss, refrigerant low, or undersizing.",
+      "probableComponent": "Envelope / capacity",
+      "partsToPick": [
+        "Filter set",
+        "refrigerant service kit",
+        "thermal inspection kit"
+      ],
+      "recommendedAction": "Check whether preheat was long enough, then inspect capacity, refrigerant, filters, and envelope leakage.",
+      "confidence": 0.87,
+      "evidenceSummary": "Setpoint miss persisted for 22 samples with max residual 0.13 degC."
+    },
+    {
+      "id": "setpoint_miss-e72fea56-20260528131951",
+      "type": "setpoint_miss",
+      "severity": "high",
+      "title": "Setpoint not reached",
+      "message": "Room temperature remains far from setpoint while conditioning is required.",
+      "deviceId": "e72fea56-abe7-4d3f-a0ed-1e6b6c462157",
+      "createdAt": "2026-05-28T13:19:51",
+      "resolvedAt": "2026-05-28T13:49:06",
+      "durationMinutes": 29.2,
+      "temperature": 22.08,
+      "setpoint": 20.0,
+      "evidence": {
+        "rows": 22,
+        "maxAbsResidualDegC": 0.13,
+        "maxPeerDeviationDegC": 0.02,
+        "meanRoomTempDegC": 22.22,
+        "meanSetpointDegC": 20.0
+      },
+      "likelyCause": "Extended conditioning could not reach target; likely envelope loss, refrigerant low, or undersizing.",
+      "probableComponent": "Envelope / capacity",
+      "partsToPick": [
+        "Filter set",
+        "refrigerant service kit",
+        "thermal inspection kit"
+      ],
+      "recommendedAction": "Check whether preheat was long enough, then inspect capacity, refrigerant, filters, and envelope leakage.",
+      "confidence": 0.87,
+      "evidenceSummary": "Setpoint miss persisted for 22 samples with max residual 0.13 degC."
+    },
+    {
+      "id": "cusum_negative_alarm-1c893f75-20260528140307",
+      "type": "cusum_negative_alarm",
+      "severity": "high",
+      "title": "Sustained colder-than-model residual",
+      "message": "Measured temperature is persistently below the RC model prediction.",
+      "deviceId": "1c893f75-4599-4402-9d4c-1017aa858fa8",
+      "createdAt": "2026-05-28T14:03:07",
+      "resolvedAt": "2026-05-28T14:06:47",
+      "durationMinutes": 3.7,
+      "temperature": 20.97,
+      "setpoint": 20.0,
+      "evidence": {
+        "rows": 3,
+        "maxAbsResidualDegC": 0.35,
+        "maxPeerDeviationDegC": 0.03,
+        "meanRoomTempDegC": 20.66,
+        "meanSetpointDegC": 20.0
+      },
+      "likelyCause": "Increasing heat loss, door/ventilation leakage, or weakening refrigerant path.",
+      "probableComponent": "Envelope / refrigerant circuit",
+      "partsToPick": [
+        "Filter set",
+        "refrigerant service kit",
+        "seal inspection kit"
+      ],
+      "recommendedAction": "Inspect airflow, filters, door/vent state, and refrigerant pressure trend.",
+      "confidence": 0.81,
+      "evidenceSummary": "Residual evidence peaked at 0.35 degC across 3 samples."
+    },
+    {
+      "id": "rc_negative_shift-1c893f75-20260528140307",
+      "type": "rc_negative_shift",
+      "severity": "high",
+      "title": "Sharp negative thermal residual",
+      "message": "The room is colder than expected from the physics model.",
+      "deviceId": "1c893f75-4599-4402-9d4c-1017aa858fa8",
+      "createdAt": "2026-05-28T14:03:07",
+      "resolvedAt": "2026-05-28T14:08:02",
+      "durationMinutes": 4.9,
+      "temperature": 20.97,
+      "setpoint": 20.0,
+      "evidence": {
+        "rows": 4,
+        "maxAbsResidualDegC": 0.35,
+        "maxPeerDeviationDegC": 0.21,
+        "meanRoomTempDegC": 20.55,
+        "meanSetpointDegC": 20.0
+      },
+      "likelyCause": "Door/ventilation event, defrost dip, or sudden capacity loss.",
+      "probableComponent": "Envelope / airflow path",
+      "partsToPick": [
+        "Filter set",
+        "seal inspection kit"
+      ],
+      "recommendedAction": "Confirm whether this coincides with defrost; if sustained, inspect airflow and envelope leakage.",
+      "confidence": 0.76,
+      "evidenceSummary": "Residual evidence peaked at 0.35 degC across 4 samples."
+    },
+    {
+      "id": "cusum_negative_alarm-930f3621-20260528140307",
+      "type": "cusum_negative_alarm",
+      "severity": "high",
+      "title": "Sustained colder-than-model residual",
+      "message": "Measured temperature is persistently below the RC model prediction.",
+      "deviceId": "930f3621-05df-4574-9270-9d994c5b716c",
+      "createdAt": "2026-05-28T14:03:07",
+      "resolvedAt": "2026-05-28T14:06:47",
+      "durationMinutes": 3.7,
+      "temperature": 20.97,
+      "setpoint": 20.0,
+      "evidence": {
+        "rows": 3,
+        "maxAbsResidualDegC": 0.35,
+        "maxPeerDeviationDegC": 0.03,
+        "meanRoomTempDegC": 20.66,
+        "meanSetpointDegC": 20.0
+      },
+      "likelyCause": "Increasing heat loss, door/ventilation leakage, or weakening refrigerant path.",
+      "probableComponent": "Envelope / refrigerant circuit",
+      "partsToPick": [
+        "Filter set",
+        "refrigerant service kit",
+        "seal inspection kit"
+      ],
+      "recommendedAction": "Inspect airflow, filters, door/vent state, and refrigerant pressure trend.",
+      "confidence": 0.81,
+      "evidenceSummary": "Residual evidence peaked at 0.35 degC across 3 samples."
+    },
+    {
+      "id": "rc_negative_shift-930f3621-20260528140307",
+      "type": "rc_negative_shift",
+      "severity": "high",
+      "title": "Sharp negative thermal residual",
+      "message": "The room is colder than expected from the physics model.",
+      "deviceId": "930f3621-05df-4574-9270-9d994c5b716c",
+      "createdAt": "2026-05-28T14:03:07",
+      "resolvedAt": "2026-05-28T14:08:02",
+      "durationMinutes": 4.9,
+      "temperature": 20.97,
+      "setpoint": 20.0,
+      "evidence": {
+        "rows": 4,
+        "maxAbsResidualDegC": 0.35,
+        "maxPeerDeviationDegC": 0.21,
+        "meanRoomTempDegC": 20.55,
+        "meanSetpointDegC": 20.0
+      },
+      "likelyCause": "Door/ventilation event, defrost dip, or sudden capacity loss.",
+      "probableComponent": "Envelope / airflow path",
+      "partsToPick": [
+        "Filter set",
+        "seal inspection kit"
+      ],
+      "recommendedAction": "Confirm whether this coincides with defrost; if sustained, inspect airflow and envelope leakage.",
+      "confidence": 0.75,
+      "evidenceSummary": "Residual evidence peaked at 0.35 degC across 4 samples."
+    },
+    {
+      "id": "cusum_negative_alarm-bdaf0e14-20260528140307",
+      "type": "cusum_negative_alarm",
+      "severity": "high",
+      "title": "Sustained colder-than-model residual",
+      "message": "Measured temperature is persistently below the RC model prediction.",
+      "deviceId": "bdaf0e14-2cd1-43c8-b9ea-b3c90309f773",
+      "createdAt": "2026-05-28T14:03:07",
+      "resolvedAt": "2026-05-28T14:06:47",
+      "durationMinutes": 3.7,
+      "temperature": 20.97,
+      "setpoint": 20.0,
+      "evidence": {
+        "rows": 3,
+        "maxAbsResidualDegC": 0.35,
+        "maxPeerDeviationDegC": 0.03,
+        "meanRoomTempDegC": 20.66,
+        "meanSetpointDegC": 20.0
+      },
+      "likelyCause": "Increasing heat loss, door/ventilation leakage, or weakening refrigerant path.",
+      "probableComponent": "Envelope / refrigerant circuit",
+      "partsToPick": [
+        "Filter set",
+        "refrigerant service kit",
+        "seal inspection kit"
+      ],
+      "recommendedAction": "Inspect airflow, filters, door/vent state, and refrigerant pressure trend.",
+      "confidence": 0.81,
+      "evidenceSummary": "Residual evidence peaked at 0.35 degC across 3 samples."
+    },
+    {
+      "id": "rc_negative_shift-bdaf0e14-20260528140307",
+      "type": "rc_negative_shift",
+      "severity": "high",
+      "title": "Sharp negative thermal residual",
+      "message": "The room is colder than expected from the physics model.",
+      "deviceId": "bdaf0e14-2cd1-43c8-b9ea-b3c90309f773",
+      "createdAt": "2026-05-28T14:03:07",
+      "resolvedAt": "2026-05-28T14:08:02",
+      "durationMinutes": 4.9,
+      "temperature": 20.97,
+      "setpoint": 20.0,
+      "evidence": {
+        "rows": 4,
+        "maxAbsResidualDegC": 0.35,
+        "maxPeerDeviationDegC": 0.21,
+        "meanRoomTempDegC": 20.55,
+        "meanSetpointDegC": 20.0
+      },
+      "likelyCause": "Door/ventilation event, defrost dip, or sudden capacity loss.",
+      "probableComponent": "Envelope / airflow path",
+      "partsToPick": [
+        "Filter set",
+        "seal inspection kit"
+      ],
+      "recommendedAction": "Confirm whether this coincides with defrost; if sustained, inspect airflow and envelope leakage.",
+      "confidence": 0.75,
+      "evidenceSummary": "Residual evidence peaked at 0.35 degC across 4 samples."
+    },
+    {
+      "id": "cusum_negative_alarm-e72fea56-20260528140307",
+      "type": "cusum_negative_alarm",
+      "severity": "high",
+      "title": "Sustained colder-than-model residual",
+      "message": "Measured temperature is persistently below the RC model prediction.",
+      "deviceId": "e72fea56-abe7-4d3f-a0ed-1e6b6c462157",
+      "createdAt": "2026-05-28T14:03:07",
+      "resolvedAt": "2026-05-28T14:06:47",
+      "durationMinutes": 3.7,
+      "temperature": 20.97,
+      "setpoint": 20.0,
+      "evidence": {
+        "rows": 3,
+        "maxAbsResidualDegC": 0.35,
+        "maxPeerDeviationDegC": 0.03,
+        "meanRoomTempDegC": 20.66,
+        "meanSetpointDegC": 20.0
+      },
+      "likelyCause": "Increasing heat loss, door/ventilation leakage, or weakening refrigerant path.",
+      "probableComponent": "Envelope / refrigerant circuit",
+      "partsToPick": [
+        "Filter set",
+        "refrigerant service kit",
+        "seal inspection kit"
+      ],
+      "recommendedAction": "Inspect airflow, filters, door/vent state, and refrigerant pressure trend.",
+      "confidence": 0.81,
+      "evidenceSummary": "Residual evidence peaked at 0.35 degC across 3 samples."
+    },
+    {
+      "id": "rc_negative_shift-e72fea56-20260528140307",
+      "type": "rc_negative_shift",
+      "severity": "high",
+      "title": "Sharp negative thermal residual",
+      "message": "The room is colder than expected from the physics model.",
+      "deviceId": "e72fea56-abe7-4d3f-a0ed-1e6b6c462157",
+      "createdAt": "2026-05-28T14:03:07",
+      "resolvedAt": "2026-05-28T14:08:02",
+      "durationMinutes": 4.9,
+      "temperature": 20.97,
+      "setpoint": 20.0,
+      "evidence": {
+        "rows": 4,
+        "maxAbsResidualDegC": 0.35,
+        "maxPeerDeviationDegC": 0.21,
+        "meanRoomTempDegC": 20.55,
+        "meanSetpointDegC": 20.0
+      },
+      "likelyCause": "Door/ventilation event, defrost dip, or sudden capacity loss.",
+      "probableComponent": "Envelope / airflow path",
+      "partsToPick": [
+        "Filter set",
+        "seal inspection kit"
+      ],
+      "recommendedAction": "Confirm whether this coincides with defrost; if sustained, inspect airflow and envelope leakage.",
+      "confidence": 0.75,
+      "evidenceSummary": "Residual evidence peaked at 0.35 degC across 4 samples."
+    },
+    {
+      "id": "cusum_positive_alarm-1c893f75-20260528140902",
+      "type": "cusum_positive_alarm",
+      "severity": "medium",
+      "title": "Sustained warmer-than-model residual",
+      "message": "Measured temperature is persistently above the RC model prediction.",
+      "deviceId": "1c893f75-4599-4402-9d4c-1017aa858fa8",
+      "createdAt": "2026-05-28T14:09:02",
+      "resolvedAt": "2026-05-28T14:20:17",
+      "durationMinutes": 11.2,
+      "temperature": 20.63,
+      "setpoint": 20.0,
+      "evidence": {
+        "rows": 4,
+        "maxAbsResidualDegC": 0.43,
+        "maxPeerDeviationDegC": 0.21,
+        "meanRoomTempDegC": 21.25,
+        "meanSetpointDegC": 20.0
+      },
+      "likelyCause": "Unexpected heat gain, sensor bias, or control overshoot.",
+      "probableComponent": "Controls / room sensor",
+      "partsToPick": [
+        "Temperature sensor",
+        "controller service kit"
+      ],
+      "recommendedAction": "Check setpoint history, sensor placement, and external heat gains.",
+      "confidence": 0.74,
+      "evidenceSummary": "Residual evidence peaked at 0.43 degC across 4 samples."
+    },
+    {
+      "id": "rc_positive_shift-1c893f75-20260528140902",
+      "type": "rc_positive_shift",
+      "severity": "medium",
+      "title": "Sharp positive thermal residual",
+      "message": "The room is warmer than expected from the physics model.",
+      "deviceId": "1c893f75-4599-4402-9d4c-1017aa858fa8",
+      "createdAt": "2026-05-28T14:09:02",
+      "resolvedAt": "2026-05-28T14:11:02",
+      "durationMinutes": 2.0,
+      "temperature": 20.63,
+      "setpoint": 20.0,
+      "evidence": {
+        "rows": 3,
+        "maxAbsResidualDegC": 0.43,
+        "maxPeerDeviationDegC": 0.21,
+        "meanRoomTempDegC": 20.85,
+        "meanSetpointDegC": 20.0
+      },
+      "likelyCause": "Solar/occupancy gain, sensor bias, or control overshoot.",
+      "probableComponent": "Controls / room sensor",
+      "partsToPick": [
+        "Temperature sensor",
+        "controller service kit"
+      ],
+      "recommendedAction": "Check occupancy, solar exposure, and sensor agreement with peer pumps.",
+      "confidence": 0.68,
+      "evidenceSummary": "Residual evidence peaked at 0.43 degC across 3 samples."
+    },
+    {
+      "id": "cusum_positive_alarm-930f3621-20260528140902",
+      "type": "cusum_positive_alarm",
+      "severity": "medium",
+      "title": "Sustained warmer-than-model residual",
+      "message": "Measured temperature is persistently above the RC model prediction.",
+      "deviceId": "930f3621-05df-4574-9270-9d994c5b716c",
+      "createdAt": "2026-05-28T14:09:02",
+      "resolvedAt": "2026-05-28T14:21:17",
+      "durationMinutes": 12.2,
+      "temperature": 20.63,
+      "setpoint": 20.0,
+      "evidence": {
+        "rows": 4,
+        "maxAbsResidualDegC": 0.43,
+        "maxPeerDeviationDegC": 0.21,
+        "meanRoomTempDegC": 21.27,
+        "meanSetpointDegC": 20.0
+      },
+      "likelyCause": "Unexpected heat gain, sensor bias, or control overshoot.",
+      "probableComponent": "Controls / room sensor",
+      "partsToPick": [
+        "Temperature sensor",
+        "controller service kit"
+      ],
+      "recommendedAction": "Check setpoint history, sensor placement, and external heat gains.",
+      "confidence": 0.74,
+      "evidenceSummary": "Residual evidence peaked at 0.43 degC across 4 samples."
+    },
+    {
+      "id": "rc_positive_shift-930f3621-20260528140902",
+      "type": "rc_positive_shift",
+      "severity": "medium",
+      "title": "Sharp positive thermal residual",
+      "message": "The room is warmer than expected from the physics model.",
+      "deviceId": "930f3621-05df-4574-9270-9d994c5b716c",
+      "createdAt": "2026-05-28T14:09:02",
+      "resolvedAt": "2026-05-28T14:11:02",
+      "durationMinutes": 2.0,
+      "temperature": 20.63,
+      "setpoint": 20.0,
+      "evidence": {
+        "rows": 3,
+        "maxAbsResidualDegC": 0.43,
+        "maxPeerDeviationDegC": 0.21,
+        "meanRoomTempDegC": 20.85,
+        "meanSetpointDegC": 20.0
+      },
+      "likelyCause": "Solar/occupancy gain, sensor bias, or control overshoot.",
+      "probableComponent": "Controls / room sensor",
+      "partsToPick": [
+        "Temperature sensor",
+        "controller service kit"
+      ],
+      "recommendedAction": "Check occupancy, solar exposure, and sensor agreement with peer pumps.",
+      "confidence": 0.68,
+      "evidenceSummary": "Residual evidence peaked at 0.43 degC across 3 samples."
+    },
+    {
+      "id": "cusum_positive_alarm-bdaf0e14-20260528140902",
+      "type": "cusum_positive_alarm",
+      "severity": "medium",
+      "title": "Sustained warmer-than-model residual",
+      "message": "Measured temperature is persistently above the RC model prediction.",
+      "deviceId": "bdaf0e14-2cd1-43c8-b9ea-b3c90309f773",
+      "createdAt": "2026-05-28T14:09:02",
+      "resolvedAt": "2026-05-28T14:21:17",
+      "durationMinutes": 12.2,
+      "temperature": 20.63,
+      "setpoint": 20.0,
+      "evidence": {
+        "rows": 4,
+        "maxAbsResidualDegC": 0.43,
+        "maxPeerDeviationDegC": 0.21,
+        "meanRoomTempDegC": 21.27,
+        "meanSetpointDegC": 20.0
+      },
+      "likelyCause": "Unexpected heat gain, sensor bias, or control overshoot.",
+      "probableComponent": "Controls / room sensor",
+      "partsToPick": [
+        "Temperature sensor",
+        "controller service kit"
+      ],
+      "recommendedAction": "Check setpoint history, sensor placement, and external heat gains.",
+      "confidence": 0.74,
+      "evidenceSummary": "Residual evidence peaked at 0.43 degC across 4 samples."
+    },
+    {
+      "id": "rc_positive_shift-bdaf0e14-20260528140902",
+      "type": "rc_positive_shift",
+      "severity": "medium",
+      "title": "Sharp positive thermal residual",
+      "message": "The room is warmer than expected from the physics model.",
+      "deviceId": "bdaf0e14-2cd1-43c8-b9ea-b3c90309f773",
+      "createdAt": "2026-05-28T14:09:02",
+      "resolvedAt": "2026-05-28T14:11:02",
+      "durationMinutes": 2.0,
+      "temperature": 20.63,
+      "setpoint": 20.0,
+      "evidence": {
+        "rows": 3,
+        "maxAbsResidualDegC": 0.43,
+        "maxPeerDeviationDegC": 0.21,
+        "meanRoomTempDegC": 20.85,
+        "meanSetpointDegC": 20.0
+      },
+      "likelyCause": "Solar/occupancy gain, sensor bias, or control overshoot.",
+      "probableComponent": "Controls / room sensor",
+      "partsToPick": [
+        "Temperature sensor",
+        "controller service kit"
+      ],
+      "recommendedAction": "Check occupancy, solar exposure, and sensor agreement with peer pumps.",
+      "confidence": 0.68,
+      "evidenceSummary": "Residual evidence peaked at 0.43 degC across 3 samples."
+    },
+    {
+      "id": "cusum_positive_alarm-e72fea56-20260528140902",
+      "type": "cusum_positive_alarm",
+      "severity": "medium",
+      "title": "Sustained warmer-than-model residual",
+      "message": "Measured temperature is persistently above the RC model prediction.",
+      "deviceId": "e72fea56-abe7-4d3f-a0ed-1e6b6c462157",
+      "createdAt": "2026-05-28T14:09:02",
+      "resolvedAt": "2026-05-28T14:21:17",
+      "durationMinutes": 12.2,
+      "temperature": 20.63,
+      "setpoint": 20.0,
+      "evidence": {
+        "rows": 4,
+        "maxAbsResidualDegC": 0.43,
+        "maxPeerDeviationDegC": 0.21,
+        "meanRoomTempDegC": 21.27,
+        "meanSetpointDegC": 20.0
+      },
+      "likelyCause": "Unexpected heat gain, sensor bias, or control overshoot.",
+      "probableComponent": "Controls / room sensor",
+      "partsToPick": [
+        "Temperature sensor",
+        "controller service kit"
+      ],
+      "recommendedAction": "Check setpoint history, sensor placement, and external heat gains.",
+      "confidence": 0.74,
+      "evidenceSummary": "Residual evidence peaked at 0.43 degC across 4 samples."
+    },
+    {
+      "id": "rc_positive_shift-e72fea56-20260528140902",
+      "type": "rc_positive_shift",
+      "severity": "medium",
+      "title": "Sharp positive thermal residual",
+      "message": "The room is warmer than expected from the physics model.",
+      "deviceId": "e72fea56-abe7-4d3f-a0ed-1e6b6c462157",
+      "createdAt": "2026-05-28T14:09:02",
+      "resolvedAt": "2026-05-28T14:11:02",
+      "durationMinutes": 2.0,
+      "temperature": 20.63,
+      "setpoint": 20.0,
+      "evidence": {
+        "rows": 3,
+        "maxAbsResidualDegC": 0.43,
+        "maxPeerDeviationDegC": 0.21,
+        "meanRoomTempDegC": 20.85,
+        "meanSetpointDegC": 20.0
+      },
+      "likelyCause": "Solar/occupancy gain, sensor bias, or control overshoot.",
+      "probableComponent": "Controls / room sensor",
+      "partsToPick": [
+        "Temperature sensor",
+        "controller service kit"
+      ],
+      "recommendedAction": "Check occupancy, solar exposure, and sensor agreement with peer pumps.",
+      "confidence": 0.68,
+      "evidenceSummary": "Residual evidence peaked at 0.43 degC across 3 samples."
+    },
+    {
+      "id": "setpoint_miss-1c893f75-20260528142817",
+      "type": "setpoint_miss",
+      "severity": "high",
+      "title": "Setpoint not reached",
+      "message": "Room temperature remains far from setpoint while conditioning is required.",
+      "deviceId": "1c893f75-4599-4402-9d4c-1017aa858fa8",
+      "createdAt": "2026-05-28T14:28:17",
+      "resolvedAt": "2026-05-28T14:58:32",
+      "durationMinutes": 30.2,
+      "temperature": 22.27,
+      "setpoint": 20.0,
+      "evidence": {
+        "rows": 31,
+        "maxAbsResidualDegC": 0.19,
+        "maxPeerDeviationDegC": 0.06,
+        "meanRoomTempDegC": 22.26,
+        "meanSetpointDegC": 20.0
+      },
+      "likelyCause": "Extended conditioning could not reach target; likely envelope loss, refrigerant low, or undersizing.",
+      "probableComponent": "Envelope / capacity",
+      "partsToPick": [
+        "Filter set",
+        "refrigerant service kit",
+        "thermal inspection kit"
+      ],
+      "recommendedAction": "Check whether preheat was long enough, then inspect capacity, refrigerant, filters, and envelope leakage.",
+      "confidence": 0.88,
+      "evidenceSummary": "Setpoint miss persisted for 31 samples with max residual 0.19 degC."
+    },
+    {
+      "id": "setpoint_miss-930f3621-20260528142817",
+      "type": "setpoint_miss",
+      "severity": "high",
+      "title": "Setpoint not reached",
+      "message": "Room temperature remains far from setpoint while conditioning is required.",
+      "deviceId": "930f3621-05df-4574-9270-9d994c5b716c",
+      "createdAt": "2026-05-28T14:28:17",
+      "resolvedAt": "2026-05-28T14:58:32",
+      "durationMinutes": 30.2,
+      "temperature": 22.27,
+      "setpoint": 20.0,
+      "evidence": {
+        "rows": 31,
+        "maxAbsResidualDegC": 0.19,
+        "maxPeerDeviationDegC": 0.06,
+        "meanRoomTempDegC": 22.26,
+        "meanSetpointDegC": 20.0
+      },
+      "likelyCause": "Extended conditioning could not reach target; likely envelope loss, refrigerant low, or undersizing.",
+      "probableComponent": "Envelope / capacity",
+      "partsToPick": [
+        "Filter set",
+        "refrigerant service kit",
+        "thermal inspection kit"
+      ],
+      "recommendedAction": "Check whether preheat was long enough, then inspect capacity, refrigerant, filters, and envelope leakage.",
+      "confidence": 0.88,
+      "evidenceSummary": "Setpoint miss persisted for 31 samples with max residual 0.19 degC."
+    },
+    {
+      "id": "setpoint_miss-bdaf0e14-20260528142817",
+      "type": "setpoint_miss",
+      "severity": "high",
+      "title": "Setpoint not reached",
+      "message": "Room temperature remains far from setpoint while conditioning is required.",
+      "deviceId": "bdaf0e14-2cd1-43c8-b9ea-b3c90309f773",
+      "createdAt": "2026-05-28T14:28:17",
+      "resolvedAt": "2026-05-28T14:58:32",
+      "durationMinutes": 30.2,
+      "temperature": 22.27,
+      "setpoint": 20.0,
+      "evidence": {
+        "rows": 31,
+        "maxAbsResidualDegC": 0.2,
+        "maxPeerDeviationDegC": 0.06,
+        "meanRoomTempDegC": 22.26,
+        "meanSetpointDegC": 20.0
+      },
+      "likelyCause": "Extended conditioning could not reach target; likely envelope loss, refrigerant low, or undersizing.",
+      "probableComponent": "Envelope / capacity",
+      "partsToPick": [
+        "Filter set",
+        "refrigerant service kit",
+        "thermal inspection kit"
+      ],
+      "recommendedAction": "Check whether preheat was long enough, then inspect capacity, refrigerant, filters, and envelope leakage.",
+      "confidence": 0.88,
+      "evidenceSummary": "Setpoint miss persisted for 31 samples with max residual 0.2 degC."
+    },
+    {
+      "id": "setpoint_miss-e72fea56-20260528142817",
+      "type": "setpoint_miss",
+      "severity": "high",
+      "title": "Setpoint not reached",
+      "message": "Room temperature remains far from setpoint while conditioning is required.",
+      "deviceId": "e72fea56-abe7-4d3f-a0ed-1e6b6c462157",
+      "createdAt": "2026-05-28T14:28:17",
+      "resolvedAt": "2026-05-28T14:58:32",
+      "durationMinutes": 30.2,
+      "temperature": 22.27,
+      "setpoint": 20.0,
+      "evidence": {
+        "rows": 31,
+        "maxAbsResidualDegC": 0.2,
+        "maxPeerDeviationDegC": 0.06,
+        "meanRoomTempDegC": 22.26,
+        "meanSetpointDegC": 20.0
+      },
+      "likelyCause": "Extended conditioning could not reach target; likely envelope loss, refrigerant low, or undersizing.",
+      "probableComponent": "Envelope / capacity",
+      "partsToPick": [
+        "Filter set",
+        "refrigerant service kit",
+        "thermal inspection kit"
+      ],
+      "recommendedAction": "Check whether preheat was long enough, then inspect capacity, refrigerant, filters, and envelope leakage.",
+      "confidence": 0.88,
+      "evidenceSummary": "Setpoint miss persisted for 31 samples with max residual 0.2 degC."
+    }
+  ]
+}

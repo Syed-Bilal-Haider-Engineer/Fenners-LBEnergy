@@ -9,9 +9,46 @@ from __future__ import annotations
 
 import numpy as np
 import pandas as pd
-from scipy.linalg import lstsq
 
 from .config import DT_HOURS, PRED_DT_HOURS, BOOST_KW_THRESHOLD
+
+
+def _lstsq(X: np.ndarray, y: np.ndarray) -> np.ndarray:
+    return np.linalg.lstsq(X, y, rcond=None)[0]
+
+
+def _bounded_pattern_search(
+    objective,
+    init: tuple[float, float, float],
+    bounds: list[tuple[float, float]],
+    *,
+    max_iter: int = 240,
+    tol: float = 1e-5,
+) -> tuple[np.ndarray, float]:
+    """Small dependency-free bounded optimizer for the 3-parameter trajectory fit."""
+    x = np.array(
+        [min(max(v, lo), hi) for v, (lo, hi) in zip(init, bounds)],
+        dtype=float,
+    )
+    spans = np.array([hi - lo for lo, hi in bounds], dtype=float)
+    steps = spans * 0.10
+    best = float(objective(x))
+
+    for _ in range(max_iter):
+        improved = False
+        for i in range(len(x)):
+            for sign in (1.0, -1.0):
+                candidate = x.copy()
+                lo, hi = bounds[i]
+                candidate[i] = min(max(candidate[i] + sign * steps[i], lo), hi)
+                score = float(objective(candidate))
+                if score < best:
+                    x, best, improved = candidate, score, True
+        if not improved:
+            steps *= 0.5
+            if float(steps.max()) < tol:
+                break
+    return x, best
 
 
 def fit_rc_ols(df: pd.DataFrame) -> dict:
@@ -49,7 +86,7 @@ def fit_rc_ols(df: pd.DataFrame) -> dict:
             np.ones(len(standby)),
         ])
         ys = standby["dT_dt"].values
-        th_s, _, _, _ = lstsq(Xs, ys)
+        th_s = _lstsq(Xs, ys)
         tau_stage1 = 1.0 / th_s[0] if th_s[0] > 0 else float("nan")
         beta2_stage1 = -th_s[0]         # β₂ = −1/τ
     else:
@@ -75,7 +112,7 @@ def fit_rc_ols(df: pd.DataFrame) -> dict:
         np.ones(len(heating)),
     ])
     yh = heating["dT_dt"].values
-    th_h, _, _, _ = lstsq(Xh, yh)
+    th_h = _lstsq(Xh, yh)
     beta1_heat, beta2_heat, beta4_boost, beta3_heat = th_h
 
     yh_pred = Xh @ th_h
@@ -153,8 +190,6 @@ def fit_heatup_trajectory(
 
     Returns calibrated {β₁,β₂,β₃}, `T_supply_eff`, ramp RMSE and ramp count.
     """
-    from scipy.optimize import minimize
-
     is_boost = df["is_boost"] if "is_boost" in df else (df["P_total_kw"] >= 20).astype(int)
     mask = (df["heating_req"] == 1) & (is_boost == 0) & (df["T_supply"] > df["T_room"] + 3)
     grp = (mask != mask.shift()).cumsum()
@@ -176,13 +211,16 @@ def fit_heatup_trajectory(
         return float(np.sqrt(err / n))
 
     # Physical bounds: β₁≥0 (heating adds heat), β₂≤0 (loss to outside).
-    res = minimize(ramp_rmse, np.array(init), method="L-BFGS-B",
-                   bounds=[(0.0, 1.0), (-1.0, 0.0), (-2.0, 2.0)])
-    b1, b2, b3 = res.x
+    beta, rmse = _bounded_pattern_search(
+        ramp_rmse,
+        init,
+        bounds=[(0.0, 1.0), (-1.0, 0.0), (-2.0, 2.0)],
+    )
+    b1, b2, b3 = beta
     return {
         "beta1": float(b1), "beta2": float(b2), "beta3": float(b3),
         "T_supply_eff": T_supply_eff,
-        "ramp_rmse_degC": float(res.fun),
+        "ramp_rmse_degC": float(rmse),
         "n_ramps": len(ramps),
     }
 
@@ -210,8 +248,6 @@ def fit_cooldown_trajectory(
 
     Returns calibrated {β₁,β₂,β₃}, `T_supply_eff`, ramp RMSE and ramp count.
     """
-    from scipy.optimize import minimize
-
     SUPPLY_DELTA = 1.0
     is_boost = df["is_boost"] if "is_boost" in df else (df["P_total_kw"] >= 20).astype(int)
     cooling_now = df["T_supply"] < df["T_room"] - SUPPLY_DELTA        # cold supply present
@@ -237,13 +273,16 @@ def fit_cooldown_trajectory(
         return float(np.sqrt(err / n))
 
     # Same physical bounds as heating: β₁≥0 (supply drives toward its temp), β₂≤0.
-    res = minimize(ramp_rmse, np.array(init), method="L-BFGS-B",
-                   bounds=[(0.0, 1.0), (-1.0, 0.0), (-2.0, 2.0)])
-    b1, b2, b3 = res.x
+    beta, rmse = _bounded_pattern_search(
+        ramp_rmse,
+        init,
+        bounds=[(0.0, 1.0), (-1.0, 0.0), (-2.0, 2.0)],
+    )
+    b1, b2, b3 = beta
     return {
         "beta1": float(b1), "beta2": float(b2), "beta3": float(b3),
         "T_supply_eff": T_supply_eff,
-        "ramp_rmse_degC": float(res.fun),
+        "ramp_rmse_degC": float(rmse),
         "n_ramps": len(ramps),
     }
 

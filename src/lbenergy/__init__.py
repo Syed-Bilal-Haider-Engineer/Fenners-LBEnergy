@@ -23,6 +23,10 @@ from .evaluate import validate_on_cooling, trajectory_rmse
 from .residual import ResidualCorrector
 from .external import fetch_weather, join_external
 from .backtest import run_backtest, evaluate_event, dedupe_events
+from .anomaly import (
+    FaultThresholds, score_anomalies, extract_alerts, summarize_faults,
+    run_fault_detection,
+)
 
 __all__ = [
     "config",
@@ -36,4 +40,6 @@ __all__ = [
     "ResidualCorrector",
     "fetch_weather", "join_external",
     "run_backtest", "evaluate_event", "dedupe_events",
+    "FaultThresholds", "score_anomalies", "extract_alerts", "summarize_faults",
+    "run_fault_detection",
 ]

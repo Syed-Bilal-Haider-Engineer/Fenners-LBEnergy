@@ -44,6 +44,7 @@ import os
 from lbenergy import (
     run_pipeline, run_backtest, fit_heatup_trajectory, fit_cooldown_trajectory,
     predict_preheat_start, predict_precool_start, simulate_trajectory,
+    run_fault_detection,
 )
 from lbenergy.backtest import dedupe_events
 from lbenergy.config import (
@@ -125,6 +126,58 @@ def backtest(window: str = Query("heating", pattern="^(heating|cooling)$")) -> d
     return {"summary": summary, "events": records}
 
 
+@app.get("/faults")
+def faults(window: str = Query("heating", pattern="^(heating|cooling)$")) -> dict:
+    """Fault/anomaly detector output: summary + grouped alert records."""
+    scored, alerts_df, summary = _faults(window)
+    alerts = alerts_df.to_dict("records") if not alerts_df.empty else []
+    return {
+        "summary": {k: _safe(v) for k, v in summary.items()},
+        "alerts": alerts,
+        "sampleCount": int(len(scored)),
+    }
+
+
+@app.get("/faults/timeline")
+def faults_timeline(
+    window: str = Query("heating", pattern="^(heating|cooling)$"),
+    deviceId: str | None = Query(None, description="Optional heat-pump device id"),
+    limit: int = Query(1200, ge=100, le=10000),
+) -> dict:
+    """Device-level scored timeline for technician evidence charts."""
+    scored, _, _ = _faults(window)
+    rows = scored.reset_index().sort_values("ts")
+    if deviceId:
+        rows = rows[rows["device_id"] == deviceId]
+    rows = rows.tail(limit)
+
+    columns = [
+        "ts", "device_id", "T_room", "setpoint", "T_supply", "T_out",
+        "P_device_kw", "rc_residual", "residual_z", "cusum_pos", "cusum_neg",
+        "defrost", "compressor", "heating_req", "cooling_req",
+        "hardware_alarm", "peer_sensor_outlier", "cusum_negative_alarm",
+        "cusum_positive_alarm", "rc_negative_shift", "rc_positive_shift",
+        "compressor_no_effect", "setpoint_miss", "any_fault_flag",
+    ]
+    available = [c for c in columns if c in rows.columns]
+    records = []
+    for record in rows[available].to_dict("records"):
+        out = {}
+        for key, value in record.items():
+            if key == "ts":
+                out[key] = pd.Timestamp(value).isoformat()
+            else:
+                out[key] = _safe(value)
+        records.append(out)
+
+    return {
+        "window": window,
+        "deviceId": deviceId,
+        "count": len(records),
+        "rows": records,
+    }
+
+
 @app.get("/preheat")
 def preheat(
     t_room: float = Query(..., description="current/trough room temp °C"),
@@ -142,11 +195,13 @@ def preheat(
         T_room_now=t_room, T_out_const=t_out, hours_to_event=hours,
         beta=m["beta"], T_supply_nom=m["T_supply_eff"], T_target=target,
     )
+    predicted_temp = float(traj[-1])
+    feasible = predicted_temp >= target
     return {
         "lead_hours": _safe(lead_h),
-        "feasible": bool(lead_h < hours - 1e-3),
-        "predicted_temp_at_event": _safe(float(traj[-1])),
-        "on_time": bool(float(traj[-1]) >= target),
+        "feasible": bool(feasible),
+        "predicted_temp_at_event": _safe(predicted_temp),
+        "on_time": bool(feasible and predicted_temp >= target),
         "setpoint": _safe(setpoint),
         "trajectory_temp": [_safe(float(t)) for t in traj],
         "step_minutes": int(round(PRED_DT_HOURS * 60)),
@@ -232,6 +287,13 @@ def _heating() -> tuple:
         _HEATING = run_backtest("heating")
     return _HEATING
 _HEATING = None
+_FAULTS: dict[str, tuple[pd.DataFrame, pd.DataFrame, dict]] = {}
+
+
+def _faults(window: str) -> tuple[pd.DataFrame, pd.DataFrame, dict]:
+    if window not in _FAULTS:
+        _FAULTS[window] = run_fault_detection(window)
+    return _FAULTS[window]
 
 
 @app.get("/energy/statistics")
