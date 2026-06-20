@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -10,9 +11,9 @@ import {
   MapPin,
 } from "lucide-react";
 
-const NAV_ITEMS = [
+const NAV_ITEMS: { href: string; label: string; icon: React.ElementType; badge?: number }[] = [
   { href: "/dashboard/schedule", label: "Schedule", icon: Calendar },
-  { href: "/dashboard/alerts", label: "Alerts", icon: AlertTriangle },
+  { href: "/dashboard/alerts", label: "Alerts", icon: AlertTriangle, badge: 3 },
   { href: "/dashboard/reports", label: "Reports", icon: FileText },
   { href: "/dashboard/configuration", label: "Configuration", icon: Settings },
 ];

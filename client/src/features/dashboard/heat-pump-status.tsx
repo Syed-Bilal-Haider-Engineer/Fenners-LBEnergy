@@ -9,14 +9,7 @@ function Donut({ segments }: { segments: Segment[] }) {
   const radius = 56;
   const stroke = 16;
   const circumference = 2 * Math.PI * radius;
-  const segments = SEGMENTS.filter((s) => s.pct > 0).map((segment, index, source) => {
-    const previousPct = source.slice(0, index).reduce((sum, item) => sum + item.pct, 0);
-    return {
-      ...segment,
-      dash: (segment.pct / 100) * circumference,
-      offset: (previousPct / 100) * circumference,
-    };
-  });
+  let offset = 0;
 
   return (
     <svg viewBox="0 0 140 140" className="h-[150px] w-[150px] -rotate-90">
