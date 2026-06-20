@@ -150,6 +150,56 @@ body {
   color: #ffffff;
 }
 
+/* ── Floating orange/blue background blobs (lava-lamp) ────────────────── */
+.blob {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(70px);
+  pointer-events: none;
+  will-change: transform;
+}
+.blob-coral {
+  background: radial-gradient(closest-side, rgba(255, 97, 72, 0.75), transparent 70%);
+}
+.blob-ember {
+  background: radial-gradient(closest-side, rgba(242, 66, 39, 0.7), transparent 70%);
+}
+.blob-ocean {
+  background: radial-gradient(closest-side, rgba(25, 86, 123, 0.7), transparent 70%);
+}
+.blob-sky {
+  background: radial-gradient(closest-side, rgba(11, 117, 183, 0.6), transparent 70%);
+}
+
+@keyframes blob-a {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(8vw, 6vh) scale(1.15); }
+  66% { transform: translate(-6vw, 10vh) scale(0.9); }
+}
+@keyframes blob-b {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  30% { transform: translate(-9vw, 8vh) scale(1.2); }
+  70% { transform: translate(7vw, -6vh) scale(0.95); }
+}
+@keyframes blob-c {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  40% { transform: translate(10vw, -8vh) scale(1.1); }
+  75% { transform: translate(-8vw, -4vh) scale(1.05); }
+}
+@keyframes blob-d {
+  0%, 100% { transform: translate(0, 0) scale(1.05); }
+  50% { transform: translate(-7vw, -9vh) scale(0.9); }
+}
+
+.anim-a { animation: blob-a 22s ease-in-out infinite; }
+.anim-b { animation: blob-b 27s ease-in-out infinite; }
+.anim-c { animation: blob-c 24s ease-in-out infinite; }
+.anim-d { animation: blob-d 30s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .anim-a, .anim-b, .anim-c, .anim-d { animation: none; }
+}
+
 /* Pulse line used behind the energy chart's live series */
 @keyframes pulse-flow {
   0% {
