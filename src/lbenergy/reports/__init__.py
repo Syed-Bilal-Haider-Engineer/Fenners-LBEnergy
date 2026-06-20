@@ -6,5 +6,6 @@ New report topics extend `ReportBuilder` and override `body()`.
 
 from lbenergy.reports.builder import ReportBuilder
 from lbenergy.reports.financial import FinancialReport
+from lbenergy.reports.sustainability import SustainabilityReport
 
-__all__ = ["ReportBuilder", "FinancialReport"]
+__all__ = ["ReportBuilder", "FinancialReport", "SustainabilityReport"]

@@ -201,6 +201,17 @@ class ReportBuilder:
         y = A4[1] - B.PAGE_MARGIN - logo.height
         logo.drawOn(canvas, x, y)
 
+        second_w, second_h = B.second_logo_size(B.LOGO_HEIGHT_PT)
+        canvas.drawImage(
+            str(B.SECOND_LOGO_PATH),
+            x + logo.width + B.LOGO_GAP_PT,
+            y,
+            width=second_w,
+            height=second_h,
+            mask="auto",
+            preserveAspectRatio=True,
+        )
+
         canvas.setFont(B.FONT_FAMILY, 8)
         canvas.setFillColor(B.TEXT_COLOR)
         canvas.drawRightString(
