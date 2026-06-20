@@ -21,16 +21,13 @@ export default function BuildingDetailPage({buildingKey}:{buildingKey:string}) {
   if (!building) notFound();
 
   return (
-    <div className="flex min-h-screen bg-canvas">
-      <Sidebar />
-
-      <div className="flex-1">
-        <DetailTopbar
-          backHref="/"
-          backLabel="Dashboard"
-          title={building.name}
-          subtitle={building.location}
-        />
+    <>
+      <DetailTopbar
+        backHref="/dashboard"
+        backLabel="Dashboard"
+        title={building.name}
+        subtitle={building.location}
+      />
 
         <main className="flex flex-col gap-5 px-8 pb-8 pt-5">
           <div className="grid grid-cols-4 gap-4">
@@ -101,8 +98,7 @@ export default function BuildingDetailPage({buildingKey}:{buildingKey:string}) {
             </div>
           </section>
         </main>
-      </div>
-    </div>
+    </>
   );
 }
 

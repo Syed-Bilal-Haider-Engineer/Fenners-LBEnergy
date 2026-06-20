@@ -9,7 +9,7 @@ import {
 
 export function Topbar() {
   return (
-    <header className="flex items-center justify-between px-8 pb-2 pt-7">
+    <header className="flex items-center justify-between px-2 pb-6">
       <div>
         <h1 className="flex items-center gap-2 text-[22px] font-semibold text-graphite-900">
           Good morning, Lukas <span className="text-xl">👋</span>

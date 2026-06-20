@@ -15,19 +15,28 @@ export function DetailTopbar({
   actions?: React.ReactNode;
 }) {
   return (
-    <header className="flex items-center justify-between border-b border-slate-200 bg-white px-8 py-5">
+    <header className=" mt-2 z-10 mb-4 flex items-start justify-between bg-transparent pt-2 pb-3">
+      {/* Left */}
       <div>
         <Link
           href={backHref}
-          className="mb-2 inline-flex items-center gap-1 text-sm font-medium text-slate-400 hover:text-slate-600"
+          className="inline-flex items-center gap-1 text-sm text-slate-400 hover:text-slate-600"
         >
           <ChevronLeft size={15} />
           {backLabel}
         </Link>
-        <h1 className="text-xl font-semibold tracking-tight text-slate-900">{title}</h1>
-        {subtitle ? <p className="mt-0.5 text-sm text-slate-400">{subtitle}</p> : null}
+
+        <h1 className="mt-1 text-xl font-semibold tracking-tight text-slate-900">
+          {title}
+        </h1>
+
+        {subtitle && (
+          <p className="mt-0.5 text-sm text-slate-400">{subtitle}</p>
+        )}
       </div>
-      {actions ? <div className="flex items-center gap-2">{actions}</div> : null}
+
+      {/* Right actions */}
+      {actions && <div className="flex items-center gap-2">{actions}</div>}
     </header>
   );
 }
