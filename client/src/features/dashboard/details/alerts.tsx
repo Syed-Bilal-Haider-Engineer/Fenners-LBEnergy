@@ -16,7 +16,7 @@ export function Alerts() {
     <div className="rounded-2xl border border-slate-200 bg-white p-5">
       <div className="mb-4 flex items-center justify-between">
         <h2 className="text-sm font-semibold text-slate-900">Alerts</h2>
-        <Link href="/alerts" className="text-xs font-medium text-emerald-600 hover:text-emerald-700">
+        <Link href="/dashboard/alerts" className="text-xs font-medium text-emerald-600 hover:text-emerald-700">
           View all
         </Link>
       </div>
@@ -26,7 +26,7 @@ export function Alerts() {
           const meta = SEVERITY_ICON[alert.severity];
           const Icon = meta.icon;
           return (
-            <Link key={alert.id} href="/alerts" className="flex items-start gap-3 group">
+            <Link key={alert.id} href="/dashboard/alerts" className="flex items-start gap-3 group">
               <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${meta.bg}`}>
                 <Icon size={15} className={meta.color} />
               </div>

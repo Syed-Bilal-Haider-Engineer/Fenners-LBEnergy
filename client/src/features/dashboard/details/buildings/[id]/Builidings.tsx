@@ -1,6 +1,5 @@
 
 import { BUILDINGS } from "@/src/_lib/constant/mock-buildings";
-import { Sidebar } from "@/src/layout/widgets/sidebar";
 import { DetailTopbar } from "@/src/shared/detail-topbar";
 import { StatusBadge } from "@/src/shared/status-badge";
 import { StatusRailRow } from "@/src/shared/status-rail-row";

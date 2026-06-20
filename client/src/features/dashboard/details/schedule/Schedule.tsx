@@ -3,7 +3,7 @@
 import { useMemo } from "react";
 import Link from "next/link";
 import { DetailTopbar } from "@/src/shared/detail-topbar";
-import { SCHEDULE, ScheduleStatus } from "@/src/_lib/constant/mock-schedule";
+import { SCHEDULE, type ScheduleEntry } from "@/src/_lib/constant/mock-schedule";
 import { StatusRailRow } from "@/src/shared/status-rail-row";
 import { StatusBadge } from "@/src/shared/status-badge";
 import { Thermometer, Plus } from "lucide-react";
@@ -16,7 +16,7 @@ const STATUS_META = {
 
 export default function SchedulePage() {
   const grouped = useMemo(() => {
-    const map = new Map<string, any[]>();
+    const map = new Map<string, ScheduleEntry[]>();
     for (const s of SCHEDULE) {
       const arr = map.get(s.day) ?? [];
       arr.push(s);
@@ -50,7 +50,7 @@ export default function SchedulePage() {
                 const meta = STATUS_META[e.status];
 
                 return (
-                  <Link key={e.id} href={`/buildings/${e.building}`}>
+                  <Link key={e.id} href={`/dashboard/buildings/${encodeURIComponent(e.building)}`}>
                     <StatusRailRow tone={meta.rail} className="p-3 hover:bg-slate-50 rounded-xl">
                       <div className="flex justify-between">
                         <div>

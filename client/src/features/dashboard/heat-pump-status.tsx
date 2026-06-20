@@ -11,14 +11,19 @@ function Donut() {
   const radius = 56;
   const stroke = 16;
   const circumference = 2 * Math.PI * radius;
-  let offset = 0;
+  const segments = SEGMENTS.filter((s) => s.pct > 0).map((segment, index, source) => {
+    const previousPct = source.slice(0, index).reduce((sum, item) => sum + item.pct, 0);
+    return {
+      ...segment,
+      dash: (segment.pct / 100) * circumference,
+      offset: (previousPct / 100) * circumference,
+    };
+  });
 
   return (
     <svg viewBox="0 0 140 140" className="h-[150px] w-[150px] -rotate-90">
       <circle cx="70" cy="70" r={radius} fill="none" stroke="#EEF0F3" strokeWidth={stroke} />
-      {SEGMENTS.filter((s) => s.pct > 0).map((s) => {
-        const dash = (s.pct / 100) * circumference;
-        const circle = (
+      {segments.map((s) => (
           <circle
             key={s.label}
             cx="70"
@@ -27,14 +32,11 @@ function Donut() {
             fill="none"
             stroke={s.color}
             strokeWidth={stroke}
-            strokeDasharray={`${dash} ${circumference - dash}`}
-            strokeDashoffset={-offset}
+            strokeDasharray={`${s.dash} ${circumference - s.dash}`}
+            strokeDashoffset={-s.offset}
             strokeLinecap="butt"
           />
-        );
-        offset += dash;
-        return circle;
-      })}
+      ))}
     </svg>
   );
 }

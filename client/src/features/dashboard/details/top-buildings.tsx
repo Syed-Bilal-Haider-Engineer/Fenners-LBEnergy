@@ -10,14 +10,14 @@ export function TopBuildings() {
     <div className="rounded-2xl border border-slate-200 bg-white p-5">
       <div className="mb-4 flex items-center justify-between">
         <h2 className="text-sm font-semibold text-slate-900">Top Buildings by Savings</h2>
-        <Link href="/schedule" className="text-xs font-medium text-emerald-600 hover:text-emerald-700">
+        <Link href="/dashboard/buildings" className="text-xs font-medium text-emerald-600 hover:text-emerald-700">
           View all
         </Link>
       </div>
 
       <div className="flex flex-col gap-4">
         {buildingList.map((building) => (
-          <Link key={building.id} href={`/buildings/${encodeURIComponent(building.name)}`}>
+          <Link key={building.id} href={`/dashboard/buildings/${encodeURIComponent(building.name)}`}>
             <div className="group">
               <div className="mb-1.5 flex items-center justify-between">
                 <span className="text-sm text-slate-700 group-hover:text-slate-900">

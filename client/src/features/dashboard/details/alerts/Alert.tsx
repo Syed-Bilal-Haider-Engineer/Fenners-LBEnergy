@@ -4,7 +4,6 @@ import { useMemo, useState } from "react";
 import { DetailTopbar } from "@/src/shared/detail-topbar";
 import { ALERTS, AlertSeverity } from "@/src/_lib/constant/mock-alerts";
 import { StatusRailRow } from "@/src/shared/status-rail-row";
-import { StatusBadge } from "@/src/shared/status-badge";
 import { AlertTriangle, Info, OctagonAlert, Check } from "lucide-react";
 
 const FILTERS = [
@@ -51,7 +50,7 @@ export default function AlertsPage() {
           {FILTERS.map((f) => (
             <button
               key={f.value}
-              onClick={() => setFilter(f.value as any)}
+              onClick={() => setFilter(f.value)}
               className={`rounded-lg px-3.5 py-1.5 text-sm font-medium ${
                 filter === f.value
                   ? "bg-slate-900 text-white"

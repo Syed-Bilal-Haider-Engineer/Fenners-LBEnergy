@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Thermometer } from "lucide-react";
-import { StatusBadge } from "@/src/components/shared/status-badge";
-import { SCHEDULE } from "@/src/lib/mock-schedule";
+import { StatusBadge } from "@/src/shared/status-badge";
+import { SCHEDULE } from "@/src/_lib/constant/mock-schedule";
 
 export function UpcomingSchedule() {
   const next24h = SCHEDULE.filter((s) => s.day === "Today").slice(0, 4);
@@ -10,7 +10,7 @@ export function UpcomingSchedule() {
     <div className="rounded-2xl border border-slate-200 bg-white p-5">
       <div className="mb-1 flex items-center justify-between">
         <h2 className="text-sm font-semibold text-slate-900">Upcoming Schedule</h2>
-        <Link href="/schedule" className="text-xs font-medium text-emerald-600 hover:text-emerald-700">
+        <Link href="/dashboard/schedule" className="text-xs font-medium text-emerald-600 hover:text-emerald-700">
           View all
         </Link>
       </div>
@@ -20,7 +20,7 @@ export function UpcomingSchedule() {
         {next24h.map((entry, i) => {
           const tone = entry.status === "heating" ? "emerald" : "amber";
           return (
-            <Link key={entry.id} href={`/buildings/${encodeURIComponent(entry.building)}`}>
+            <Link key={entry.id} href={`/dashboard/buildings/${encodeURIComponent(entry.building)}`}>
               <div className="flex gap-3 pb-4">
                 <div className="flex flex-col items-center">
                   <div className={`h-2 w-2 rounded-full ${tone === "emerald" ? "bg-emerald-500" : "bg-amber-500"}`} />
