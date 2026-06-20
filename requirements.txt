@@ -15,3 +15,7 @@ pyarrow
 # PDF report generation (scripts/generate_report.py)
 reportlab
 svglib
+
+# API layer (api.py) for the frontend
+fastapi
+uvicorn
