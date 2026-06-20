@@ -11,3 +11,7 @@ lightgbm
 
 # Parquet persistence (pipeline.persist_parquet)
 pyarrow
+
+# PDF report generation (scripts/generate_report.py)
+reportlab
+svglib
