@@ -1,15 +1,7 @@
-import { Card, CardHeader } from "../../components/ui/card";
+"use client";
 
-interface Stat {
-  label: string;
-  value: string;
-  unit?: string;
-  delta?: string;
-  deltaTone?: "up" | "down";
-  footnote: string;
-  icon: React.ReactNode;
-  iconBg: string;
-}
+import { Card } from "../../components/ui/card";
+import { useLocations } from "./locations/locations-context";
 
 function Icon({ name }: { name: "bolt" | "euro" | "leaf" | "pump" }) {
   const common = "h-5 w-5";
@@ -43,39 +35,43 @@ function Icon({ name }: { name: "bolt" | "euro" | "leaf" | "pump" }) {
   }
 }
 
-const STATS: Stat[] = [
-  {
-    label: "Energy Saved",
-    value: "12,540",
-    unit: "kWh",
-    delta: "18.6%",
-    deltaTone: "up",
-    footnote: "vs last week",
-    icon: <Icon name="bolt" />,
-    iconBg: "bg-ember-50 text-ember-600",
-  },
-  {
-    label: "Cost Saved",
-    value: "€2,753",
-    delta: "16.3%",
-    deltaTone: "up",
-    footnote: "vs last week",
-    icon: <Icon name="euro" />,
-    iconBg: "bg-sky-50 text-sky-500",
-  },
-  {
-    label: "CO₂ Saved",
-    value: "6.21",
-    unit: "t",
-    delta: "17.8%",
-    deltaTone: "up",
-    footnote: "vs last week",
-    icon: <Icon name="leaf" />,
-    iconBg: "bg-ember-50 text-ember-600",
-  },
-];
-
 export function KpiRow() {
+  const { selected } = useLocations();
+  const u = selected.units;
+  const fmt = (n: number) => Math.round(n).toLocaleString("en-US");
+
+  const active = Math.round(u * 0.45);
+  const warnings = Math.max(0, Math.round(u * 0.1));
+
+  const STATS = [
+    {
+      label: "Energy Saved",
+      value: fmt(u * 1568),
+      unit: "kWh",
+      delta: "18.6%",
+      footnote: "vs last week",
+      icon: <Icon name="bolt" />,
+      iconBg: "bg-ember-50 text-ember-600",
+    },
+    {
+      label: "Cost Saved",
+      value: `€${fmt(u * 344)}`,
+      delta: "16.3%",
+      footnote: "vs last week",
+      icon: <Icon name="euro" />,
+      iconBg: "bg-sky-50 text-sky-500",
+    },
+    {
+      label: "CO₂ Saved",
+      value: (u * 0.78).toFixed(2),
+      unit: "t",
+      delta: "17.8%",
+      footnote: "vs last week",
+      icon: <Icon name="leaf" />,
+      iconBg: "bg-ember-50 text-ember-600",
+    },
+  ];
+
   return (
     <div className="grid grid-cols-4 gap-4">
       {STATS.map((s) => (
@@ -108,9 +104,9 @@ export function KpiRow() {
         </span>
         <div>
           <p className="text-[13px] text-graphite-600/80">Heat Pumps</p>
-          <p className="tabular mt-0.5 text-[22px] font-semibold leading-none text-graphite-900">29</p>
+          <p className="tabular mt-0.5 text-[22px] font-semibold leading-none text-graphite-900">{u}</p>
           <p className="mt-1.5 text-xs text-graphite-600/70">
-            <span className="text-graphite-900">11 Active</span> · 2 Warnings
+            <span className="text-graphite-900">{active} Active</span> · {warnings} Warnings
           </p>
         </div>
       </Card>

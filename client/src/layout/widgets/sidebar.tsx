@@ -12,7 +12,7 @@ import {
 
 const NAV_ITEMS = [
   { href: "/dashboard/schedule", label: "Schedule", icon: Calendar },
-  { href: "/dashboard/alerts", label: "Alerts", icon: AlertTriangle, badge: 3 },
+  { href: "/dashboard/alerts", label: "Alerts", icon: AlertTriangle },
   { href: "/dashboard/reports", label: "Reports", icon: FileText },
   { href: "/dashboard/configuration", label: "Configuration", icon: Settings },
 ];
