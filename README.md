@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="assets/product/ToolLogo.png" alt="OnQ — Never Early · Never Late" width="420" />
+
 # 🔥 Adaptive Predictive Preheat Control
 
 ### One physics-informed thermal model whose structure is identical for every building — from canvas tents to concrete lecture halls — calibrated per building from its own telemetry, telling the heat pump the exact moment to start.
