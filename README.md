@@ -114,9 +114,24 @@ Fenners-LBEnergy/
 │       ├── IHL_optimal_start_guide.md
 │       └── comparisson.md
 ├── src/
-│   └── explore_and_fit.py         # EDA + RC system identification
+│   └── lbenergy/                  # importable model package
+│       ├── config.py              # repo-relative paths + model constants
+│       ├── data.py                # loading: snapshots / power / events
+│       ├── pipeline.py            # ingest → features → (optional) persist
+│       ├── rc_model.py            # RC fit + forward simulation (physics core)
+│       ├── preheat.py             # optimal preheat start-time prediction
+│       ├── residual.py            # LightGBM residual corrector (scaffold)
+│       ├── evaluate.py            # cross-window validation + metrics
+│       └── plots.py               # diagnostic plotting
+├── scripts/                       # thin CLI entrypoints
+│   ├── train.py                   # calibrate {β,τ} → models/rc_params.json
+│   └── run_diagnostics.py         # full analysis → outputs/
+├── backend/                       # FastAPI service (/predict/preheat_start)
+├── frontend/                      # Streamlit demo dashboard
+├── models/                        # fitted artifacts (rc_params.json)
+├── notebooks/                     # exploratory notebooks
 ├── outputs/                       # diagnostic plots
-└── plot_csvs.ipynb                # exploratory notebook
+└── requirements.txt
 ```
 
 ---
@@ -125,13 +140,17 @@ Fenners-LBEnergy/
 
 ```bash
 # 1. Install dependencies
-pip install numpy pandas scipy lightgbm matplotlib
+pip install -r requirements.txt
 
-# 2. Run the EDA + RC calibration
-python src/explore_and_fit.py
+# 2. Calibrate the RC model  (writes models/rc_params.json)
+python scripts/train.py
 
-# 3. Explore interactively
-jupyter notebook plot_csvs.ipynb
+# 3. Run the full diagnostics  (writes plots to outputs/)
+python scripts/run_diagnostics.py
+
+# 4. (optional) Serve predictions
+uvicorn backend.main:app --reload        # API at http://127.0.0.1:8000/docs
+streamlit run frontend/app.py            # dashboard at http://localhost:8501
 ```
 
 The dataset lives under `data/` — see [`data/README.md`](data/README.md) for the full column schema, time windows, and heat-pump error-register decoding.

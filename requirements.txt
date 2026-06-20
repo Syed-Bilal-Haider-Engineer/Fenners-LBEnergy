@@ -1,0 +1,20 @@
+# Core model + data pipeline
+numpy
+pandas
+scipy
+
+# Diagnostic plots
+matplotlib
+
+# ML residual corrector (PDR §6.4)
+lightgbm
+
+# Parquet persistence (pipeline.persist_parquet)
+pyarrow
+
+# Backend API
+fastapi
+uvicorn[standard]
+
+# Frontend dashboard
+streamlit
