@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 
 export function LoginForm() {
@@ -14,9 +15,15 @@ export function LoginForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex w-full max-w-[380px] flex-col gap-5">
+    <form
+      onSubmit={handleSubmit}
+      className="flex w-full max-w-[380px] flex-col gap-5"
+    >
       <div className="flex flex-col gap-1.5">
-        <label htmlFor="email" className="text-[13px] font-medium text-graphite-900">
+        <label
+          htmlFor="email"
+          className="text-[13px] font-medium text-graphite-900"
+        >
           Work email
         </label>
         <input
@@ -32,7 +39,10 @@ export function LoginForm() {
 
       <div className="flex flex-col gap-1.5">
         <div className="flex items-center justify-between">
-          <label htmlFor="password" className="text-[13px] font-medium text-graphite-900">
+          <label
+            htmlFor="password"
+            className="text-[13px] font-medium text-graphite-900"
+          >
             Password
           </label>
           <button type="button" className="text-xs font-medium text-ember-600">
@@ -56,12 +66,31 @@ export function LoginForm() {
             className="px-1.5 text-graphite-600/60"
           >
             {showPassword ? (
-              <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-                <path d="M3 3l18 18M10.6 10.6a3 3 0 0 0 4.2 4.2M6.6 6.7C4.5 8 3 10 2 12c1.6 3.3 5 7 10 7 1.7 0 3.3-.4 4.7-1.1M17.4 17.3C19.5 16 21 14 22 12c-1.1-2.2-3-4.3-5.4-5.7A11 11 0 0 0 12 5c-.6 0-1.2.05-1.8.14" strokeLinecap="round" strokeLinejoin="round" />
+              <svg
+                className="h-4 w-4"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+              >
+                <path
+                  d="M3 3l18 18M10.6 10.6a3 3 0 0 0 4.2 4.2M6.6 6.7C4.5 8 3 10 2 12c1.6 3.3 5 7 10 7 1.7 0 3.3-.4 4.7-1.1M17.4 17.3C19.5 16 21 14 22 12c-1.1-2.2-3-4.3-5.4-5.7A11 11 0 0 0 12 5c-.6 0-1.2.05-1.8.14"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
               </svg>
             ) : (
-              <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-                <path d="M2 12c1.6-3.3 5-7 10-7s8.4 3.7 10 7c-1.6 3.3-5 7-10 7s-8.4-3.7-10-7Z" strokeLinejoin="round" />
+              <svg
+                className="h-4 w-4"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+              >
+                <path
+                  d="M2 12c1.6-3.3 5-7 10-7s8.4 3.7 10 7c-1.6 3.3-5 7-10 7s-8.4-3.7-10-7Z"
+                  strokeLinejoin="round"
+                />
                 <circle cx="12" cy="12" r="3" />
               </svg>
             )}
@@ -83,7 +112,11 @@ export function LoginForm() {
         type="submit"
         className="mt-1 rounded-lg bg-graphite-900 py-2.5 text-sm font-medium text-white transition-opacity hover:opacity-90"
       >
-        Sign in
+        <Link href="/dashboard">
+        
+          Sign in
+        
+        </Link>
       </button>
 
       <p className="text-center text-[13px] text-graphite-600/70">
