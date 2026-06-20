@@ -1,13 +1,11 @@
+"use client";
+
 import { Card, CardHeader } from "../../components/ui/card";
+import { useLocations } from "./locations/locations-context";
 
-const SEGMENTS = [
-  { label: "Active", value: 11, pct: 37.9, color: "#1fa971" },
-  { label: "Idle", value: 16, pct: 55.2, color: "#19567b" },
-  { label: "Warning", value: 2, pct: 6.9, color: "#f59e0b" },
-  { label: "Offline", value: 0, pct: 0, color: "#f24227" },
-];
+type Segment = { label: string; value: number; pct: number; color: string };
 
-function Donut() {
+function Donut({ segments }: { segments: Segment[] }) {
   const radius = 56;
   const stroke = 16;
   const circumference = 2 * Math.PI * radius;
@@ -16,38 +14,56 @@ function Donut() {
   return (
     <svg viewBox="0 0 140 140" className="h-[150px] w-[150px] -rotate-90">
       <circle cx="70" cy="70" r={radius} fill="none" stroke="#EEF0F3" strokeWidth={stroke} />
-      {SEGMENTS.filter((s) => s.pct > 0).map((s) => {
-        const dash = (s.pct / 100) * circumference;
-        const circle = (
-          <circle
-            key={s.label}
-            cx="70"
-            cy="70"
-            r={radius}
-            fill="none"
-            stroke={s.color}
-            strokeWidth={stroke}
-            strokeDasharray={`${dash} ${circumference - dash}`}
-            strokeDashoffset={-offset}
-            strokeLinecap="butt"
-          />
-        );
-        offset += dash;
-        return circle;
-      })}
+      {segments
+        .filter((s) => s.pct > 0)
+        .map((s) => {
+          const dash = (s.pct / 100) * circumference;
+          const circle = (
+            <circle
+              key={s.label}
+              cx="70"
+              cy="70"
+              r={radius}
+              fill="none"
+              stroke={s.color}
+              strokeWidth={stroke}
+              strokeDasharray={`${dash} ${circumference - dash}`}
+              strokeDashoffset={-offset}
+              strokeLinecap="butt"
+            />
+          );
+          offset += dash;
+          return circle;
+        })}
     </svg>
   );
 }
 
 export function HeatPumpStatus() {
+  const { selected } = useLocations();
+  const total = selected.units;
+
+  const active = Math.round(total * 0.45);
+  const warning = Math.max(0, Math.round(total * 0.1));
+  const offline = total >= 12 ? 1 : 0;
+  const idle = Math.max(0, total - active - warning - offline);
+  const pct = (n: number) => (total ? +((n / total) * 100).toFixed(1) : 0);
+
+  const SEGMENTS: Segment[] = [
+    { label: "Active", value: active, pct: pct(active), color: "#1fa971" },
+    { label: "Idle", value: idle, pct: pct(idle), color: "#19567b" },
+    { label: "Warning", value: warning, pct: pct(warning), color: "#f59e0b" },
+    { label: "Offline", value: offline, pct: pct(offline), color: "#f24227" },
+  ];
+
   return (
     <Card>
       <CardHeader title="Heat Pump Status" />
       <div className="flex items-center gap-5">
         <div className="relative flex flex-shrink-0 items-center justify-center">
-          <Donut />
+          <Donut segments={SEGMENTS} />
           <div className="absolute flex flex-col items-center">
-            <span className="tabular text-2xl font-semibold text-graphite-900">29</span>
+            <span className="tabular text-2xl font-semibold text-graphite-900">{total}</span>
             <span className="text-[11px] text-graphite-600/60">Total</span>
           </div>
         </div>

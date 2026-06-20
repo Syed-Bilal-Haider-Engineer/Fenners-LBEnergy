@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Calendar, Sun, Moon } from "lucide-react";
+import { LocationSwitcher } from "@/src/features/dashboard/locations/location-switcher";
 
 export function Topbar() {
   const [dark, setDark] = useState(false);
@@ -33,6 +34,9 @@ export function Topbar() {
       </div>
 
       <div className="flex items-center gap-3">
+        {/* Location selector */}
+        <LocationSwitcher />
+
         {/* Date Range */}
         <button className="flex items-center gap-2 rounded-lg border border-line bg-white px-3.5 py-2 text-sm text-graphite-900 shadow-panel transition hover:bg-canvas dark:bg-graphite-800">
           <Calendar className="h-4 w-4 text-graphite-600" />

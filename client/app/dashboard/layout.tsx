@@ -1,5 +1,6 @@
 // app/dashboard/layout.tsx
 import { Sidebar } from "@/src/layout/widgets/sidebar";
+import { LocationsProvider } from "@/src/features/dashboard/locations/locations-context";
 
 export default function DashboardLayout({
   children,
@@ -7,6 +8,7 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
+    <LocationsProvider>
     <div className="flex h-screen bg-canvas overflow-hidden">
       {/* Sidebar (shared globally) */}
       <aside className="h-screen sticky top-0">
@@ -20,5 +22,6 @@ export default function DashboardLayout({
         </div>
       </div>
     </div>
+    </LocationsProvider>
   );
 }
