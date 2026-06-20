@@ -46,6 +46,11 @@ SAFETY_MARGIN    = 0.5          # °C: preheat to T_setpoint - margin
 BOOST_KW_THRESHOLD = 20.0       # kW total: above this = Mode-2 electric boost is active
 P_STANDBY_KW       = 4.7        # kW total: Mode-1 fan/coil baseline (verified from data)
 
+# ── Savings assumptions (LABEL these in any reported number) ──────────────────
+TARIFF_EUR_PER_KWH = 0.30       # €/kWh electricity price        (ASSUMPTION)
+CO2_KG_PER_KWH     = 0.40       # kg CO₂ per kWh grid electricity (ASSUMPTION)
+BACKTEST_LOOKBACK_H = 7.0       # overnight setback window (events run 04:30–21:30 → 7h gap)
+
 # Building-type priors for the generalisation sweep (β₁, β₂, τ estimate).
 BUILDING_TYPES = {
     "Thin tent (4×8m, canvas)":         {"beta1": 0.50,  "beta2": -2.00,  "tau_est": 0.50},

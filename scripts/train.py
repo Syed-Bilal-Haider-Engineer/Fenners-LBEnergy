@@ -23,7 +23,7 @@ if sys.stdout.encoding and sys.stdout.encoding.lower() not in ("utf-8", "utf8"):
 # Make the src/ package importable when run as a plain script.
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from lbenergy import config, run_pipeline, fit_rc_ols   # noqa: E402
+from lbenergy import config, run_pipeline, fit_rc_ols, fit_heatup_trajectory  # noqa: E402
 
 
 def main() -> None:
@@ -36,24 +36,29 @@ def main() -> None:
     print(f"[train] Building '{args.window}' pipeline ...")
     df, _events = run_pipeline(args.window)
 
-    print(f"[train] Fitting RC model on {len(df)} rows ...")
-    params = fit_rc_ols(df)
+    # Deployable control params: trajectory-calibrated heat-up model.
+    print(f"[train] Trajectory-calibrating heat-up model on {len(df)} rows ...")
+    hp = fit_heatup_trajectory(df)
+    # Diagnostics: OLS fit (passive-cooling τ etc.).
+    ols = fit_rc_ols(df)
 
     out = config.MODELS_DIR / "rc_params.json"
     payload = {
-        "window":  args.window,
-        "beta1":   params["beta1"],
-        "beta2":   params["beta2"],
-        "beta3":   params["beta3"],
-        "tau_hours": params["tau_hours"],
-        "rmse_all":  params["rmse_all"],
-        "r2_all":    params["r2_all"],
-        "n_samples": params["n_samples"],
+        "window":         args.window,
+        "beta1":          hp["beta1"],
+        "beta2":          hp["beta2"],
+        "beta3":          hp["beta3"],
+        "T_supply_eff":   hp["T_supply_eff"],     # controller MUST use this as T_supply_nom
+        "ramp_rmse_degC": hp["ramp_rmse_degC"],
+        "n_ramps":        hp["n_ramps"],
+        "tau_cool_hours": ols["tau_stage1_h"],    # diagnostic: passive-cooling τ
     }
     out.write_text(json.dumps(payload, indent=2))
 
     print(f"[train] β₁={payload['beta1']:.4f}  β₂={payload['beta2']:.4f}  "
-          f"τ={payload['tau_hours']:.1f} h  RMSE={payload['rmse_all']:.4f} °C/h")
+          f"β₃={payload['beta3']:.4f}  T_supply_eff={payload['T_supply_eff']:.1f} °C")
+    print(f"[train] ramp RMSE={payload['ramp_rmse_degC']:.3f} °C  "
+          f"(τ_cool≈{payload['tau_cool_hours']:.0f} h, diagnostic)")
     print(f"[train] Saved → {out}")
 
 

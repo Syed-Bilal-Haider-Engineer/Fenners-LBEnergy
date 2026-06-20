@@ -15,11 +15,12 @@ from .data import (
     load_snapshots, load_power, load_events,
 )
 from .pipeline import run_pipeline, run_anomaly_pipeline, persist_parquet
-from .rc_model import fit_rc_ols, simulate_trajectory
+from .rc_model import fit_rc_ols, fit_heatup_trajectory, simulate_trajectory
 from .preheat import predict_preheat_start
 from .evaluate import validate_on_cooling, trajectory_rmse
 from .residual import ResidualCorrector
 from .external import fetch_weather, join_external
+from .backtest import run_backtest, evaluate_event, dedupe_events
 
 __all__ = [
     "config",
@@ -27,9 +28,10 @@ __all__ = [
     "load_snapshots_raw", "load_power_raw", "clean",
     "load_snapshots", "load_power", "load_events",
     "run_pipeline", "run_anomaly_pipeline", "persist_parquet",
-    "fit_rc_ols", "simulate_trajectory",
+    "fit_rc_ols", "fit_heatup_trajectory", "simulate_trajectory",
     "predict_preheat_start",
     "validate_on_cooling", "trajectory_rmse",
     "ResidualCorrector",
     "fetch_weather", "join_external",
+    "run_backtest", "evaluate_event", "dedupe_events",
 ]

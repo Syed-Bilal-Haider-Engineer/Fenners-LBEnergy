@@ -29,7 +29,9 @@
 
 Mobile and temporary buildings waste enormous energy because heat pumps either run continuously or are controlled by fixed schedules that ignore building physics. The TUM Aerospace & Geodesy Campus at Ottobrunn-Taufkirchen is the reference case: 11 lecture halls, 29 heat pumps, classes filling rooms at different hours — yet the current IHL system switched on preheat at a hard-coded 2h25min before the first event and the room still missed the 21 °C target by 2.2 °C at event start (measured from the real dataset). It took until 9 hours after the event began for the space to reach setpoint — under sub-zero outside temperatures.
 
-Our solution is a **grey-box hybrid predictive model** that wraps a lumped-parameter RC thermal physics core around a lightweight ML residual corrector. Crucially, the RC *equations* are universal; only the parameters (thermal resistance R, capacitance C, heater gain) differ per building. These parameters are self-calibrated from the building's own IHL telemetry stream. This makes **one model serve every building type** from thin tents to insulated containers. The model outputs the optimal preheat start time for each upcoming event, targeting the exact moment occupants arrive — no earlier, no later. Expected impact: 15–25% reduction in energy consumption (assumption: current over-heating adds ≈20% run-time) and eliminating comfort failures at event start.
+Our solution is a **grey-box predictive model** built on a linearised, supply-air-driven RC thermal core (`dT/dt = β₁·(T_supply−T_room) + β₂·(T_room−T_out) + β₃`), with a lightweight ML residual corrector as a stretch layer. Crucially, the *equations* are universal; only the parameters `{β₁, β₂, β₃}` (where `β₂ = −1/τ` encodes insulation) differ per building, fitted from the building's own IHL telemetry. This makes **one model structure serve every building type** from thin tents to insulated containers. The model outputs the optimal preheat start time for each event, targeting the exact moment occupants arrive — no earlier, no later. It does so under a hard constraint: **we can only command setpoint timing, not switch individual heat pumps** — so timing the cheap heating mode is the lever.
+
+**Verified impact (backtest on the 7 morning preheats):** the current system reaches comfort on **0/7** mornings (mean 18.5 °C); our controller reaches it on **7/7** (mean 20.5 °C) by starting ~4 h earlier, saving **~71% of preheat-window electrical energy** by avoiding the expensive electric-boost mode (see §5.5, §8). The key mechanism is the **two-stage heating discovery** (§5.5): a cheap hot-water coil does the work, and we start it early enough to never trigger the costly electric boost.
 
 ---
 
@@ -47,7 +49,9 @@ Our solution is a **grey-box hybrid predictive model** that wraps a lumped-param
 
 ### Problem Definition
 
-Given a calendar of upcoming room bookings, real-time IHL sensor telemetry (room temperature, outside temperature, humidity, compressor state, power draw), and a weather forecast, determine — for each heat pump and each upcoming event — **the latest start time at which pre-conditioning must begin so that the room reaches its setpoint (21 °C) at exactly the moment the first occupant arrives, and holds it for the duration of the event, at minimum energy cost.**
+Given a calendar of upcoming room bookings, real-time IHL sensor telemetry (room temperature, outside temperature, humidity, compressor state, power draw), and a weather forecast, determine — for each upcoming event — **the latest start time at which pre-conditioning must begin so that the room reaches its setpoint (21 °C) at exactly the moment the first occupant arrives, and holds it for the duration of the event, at minimum energy cost.**
+
+> **Control constraint:** the only available actuation is **when to change the setpoint** (preheat timing). We **cannot switch individual heat pumps on/off** or set how many run — the units respond automatically. This constraint is decisive: it rules out a per-pump-count RL controller and makes setpoint-timing the lever (see `comparisson.md`). The "would fewer units suffice?" question is therefore answered as an offline what-if, not a real-time control action.
 
 The current IHL system applies a user-configured fixed preheat duration (set to 0 min at export; in practice the logs show ≈2h25min effective preheat on 2026-03-30). With outside temperatures near 0 °C and a room starting at 16.87 °C, that preheat was insufficient: the room reached only 18.8 °C at event start and did not reach 21 °C until 9 hours later, likely with solar and ambient assist by afternoon. The model must do better.
 
@@ -57,7 +61,7 @@ The current IHL system applies a user-configured fixed preheat duration (set to 
 |---|---|---|
 | O1 | Predict room temperature trajectory (°C vs. time) given preheat start | RMSE < 0.5 °C on held-out events |
 | O2 | Predict required preheat lead time for each event | Within ±15 min of the empirically correct lead time on held-out events |
-| O3 | Self-calibrate R, C, heater-gain from ≤3 days of warm-up telemetry | Convergence verified on heating window data |
+| O3 | Self-calibrate {β₁, β₂, β₃} from the building's own heating ramps (trajectory fit) | ✅ 0.17 °C ramp RMSE on heating window |
 | O4 | Generalise from heating window to cooling window without retraining | Trajectory RMSE < 1 °C on cooling events |
 | O5 | Quantify energy saved vs. always-on baseline | Report estimated kWh/event/device |
 
@@ -112,16 +116,16 @@ Snapshots arrive at approximately **90-second intervals per device** (observed: 
 | Setpoint (°C) | 11 / 21 (binary) | 15, 18, 20, 21, 22, 24 (varied) |
 | Relative humidity (%) | 28.2 – 43.6 | 27.6 – 56.1 |
 | CO₂ (ppm) | 394 – 495 | 382 – 662 |
-| Supply air temperature (°C) | ~59 – 60 (resistive boost) | varies |
+| Supply air temperature (°C) | per-device up to ~59; **median ~37.5 during heating** | varies |
 | Power draw per device (kW) | 1.14 – 43 (avg 5.96) | 1.85 – 10.7 (avg 2.32) |
 | Compressor active (% of rows) | 21% | varies |
 | Heating required (% of rows) | 33% | — |
 | Cooling required (% of rows) | — | 4.7% |
 | Alarm active rows | 0 | 0 |
 
-> **Note on supply temperature:** During the heating window, supply air reached ~59–60 °C with the compressor **inactive** — indicating a resistive electric boost coil, not the heat pump refrigerant circuit. This increases peak power draw and is a distinct operating mode to model separately.
+> **Note on supply temperature (corrected by analysis — see §5.5):** A single device reaches ~59 °C, but the **median across the 4 devices is ~37.5 °C** (they heat heterogeneously). The model is fit on — and the controller uses — the median ~37.5 °C, so fit and control stay consistent. The earlier "resistive boost coil" reading was wrong: at ~4.7 kW electrical the heat is delivered by a **non-electrical hot-water coil** (district heat / gas), i.e. COP ≫ 1.
 
-> **Note on power max (43 kW, heating):** This appears to be a transient spike at device restart or defrost cycle initiation; the 99th-percentile value is approximately 10 kW. The cooling-window max of 10.7 kW is more typical of steady-state heat-pump operation.
+> **Note on power (heating):** Two modes exist — **Mode 1** (fan + hot-water coil, ~4.7 kW electrical) and **Mode 2** (electric boost, ~53–73 kW). The high readings are the boost mode, not a transient artefact. This two-mode split (§5.5) is the core of the savings story.
 
 ### 5.4 Space Events
 
@@ -140,7 +144,16 @@ On **2026-03-30**, tracking Device 1 (`bdaf0e14…`):
 | 04:30:00 | **Event 1 starts** | **≈18.8** | 21 | **2.2 °C below target — comfort failure** |
 | 13:20:04 | 21 °C first reached | 21.1 | 21 | **8h50min after event start** |
 
-The preheat started 2h25min before the event. At an outside temperature of ≈1 °C and a starting room temperature of 16.87 °C, the system needed far longer — approximately 6–8 hours additional lead time — to reach 21 °C before occupants arrived. This gap is what our predictive model closes.
+The preheat started 2h25min before the event. At ≈1 °C outside and a 16.87 °C starting room, the system needed far longer — our calibrated controller estimates **~4 h lead** from the overnight trough — to reach 21 °C before occupants arrived. This gap is what our predictive model closes.
+
+**The two-stage heating discovery (the savings mechanism).** Inspecting `power_draw.csv` for the same morning: from **01:30–04:00 the total electrical draw is flat at 4.69 kW** while supply air rises to ~59 °C and the room warms — proof the heat comes from a **non-electrical hot-water coil** (Mode 1, cheap). Only at **04:05 does electrical draw jump to 53–73 kW** — the **electric boost** (Mode 2, ~15× more expensive per electrical kWh) — and the room *still* misses comfort.
+
+| Mode | Mechanism | Electrical power | Cost |
+|---|---|---|---|
+| **Mode 1** | Fan + hot-water coil (district heat / gas) | ~4.7 kW | cheap |
+| **Mode 2** | Electric boost | 53–73 kW | ~15× more per electrical kWh |
+
+Our strategy: **start Mode 1 a few hours earlier** so the room reaches comfort without ever triggering Mode 2. This needs only setpoint-timing control — which is all we have.
 
 ### 5.6 Key Signals for Modelling
 
@@ -159,7 +172,7 @@ The preheat started 2h25min before the event. At an outside temperature of ≈1 
 ### 5.7 Data Quality Notes
 
 - **No alarms** in either window (`status_is_alarm_active` = 0 in all inspected rows) — clean period for model training.
-- **`status_is_network_connected`** is empty in sampled rows (possibly not logged); use `status_has_network_error` = 0 and `status_network_error_count` > 0 as gap filter.
+- **`status_is_network_connected`** is empty in sampled rows (possibly not logged); `clean()` instead **drops** rows where `status_has_network_error` ≠ 0 (or `status_network_error_count` > 0) as the connectivity gap filter.
 - **Cooling setpoints are varied** (15–24 °C) compared to binary heating setpoints, implying the cooling window reflects more active manual adjustments or different control experiments — useful for testing generalisation.
 - **CO₂ range 394–662 ppm**: never high enough to indicate dense occupancy; useful as a slow occupancy proxy but not a primary signal.
 - **Supply temperature NaN handling**: cross-reference with `status_is_heating_required` to classify operating mode.
@@ -172,72 +185,67 @@ The preheat started 2h25min before the event. At an outside temperature of ≈1 
 
 A naive per-building ML approach fails at generalisation for a structural reason: a **thin-walled tent** has small thermal resistance R (heat leaks out fast) and small capacitance C (little thermal mass, heats and cools quickly); a **container house** has much larger R and C. A model trained on tent data will drastically overestimate how long a container needs to preheat, and vice versa. The underlying *shape* of the temperature-time trajectory (an exponential approach to setpoint) is identical across building types; only the time constant τ = R·C differs.
 
-The solution is to separate **universal physics** (the RC equations, which apply to every building) from **building-specific parameters** ({R, C, heater-gain, solar-gain coefficient}), and learn those parameters automatically from each building's own telemetry.
+The solution is to separate **universal physics** (the RC equations, which apply to every building) from **building-specific parameters** (`{β₁, β₂, β₃}`, where `τ = −1/β₂`), and learn those parameters automatically from each building's own telemetry.
 
 ### 6.2 The RC Thermal Model — Physics Core
 
-The space is modelled as a single thermal zone (lumped-parameter, 1R1C):
+The space is modelled as a single thermal zone with a **linearised, supply-air-driven** form (we use `T_supply` — which the IHL sensors measure directly — as the heating drive, rather than an inferred `Q_heater = power × COP`):
 
 ```
-dT_room/dt = (1/C) × [ Q_heater(t) + Q_solar(t) + Q_occupancy(t)
-                       − (T_room − T_outside) / R ]
+dT_room/dt = β₁·(T_supply − T_room) + β₂·(T_room − T_outside) + β₃
 ```
 
 Where:
 - `T_room(t)` — measured room air temperature (°C), the state variable
+- `T_supply(t)` — supply-air temperature (°C), the heating drive (median across the 4 devices ≈ 37.5 °C during Mode-1 heating)
 - `T_outside(t)` — outside air temperature (°C), observed or forecast
-- `C` — effective thermal capacitance (kWh/°C), encodes thermal mass of air + walls + furniture
-- `R` — effective thermal resistance (°C/kW), encodes envelope insulation and ventilation leakage
-- `Q_heater(t)` — heat pump output (kW), derived from power_draw × COP estimate
-- `Q_solar(t)` — solar gain (kW), estimated from irradiance forecast × effective aperture (calibrated)
-- `Q_occupancy(t)` — metabolic gain (kW), estimated from CO₂ or event schedule (≈70 W/person)
+- `β₁` — supply-air effectiveness ((°C/h)/°C); folds in airflow × coil efficiency × 1/C
+- `β₂` — heat-loss coefficient ((°C/h)/°C); `τ = −1/β₂` is the building time constant (insulation)
+- `β₃` — lumped constant gains (solar + occupancy + offset) (°C/h)
 
-In the heating window: `T_outside ≈ 1 °C`, supply air ≈ 59 °C, compressor inactive → `Q_heater ≈ P_electric` (resistive mode). COP ≈ 1 in this mode; for heat-pump mode (compressor active), COP is inferred from refrigerant pressures.
+This form sidesteps the need for a COP/Q_heater estimate entirely — the heat actually delivered shows up as the supply-air rise, which the sensors report. (The earlier `Q_heater = P_electric, COP≈1` "resistive" framing was wrong: Mode-1 heat is from a non-electrical coil, COP ≫ 1 — see §5.5.)
 
 ```mermaid
 graph LR
-    subgraph RC["1R1C Thermal Zone"]
+    subgraph RC["1-state RC Thermal Zone"]
         direction TB
-        Tout["T_outside\n(weather forecast)"] -- "ΔT / R\n(heat loss)" --> TNode(["T_room\n(state)"])
-        Qh["Q_heater\n(power draw × COP)"] --> TNode
-        Qs["Q_solar\n(irradiance × aperture)"] --> TNode
-        Qo["Q_occupancy\n(persons × 70 W)"] --> TNode
-        TNode -- "dT/dt × C\n(thermal mass)" --> TNode
+        Tsup["T_supply\n(heating drive)"] -- "β₁·(T_supply−T_room)" --> TNode(["T_room\n(state)"])
+        Tout["T_outside\n(weather forecast)"] -- "β₂·(T_room−T_out)\n(heat loss, β₂=−1/τ)" --> TNode
+        Gain["β₃\n(solar + occupancy)"] --> TNode
     end
-    TNode --> Traj["Temperature\nTrajectory"]
-    Traj --> Inv["Invert trajectory:\nsolve T(t*) = T_setpoint"]
+    TNode --> Traj["Temperature\nTrajectory (Euler)"]
+    Traj --> Inv["Binary-search t*:\nT(t_event) = T_setpoint − margin"]
     Inv --> StartTime["Optimal preheat\nstart time t*"]
 ```
 
-**Building-type interpretation of parameters:**
+**Building-type interpretation of parameters** (illustrative priors; `τ = −1/β₂`):
 
-| Building Type | R (°C/kW) | C (kWh/°C) | τ = RC (h) | Preheat window |
+| Building Type | β₁ | β₂ | τ = −1/β₂ | Preheat window |
 |---|---|---|---|---|
-| Thin tent (4 m × 8 m, canvas) | 0.3–0.8 | 0.1–0.3 | 0.03–0.2 | Minutes |
-| Prefab container (insulated) | 2–5 | 0.5–2 | 1–10 | 1–4 hours |
-| Lecture hall (concrete + glazing) | 5–15 | 5–30 | 5–30 | 2–12 hours |
+| Thin tent (canvas) | ~0.50 | ~−2.0 | ~0.5 h | minutes |
+| Prefab container (insulated) | ~0.15 | ~−0.20 | ~5 h | 1–4 hours |
+| Lecture hall (concrete + glazing) | ~0.08 | ~−0.08 | ~12 h | 2–12 hours |
 
-Our dataset corresponds to the **container/lecture-hall regime**: τ = R·C ≫ 1 h (evidenced by the ~9-hour heating lag observed in the data).
+Our dataset corresponds to the **container/lecture-hall regime** (slow τ, multi-hour preheat). These priors live in `config.BUILDING_TYPES` and drive the cross-building parameter sweep (§6.7).
 
 ### 6.3 Self-Calibration / System Identification
 
-Building parameters {R, C, Q_heater_nominal, α_solar} are **fitted automatically** from the building's own IHL telemetry using a **grey-box system identification** procedure:
+Parameters `{β₁, β₂, β₃}` are **fitted automatically** from the building's own IHL telemetry. We use **trajectory calibration** (implemented in `rc_model.fit_heatup_trajectory`): rather than regressing the instantaneous `dT/dt` (which is noisy and overstates warming because it misses thermal-mass lag), we fit β to reproduce the observed **temperature curves** over Mode-1 heating ramps:
 
 ```python
-# Pseudocode: parameter calibration from telemetry
-def calibrate(df_snapshots, df_power):
-    # 1. Filter to stable heating periods (setpoint constant, no mode switch)
-    periods = filter_stable_heating(df_snapshots)
-    # 2. Discretise ODE: T[k+1] = T[k] + dt/C * (Q[k] - (T[k]-T_out[k])/R)
-    # 3. Nonlinear least squares: minimise sum((T_predicted - T_measured)^2)
-    result = curve_fit(rc_model, X=[T_room, T_outside, Q_heater, dt],
-                       y=T_room_next,
-                       p0=[R_init, C_init, gain_init],
-                       bounds=[(0.1, 0.05, 0.5), (50, 100, 2.0)])
-    return result.x  # → (R, C, heater_gain)
+# Actual approach (rc_model.fit_heatup_trajectory)
+def fit_heatup_trajectory(df):
+    ramps = extract_mode1_heating_ramps(df)          # supply hot, no boost
+    T_supply_eff = median(supply on ramps)            # ≈ 37.5 °C — controller uses this
+    def ramp_rmse(beta):                              # sim each ramp, compare to observed
+        return rms(simulate_trajectory(T0, T_supply, T_out, beta) − T_room_observed)
+    beta = minimize(ramp_rmse, init, bounds=[(0,1),(-1,0),(-2,2)])  # β₁≥0, β₂≤0
+    return beta, T_supply_eff
 ```
 
-**Convergence requirement:** 3–7 days of telemetry with at least two distinct heating cycles (occupied/unoccupied) suffice to fit R, C, and solar gain. A new deployment at a tent or container receives `R_prior, C_prior` from the nearest building-type in a parameter registry; after 3 days of its own data, the calibration overwrites the prior. **No manual configuration is needed.**
+A fast OLS fit (`fit_rc_ols`, `numpy.linalg.lstsq`) is retained as a diagnostic for the passive-cooling τ. **Why trajectory fitting matters:** it produced realistic ~4 h lead times where instantaneous-rate OLS (combined with using one device's 59 °C instead of the 37.5 °C median) gave a bogus ~2.7 h — see §8 and `comparisson.md`.
+
+**Convergence:** a few days of telemetry with heating cycles suffice. A new deployment can receive prior `{β₁, β₂}` from the nearest building-type in `config.BUILDING_TYPES`; after a few days of its own data the fit overwrites the prior. **No manual configuration is needed.**
 
 ### 6.4 Hybrid Grey-Box + ML Residual
 
@@ -267,7 +275,7 @@ The model's operational output is **the latest time `t*` at which preheat must s
 Algorithm:
 1. At scheduling time (e.g. 6h before each event):
    a. Read current T_room, T_outside forecast for [now … t_event]
-   b. Use self-calibrated {R, C, heater_gain}
+   b. Use trajectory-calibrated {β₁, β₂, β₃} and T_supply_eff
    c. Simulate forward: T(t | start = now, start = 1h earlier, 2h earlier, …)
    d. Binary search for t* such that T_RC(t_event | preheat_starts_at=t*) = T_set - margin
    e. Add ML residual correction to trajectory
@@ -276,36 +284,38 @@ Algorithm:
 3. Log predicted trajectory for post-hoc evaluation
 ```
 
-**Concrete example (from data):** Event at 04:30 UTC, outside −0.3 to 1.4 °C, starting room temp 16.87 °C, target 21 °C. RC model (fitted) estimates τ ≈ 8–10 h; required lead time ≈ 6–8 h. The model would schedule preheat start at ≈ 20:30–22:30 UTC the previous evening — not 02:05 UTC as the current system did.
+**Concrete example (from the backtest):** Event at 04:30 UTC, outside ≈1.5 °C, overnight trough ≈16.8 °C, target 20.5 °C (21 − 0.5 margin). The trajectory-calibrated model gives a **~4 h lead** (Mode-1 only, supply ≈ 37.5 °C), so preheat starts ≈ 00:30 UTC — earlier than the 02:05 UTC the current system used, and crucially in the cheap Mode-1 coil so the expensive Mode-2 boost is never needed. Across the 7 mornings the mean lead is **4.07 h** (range 3.1–5.0 h), all feasible within the 7 h overnight setback.
 
 ### 6.6 Full System Pipeline
 
 ```mermaid
 flowchart TD
-    A["IHL Telemetry\n(snapshots, power, events)"] --> B["Data Ingestion\n& Preprocessing\n- UTC normalise\n- gap fill\n- mode classification"]
-    B --> C["System ID\n(calibrate R, C, gains\nper building)"]
-    C --> D["RC ODE Simulator\nForward simulation\nT(t) given preheat start"]
-    E["Weather Forecast\n(T_outside, irradiance,\nwind speed)"] --> D
-    F["Calendar Events\n(space_events.csv)"] --> G["Scheduler\nFor each upcoming event:\nbinary-search optimal t*"]
+    A["IHL Telemetry\n(snapshots, power, events)"] --> B["Shared load + clean()"]
+    B --> P1["Prediction frame\nroom-level · 15-min · median"]
+    B --> P2["Anomaly frame\ndevice-level · native ~90s"]
+    P1 --> C["Trajectory calibration\nfit β₁,β₂,β₃ + T_supply_eff"]
+    C --> D["RC forward sim (Euler)\nT(t) given preheat start"]
+    E["Weather (Open-Meteo)\nT_out, irradiance, wind"] --> D
+    F["Calendar Events\n(space_events.csv)"] --> G["Controller\nbinary-search optimal t*"]
     D --> G
-    H["LightGBM Residual\nCorrector\n(trained on ε residuals)"] --> G
-    G --> I["Preheat Start Commands\n→ IHL setpoint API"]
-    G --> J["Predicted Trajectory\n(for monitoring/audit)"]
-    J --> K["Savings Dashboard\nkWh saved, € saved\nCO₂ avoided"]
-    B --> L["Anomaly Detector\n(stretch)\nresidual monitoring"]
+    H["LightGBM Residual\n(scaffold, stretch)"] -.-> G
+    G --> I["Preheat command\n→ IHL setpoint timing"]
+    G --> J["Backtest\nB1 vs B3"]
+    J --> K["Savings\nkWh · € · CO₂"]
+    P2 --> L["Anomaly Detector\n(stretch — frame ready)"]
 ```
 
 ### 6.7 Generalisation Strategy Across Building Types
 
 The generalisation is achieved through three mechanisms working together:
 
-1. **Parameterised physics core:** The RC model is always the same ODE; only {R, C, heater_gain} differ. A model "trained" on a container is not a different model from one "trained" on a tent — it is the same model with different parameter values, derived from the same fitting procedure.
+1. **Parameterised physics core:** The RC model is always the same ODE; only {β₁, β₂, β₃} differ. A model "trained" on a container is not a different model from one "trained" on a tent — it is the same model with different parameter values, derived from the same fitting procedure.
 
 2. **Building-type feature normalisation:** When training the ML residual corrector across multiple buildings, each trajectory is normalised by its own τ = R·C (dimensionless time `t/τ`) so the residuals share a common scale. The corrector then receives building-type features (envelope area estimate, wall material category from IHL device metadata) to condition its corrections.
 
-3. **Transfer / meta-learning for few-shot adaptation:** For a new building with < 1 day of data, initialise {R, C} from the k-nearest neighbour in parameter space (keyed on building footprint and construction type from IHL onboarding data). After 3 days of telemetry, fine-tune. This is analogous to MAML-style meta-learning but without the neural network overhead.
+3. **Transfer / meta-learning for few-shot adaptation:** For a new building with < 1 day of data, initialise {β₁, β₂} from the k-nearest neighbour in parameter space (keyed on building footprint and construction type from IHL onboarding data). After a few days of telemetry, re-fit. This is analogous to MAML-style meta-learning but without the neural network overhead. *(Aspirational — not built in the 48 h; the single-building fit + parameter sweep is what we demonstrate.)*
 
-**Cross-window evaluation (heating → cooling):** The same fitted {R, C} from the heating window should explain cooling-mode trajectories in May (different outside temperature range, different setpoints 15–24 °C, different operation of compressor). R and C are envelope properties that do not change seasonally. This cross-window transfer is our primary generalization test.
+**Cross-window evaluation (heating → cooling):** The same fitted β (esp. `β₂ = −1/τ`) from the heating window should explain cooling-mode trajectories in May (different outside-temperature range, different setpoints 15–24 °C). The insulation term β₂ is an envelope property that does not change seasonally. This cross-window transfer is our primary generalization test. *(Status: the cross-window check is wired in `evaluate.py`; a symmetric precool controller for the cooling backtest is still pending.)*
 
 ---
 
@@ -326,7 +336,7 @@ The model outputs a **predicted lead time `t*` with a 90% confidence interval** 
 
 ### 7.3 Operating-Mode Robustness
 
-The dataset reveals two distinct operating modes: **resistive-electric mode** (compressor inactive, supply air ≈ 59 °C, heater gain ≈ P_electric) and **heat-pump mode** (compressor active, COP ≈ 2–4, inferred from refrigerant pressures). The model classifies the current mode from `status_is_compressor_active` and `status_low_pressure_in_bar`, then applies the correct heater-gain coefficient. Mode transitions (e.g. defrost cycles, where temperature briefly dips) are flagged and excluded from the trajectory simulation window.
+The dataset reveals two distinct heating modes (§5.5): **Mode 1** (fan + hot-water coil, ~4.7 kW electrical, the cheap workhorse — supply ≈ 37.5 °C median) and **Mode 2** (electric boost, 53–73 kW, expensive). The pipeline flags the mode from total power (`is_boost = P_total_max ≥ 20 kW`). The controller plans **Mode-1-only** preheat (so its electrical draw stays ≈ flat 4.7 kW with no boost), which is both the cheapest path and the one feasible under our setpoint-timing-only control. Defrost cycles (brief dips) and boost rows are handled explicitly during system identification (boost rows kept but flagged; defrost dropped).
 
 ---
 
@@ -336,7 +346,7 @@ The dataset reveals two distinct operating modes: **resistive-electric mode** (c
 
 | Split | Data | Purpose |
 |---|---|---|
-| Train | Heating window (2026-03-30 to 2026-04-05) | Fit {R, C, gains}; train ML residual |
+| Train | Heating window (2026-03-30 to 2026-04-05) | Fit {β₁, β₂, β₃} (trajectory); train ML residual |
 | Primary val | Cooling window events (2026-05-27 to 2026-05-29) | Cross-season generalisation test |
 | Leave-one-event-out CV | Within each window | Unbiased trajectory RMSE estimate |
 
@@ -346,17 +356,17 @@ The dataset reveals two distinct operating modes: **resistive-electric mode** (c
 
 | Metric | Definition | Target |
 |---|---|---|
-| Trajectory RMSE (°C) | RMS error of T_predicted vs. T_measured over entire heating ramp | < 0.5 °C (primary val < 1.0 °C) |
-| At-event-start error (°C) | `|T_predicted(t_event) − T_measured(t_event)|` | < 0.5 °C |
-| Preheat lead-time error (min) | `|t*_predicted − t*_required|` (required = time to reach T_set) | ±15 min |
-| On-time comfort rate (%) | % events where T_room ≥ T_set − 0.5 °C at event start | > 90% |
-| Energy saved vs. baseline (kWh/event) | `(kWh_baseline − kWh_predictive)` per event, baseline = current fixed preheat | > 10% saving |
+| Heat-up ramp RMSE (°C) | RMS error of simulated vs. observed T_room over Mode-1 ramps | < 0.5 °C — **achieved 0.17 °C** |
+| Preheat lead time | realistic vs. observed cold-start | **~4.1 h mean** (was bogus 2.7 h before calibration fix) |
+| On-time comfort rate (%) | % events with T_room ≥ T_set − 0.5 °C at event start | > 90% — **7/7 (model) vs 0/7 current** |
+| Energy saved vs. current | preheat-window electrical kWh, B1 − B3 | **~71% (~558 kWh / €167 / 223 kg CO₂ over 7 mornings)** |
 
-### 8.3 Baselines
+### 8.3 Baselines (implemented in `backtest.py`)
 
-1. **Always-on:** Setpoint maintained at 21 °C 24/7, no night setback. Upper energy bound.
-2. **Current fixed-offset:** The observed ≈2h25min fixed preheat used in the data. Lower energy bound but with demonstrated comfort failures.
-3. **Oracle:** If we knew exactly when 21 °C would be reached (from data), what was the ideal start time? This is the theoretical optimum; our model should approach it.
+1. **B1 — current system (observed):** the actual ≈2h25min blind preheat + last-minute boost, read straight from the data. Reaches only ~18.5 °C at the deadline — **0/7 on-time**.
+2. **B3 — our controller (simulated):** trajectory-calibrated model picks the start; Mode-1 only, no boost. Reaches comfort **7/7** at ~71% less preheat-window electrical energy.
+
+> **Honesty notes:** B1 comfort/energy are *observed*; B3 comfort is a *model prediction* (the controller solves for reaching target). Savings are **electrical, preheat-window only** — B1's even larger post-deadline catch-up (it ran 70 kW for hours after the event, reaching 21 °C only at 13:20) is additional, unquantified savings. €/CO₂ factors are labelled assumptions (§14.B). The heating events are deduplicated (13 rows → 7 real mornings); the **cooling-window backtest is pending** (needs the symmetric precool controller).
 
 ---
 
@@ -400,21 +410,24 @@ CO2_avoided = kWh_saved × 0.400 kg_CO2/kWh    [DE grid mix 2026, labelled as as
 ### 10.1 Data Pipeline
 
 ```
-IHL Telemetry (CSV / Parquet)
-    └─► Pandas/Polars preprocessing (UTC normalise, resample to 90s grid, fill gaps)
-    └─► Feature engineering (ΔT, COP estimate, event overlap flags)
-    └─► Storage: DuckDB (local, zero-infra, fast analytical queries)
+IHL Telemetry (CSV)
+    └─► Shared load + clean()  (drop alarm/defrost/disconnected/implausible rows)
+    └─► TWO builders:
+          • build_prediction_frame → room-level, 15-min, median  (RC model)
+          • build_anomaly_frame    → device-level, native ~90 s   (anomaly)
+    └─► Features (ΔT_supply-room, ΔT_room-out, dT/dt, is_boost, deviation-from-peer)
+    └─► External: Open-Meteo weather joined on the timestamp grid
 ```
 
 ### 10.2 Model Layer
 
 | Component | Library | Rationale |
 |---|---|---|
-| RC ODE solver | `scipy.integrate.solve_ivp` | Stiff ODE support, well-tested |
-| System identification | `scipy.optimize.curve_fit` | Nonlinear least squares, interpretable |
-| ML residual | LightGBM | Fast, low-RAM, handles tabular features, quantile regression built-in |
-| MC uncertainty | NumPy vectorised | 500-sample forward simulation < 200 ms |
-| Weather forecast | Open-Meteo API (free, EU-hosted) | Provides T_outside, solar irradiance, wind at lat/lon |
+| RC simulation | Forward-Euler integration (`rc_model.simulate_trajectory`) | Simple, fast, ample for τ ≫ Δt |
+| System identification | `numpy.linalg.lstsq` (OLS diagnostics) + `scipy.optimize.minimize`, L-BFGS-B (trajectory calibration) | Trajectory fit captures sustained warming; bounds keep β physical |
+| ML residual (stretch) | LightGBM | Fast, low-RAM, tabular, quantile regression for uncertainty |
+| Data pipeline | pandas (CSV → two frames) | Zero-infra; native ~90 s for anomaly, 15-min for prediction |
+| Weather forecast | Open-Meteo API (free, EU-hosted) | T_outside, solar irradiance, wind; cached to `data/_external_cache/` |
 
 ### 10.3 API / Demo Layer
 
@@ -439,14 +452,14 @@ System ID & RC calibration → trajectory simulator → preheat-time prediction
 → ML residual → cross-window validation → demo / dashboard
 ```
 
-The calibration step is the gating item: everything else depends on verified {R, C} estimates.
+The calibration step is the gating item: everything else depends on verified β estimates.
 
 ### Hour-Blocked Schedule
 
 | Hours | Milestone | Owner focus | Deliverable |
 |---|---|---|---|
-| 0–3 | **Data EDA & pipeline** | All | Cleaned DuckDB, feature table, event/power join |
-| 3–6 | **RC system ID** | ML lead | Fitted R, C, heater_gain on heating window; residual plot |
+| 0–3 | **Data EDA & pipeline** | All | Cleaned frames (pandas), feature table, event/power join |
+| 3–6 | **RC system ID** | ML lead | Trajectory-calibrated β₁, β₂, β₃ + T_supply_eff; ramp-fit plot |
 | 6–9 | **ODE trajectory simulator** | ML lead | Forward simulation matching observed ramp; trajectory plot |
 | 9–12 | **Preheat-time prediction** | ML lead | Binary-search `t*`; comparison vs. observed 2h25min baseline |
 | 12–15 | **ML residual corrector** | ML lead | LightGBM trained on residuals; RMSE before/after |
@@ -460,7 +473,7 @@ The calibration step is the gating item: everything else depends on verified {R,
 
 ### Guaranteed-Demo Fallback
 
-If the full hybrid model is not ready by Hour 36: demo the **RC model alone** with calibrated {R, C}, showing (a) the observed vs. predicted trajectory on the March 30 event, (b) the counterfactual "what if heating started 6h earlier — room would be at 21 °C by event start", and (c) the energy saving estimate. This is a complete and compelling demo with physics evidence.
+If the full hybrid model is not ready by Hour 36: demo the **RC model alone** with calibrated β, showing (a) the observed vs. simulated trajectory on the March 30 ramp (0.17 °C fit), (b) the counterfactual "start the cheap coil ~4h earlier — room reaches 21 °C by event start, no boost", and (c) the backtest savings (0/7 → 7/7 on-time, ~71% energy). This is a complete and compelling demo with physics evidence.
 
 ---
 
@@ -486,7 +499,7 @@ If the full hybrid model is not ready by Hour 36: demo the **RC model alone** wi
 
 > "We built a model that treats the building as a physics problem: how much thermal resistance does this envelope have, how much mass must it heat, what's the outside temperature forecast? It calibrates itself from the first 3 days of IHL telemetry — no manual setup."
 
-> "Here's the same day, replayed through our model. The model says: given −0.3 °C outside and a room starting at 16.87 °C, you need to start heating at 10:30 pm the night before, not 2 am. The room arrives at 21 °C at exactly 04:30 UTC. We saved [X] kWh per device per event."
+> "Here's the same day, replayed through our model. The model says: given ≈1.5 °C outside and a room at the overnight trough of 16.8 °C, start the cheap hot-water coil ~4 hours early (≈00:30, not 02:05) — and never fire the expensive electric boost. The room arrives at 21 °C right at the 04:30 event. Across 7 mornings that's ~71% less preheat-window electrical energy, and comfort hit 7/7 instead of 0/7."
 
 > "The same model, the same code, with different parameters — works on a tent, a container, or this lecture hall. You deploy it to a new building, it learns in 3 days."
 
@@ -540,7 +553,7 @@ devices.csv                   — 4 rows, all DEVICE_HEAT_PUMP, firmware 0.2.0
 
 2. **Is the 43 kW power spike in the heating window** a known artefact (startup surge, defrost) or does it represent a genuine peak demand event? If genuine, it affects energy cost calculations significantly.
 
-3. **Can you share the building footprint (m²), wall construction type, and glazing ratio** of the recorded space? These would let us validate the calibrated {R, C} against engineering estimates and make the generalisation claim more concrete.
+3. **Can you share the building footprint (m²), wall construction type, and glazing ratio** of the recorded space? These would let us validate the calibrated β / τ against engineering estimates and make the generalisation claim more concrete.
 
 4. **Do the 29 campus heat pumps share a single space_id per hall, or is each heat pump a separate controllable zone?** The demo data shows 4 devices for 1 space — understanding the production topology matters for multi-device scheduling.
 

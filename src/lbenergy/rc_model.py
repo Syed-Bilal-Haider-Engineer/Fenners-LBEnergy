@@ -11,7 +11,7 @@ import numpy as np
 import pandas as pd
 from scipy.linalg import lstsq
 
-from .config import DT_HOURS, BOOST_KW_THRESHOLD
+from .config import DT_HOURS, PRED_DT_HOURS, BOOST_KW_THRESHOLD
 
 
 def fit_rc_ols(df: pd.DataFrame) -> dict:
@@ -132,6 +132,58 @@ def fit_rc_ols(df: pd.DataFrame) -> dict:
         "n_heating":       len(heating),
         "n_samples":       len(clean_all),
         "theta":           theta_best,
+    }
+
+
+def fit_heatup_trajectory(
+    df: pd.DataFrame,
+    init: tuple[float, float, float] = (0.05, -0.02, 0.0),
+) -> dict:
+    """
+    Calibrate the heat-up parameters by TRAJECTORY fit (not instantaneous dT/dt).
+
+    Why: instantaneous-rate OLS overstates warming (it captures the fast air
+    response, missing thermal-mass lag), so simulated preheat is too short.
+    Fitting β to reproduce the observed temperature *curves* over Mode-1 heating
+    ramps captures the real sustained warming rate. We also report `T_supply_eff`
+    — the median (device-aggregated) supply temperature during heating — which
+    the controller MUST use as `T_supply_nom` so control and fit are consistent
+    (using one device's 59 °C against a model fit on the ~37 °C median was the
+    bug that produced unrealistically short lead times).
+
+    Returns calibrated {β₁,β₂,β₃}, `T_supply_eff`, ramp RMSE and ramp count.
+    """
+    from scipy.optimize import minimize
+
+    is_boost = df["is_boost"] if "is_boost" in df else (df["P_total_kw"] >= 20).astype(int)
+    mask = (df["heating_req"] == 1) & (is_boost == 0) & (df["T_supply"] > df["T_room"] + 3)
+    grp = (mask != mask.shift()).cumsum()
+    ramps = [g for _, g in df[mask].groupby(grp) if len(g) >= 5]
+    if not ramps:
+        raise ValueError("No Mode-1 heating ramps found for trajectory calibration.")
+
+    T_supply_eff = float(pd.concat(ramps)["T_supply"].median())
+
+    def ramp_rmse(beta: np.ndarray) -> float:
+        err, n = 0.0, 0
+        for g in ramps:
+            sim = simulate_trajectory(
+                float(g["T_room"].iloc[0]),
+                g["T_supply"].values, g["T_out"].values,
+                tuple(beta), dt_h=PRED_DT_HOURS,
+            )
+            err += float(np.sum((sim - g["T_room"].values) ** 2)); n += len(g)
+        return float(np.sqrt(err / n))
+
+    # Physical bounds: β₁≥0 (heating adds heat), β₂≤0 (loss to outside).
+    res = minimize(ramp_rmse, np.array(init), method="L-BFGS-B",
+                   bounds=[(0.0, 1.0), (-1.0, 0.0), (-2.0, 2.0)])
+    b1, b2, b3 = res.x
+    return {
+        "beta1": float(b1), "beta2": float(b2), "beta3": float(b3),
+        "T_supply_eff": T_supply_eff,
+        "ramp_rmse_degC": float(res.fun),
+        "n_ramps": len(ramps),
     }
 
 
