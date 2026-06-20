@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --font-sans: var(--font-barlow), system-ui, sans-serif;
   --font-mono: var(--font-mono), ui-monospace, monospace;
@@ -49,9 +51,18 @@
 }
 
 body {
-  background-color: #f6f7f8;
+  background-color: var(--color-canvas);
   font-family: var(--font-sans);
-  color: #191919;
+  color: var(--color-graphite-900);
+}
+
+/* Dark theme — flips text, page canvas & borders via tokens.
+   Surfaces (cards/panels) opt in with dark:* utilities. */
+.dark {
+  --color-canvas: #0f1115;
+  --color-line: #2b313a;
+  --color-graphite-900: #f1f3f5; /* primary text */
+  --color-graphite-600: #aab2bf; /* muted text */
 }
 
 .tabular {
