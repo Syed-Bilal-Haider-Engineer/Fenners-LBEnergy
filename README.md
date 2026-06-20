@@ -79,14 +79,15 @@ flowchart TD
     D --> G
     G --> I["Preheat command<br/>→ IHL setpoint timing"]
     G --> H["Backtest / savings<br/>kWh · € · CO₂ vs baselines"]
-    P2 --> J["Anomaly detector<br/>(stretch — frame ready)"]
+    P2 --> J["Anomaly detector<br/>RC residuals + CUSUM + equipment rules"]
 ```
 
 1. **Two pipelines, one shared core.** A shared loader + `clean()` feed a **prediction** frame (room-level, 15-min, median-aggregated) and an **anomaly** frame (device-level, native ~90 s). See [`PIPELINE.md`](docs/beststart_prediction/PIPELINE.md).
 2. **Trajectory calibration.** Parameters are fit to reproduce the real warming *curves* (not instantaneous rates, which overstate warming and miss thermal-mass lag) — giving realistic lead times. See `fit_heatup_trajectory`.
 3. **Physics core.** A 1-state RC ODE (forward Euler) that extrapolates sensibly under unseen weather, where a pure ML model would fail silently.
 4. **Decision output.** Binary-search the *latest* preheat start `t*` that reaches setpoint by event start — leaning on cheap Mode-1 and avoiding the Mode-2 boost.
-5. **ML residual** (LightGBM, `residual.py`) — scaffolded as a stretch accuracy layer.
+5. **Fault/anomaly detection** (`anomaly.py`) — RC residuals, CUSUM charts, peer-device checks, compressor/no-effect checks, hardware error bits, and setpoint-miss alerts.
+6. **ML residual** (LightGBM, `residual.py`) — scaffolded as a stretch accuracy layer.
 
 ---
 
@@ -124,6 +125,7 @@ Run it yourself: `python scripts/backtest.py --window heating`
 | On-time comfort rate | > 90% | ✅ 7/7 (model) vs 0/7 current |
 | Heating → cooling generalisation | RMSE < 1 °C | 🔶 cross-window check wired; cooling controller pending |
 | Energy saved vs. current | meaningful | ✅ ~71% electrical in preheat window (boost avoided) |
+| Fault/anomaly early warning | grouped actionable alerts | ✅ `scripts/anomaly.py` + `/faults` endpoint |
 
 ---
 
@@ -156,12 +158,14 @@ Fenners-LBEnergy/
 │       ├── preheat.py             # optimal preheat start-time controller
 │       ├── backtest.py            # event-level backtest: B1 vs B3, kWh/€/CO₂
 │       ├── residual.py            # LightGBM residual corrector (scaffold)
+│       ├── anomaly.py             # fault/anomaly detector (RC residuals + alerts)
 │       ├── evaluate.py            # cross-window validation + metrics
 │       └── plots.py               # diagnostic plotting
 ├── api.py                         # FastAPI layer for the frontend (no DB)
 ├── scripts/                       # thin CLI entrypoints
 │   ├── train.py                   # calibrate → models/rc_params.json
 │   ├── backtest.py                # run the event-level backtest → outputs/
+│   ├── anomaly.py                 # run fault detection → outputs/anomaly_scores_*.csv + alerts JSON
 │   └── run_diagnostics.py         # full analysis → outputs/
 ├── models/                        # fitted artifacts (rc_params.json: β + T_supply_eff)
 ├── outputs/                       # diagnostic plots + backtest CSVs
@@ -184,14 +188,18 @@ python scripts/backtest.py --window heating
 
 # 4. (optional) Full diagnostics  (writes plots to outputs/)
 python scripts/run_diagnostics.py
+
+# 5. (optional) Fault/anomaly detection (writes scored rows CSV + grouped alerts JSON)
+python scripts/anomaly.py --window heating
 ```
 
 ```python
 # Or use the package directly:
-from lbenergy import run_pipeline, run_anomaly_pipeline, run_backtest
+from lbenergy import run_pipeline, run_anomaly_pipeline, run_backtest, run_fault_detection
 df, events = run_pipeline("heating")        # prediction frame (room-level, 15-min)
 adf        = run_anomaly_pipeline("heating") # anomaly frame (device-level, ~90 s)
 per_event, summary = run_backtest("heating") # validation + savings
+scored, alerts, fault_summary = run_fault_detection("heating")
 ```
 
 See [`PIPELINE.md`](docs/beststart_prediction/PIPELINE.md) for the full how-to, and [`data/README.md`](data/README.md) for the dataset schema.
@@ -215,6 +223,8 @@ uvicorn api:app --reload      # serves http://127.0.0.1:8000  (docs at /docs)
 | `GET /backtest?window=heating` | summary + per-event B1-vs-B3 | savings dashboard |
 | `GET /preheat?t_room=&t_out=&hours=&setpoint=` | lead time + trajectory | live controller + "−2 °C" what-if |
 | `GET /trajectory?window=&index=` | observed vs simulated curve | comfort chart |
+| `GET /faults?window=heating` | fault/anomaly summary + grouped alerts | maintenance alerts |
+| `GET /faults/timeline?window=heating&deviceId=...` | scored residual/device timeline | technician evidence charts |
 
 CORS is open for any origin during the hackathon. The frontend just `fetch()`es these — e.g.
 `fetch('http://127.0.0.1:8000/backtest?window=heating')`.

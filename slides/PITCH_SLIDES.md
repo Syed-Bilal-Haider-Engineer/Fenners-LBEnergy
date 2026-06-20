@@ -3,17 +3,20 @@
 ### LBenergy GmbH × TUM Hackathon — "Building of the Future: Intelligent Control of Mobile Structures"
 
 > **Purpose of this deck:** show the jury *what we are building* and *what we plan to build by tomorrow* — not a sales pitch, a status of the work.
-> **Project name (not final):** *PreHeatIQ* / *ThermoPilot* / *AdaptHeat* — pick one before submission.
+> **Project name:** **OnQ** — *Never Early · Never Late.*
 
 ---
 
-## Slide 0 — Opening
+## Slide 0 — Opening (designed)
 
-**Team Feners**
+> **Rendered title slide:** [title-slide.html](title-slide.html) · preview [title-slide.png](title-slide.png) — built on the LB Energy brand sheet (Barlow, Ocean→Coral gradient, sharp corners, spark-diamond motif).
 
-**[Project Name — TBD]**
+Layout:
+- **Top:** Team Fenners logo **×** LB Energy logo (co-branding lockup).
+- **Centre:** **OnQ** project logo on a white plate.
+- **Below:** text box — *⟨ team member names ⟩* + event name (*Building of the Future — Intelligent Control of Mobile Structures · LB Energy × TUM Hackathon · June 2026*).
 
-*Adaptive predictive preheat control for mobile & temporary structures.*
+*Just drop your names into the text box.*
 
 ---
 

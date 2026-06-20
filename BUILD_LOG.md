@@ -19,8 +19,8 @@ heating mode → **~71% / ~558 kWh / €167 / 223 kg CO₂** saved in the prehea
 (electrical; assumptions labelled).
 
 **Cooling window (15 lecture slots):** symmetric precool controller — current **4/15** on-time;
-ours **15/15**, precooling ~2 h ahead on the cheap mode → **~39% / ~231 kWh / €69 / 93 kg CO₂**
-saved. Same model, signs flipped.
+ours **13/15**, precooling ~1.5 h ahead on the cheap mode → **~39% / ~231 kWh / €69 / 93 kg CO₂**
+saved. Two hot afternoon slots need more than the configured 3 h precool window. Same model, signs flipped.
 
 ---
 
@@ -47,7 +47,7 @@ saved. Same model, signs flipped.
 
 ### Validation (`src/lbenergy/backtest.py`, `evaluate.py`)
 - [x] **Event-level backtest (heating)** — `backtest.py`: B1 (observed) vs B3 (model), per-event metrics + kWh/€/CO₂, dedupes the doubled heating events.
-- [x] **Event-level backtest (cooling)** — symmetric **precool** path: `fit_cooldown_trajectory` + `predict_precool_start`; `run_backtest("cooling")` pulls the warmest pre-event drift down to each slot's (varying 15–21 °C) setpoint+margin. **B3 15/15 on-time vs B1 4/15; ~39% / 231 kWh saved.**
+- [x] **Event-level backtest (cooling)** — symmetric **precool** path: `fit_cooldown_trajectory` + `predict_precool_start`; `run_backtest("cooling")` pulls the warmest pre-event drift down to each slot's (varying 15–21 °C) setpoint+margin. **B3 13/15 on-time vs B1 4/15; ~39% / 231 kWh saved.**
 - [x] **Cross-window check** — `evaluate.py`: apply heating β to the cooling window.
 - [x] **CLI + artifacts** — `scripts/train.py` → `models/rc_params.json`; `scripts/backtest.py [--window heating|cooling]` → `outputs/backtest_{window}.csv`.
 
@@ -87,9 +87,9 @@ saved. Same model, signs flipped.
 | Heat-up ramp trajectory RMSE | **0.17 °C** |
 | Cool-down ramp trajectory RMSE | **0.05 °C** |
 | Mean preheat lead (B3, heating) | **4.07 h** (range 3.1–5.0) |
-| Mean precool lead (B3, cooling) | **1.98 h** |
+| Mean precool lead (B3, cooling) | **1.51 h** |
 | On-time comfort (heating) | **B1 0/7 · B3 7/7** |
-| On-time comfort (cooling) | **B1 4/15 · B3 15/15** |
+| On-time comfort (cooling) | **B1 4/15 · B3 13/15** |
 | Mean room temp at deadline (heating) | B1 18.5 °C · B3 20.5 °C |
 | Preheat-window energy saved (heating) | **~558 kWh · ~71% · €167 · 223 kg CO₂** (7 mornings) |
 | Precool-window energy saved (cooling) | **~231 kWh · ~39% · €69 · 93 kg CO₂** (15 slots) |
@@ -103,7 +103,8 @@ saved. Same model, signs flipped.
   hours, comfort at 13:20) is additional, unquantified.
 - **β₂ pins to 0** in the heat-up fit (loss unidentifiable on short ramps) — fine for the preheat
   ramp, don't extrapolate to long horizons.
-- **Cooling β is degenerate** — the cool-down fit lands on near-constant drift (β₁≈β₂≈0, β₃≈−0.65 °C/h): the short cooling ramps don't identify the supply/loss split, so the precool model is an honest constant-rate cooler, not a full RC. Fine for the demonstrated leads (~2 h); don't extrapolate. (Heat-up fit is the richer one.)
+- **Cooling has two infeasible hot-afternoon slots under the current 3 h lookback** — the corrected controller now caps lead time at the available pre-event window instead of searching out to 24 h. Those slots land just above target+margin, so the honest cooling result is 13/15 on-time.
+- **Cooling β is comparatively weakly identified** — the cool-down fit is good over short ramps (0.05 °C RMSE), but the supply/loss split is less robust than heating. Fine for the demonstrated leads; don't extrapolate. (Heat-up fit is the richer one.)
 - **Cooling savings exclude the gentler post-deadline story** — same electrical-only, pre-conditioning-window caveat as heating.
 - **Controller uses a constant T_out** over the preheat window, not the hourly forecast yet.
 - **Generalisation (tents→containers) is structural**, demonstrated by parameter sweep, not proven
@@ -118,7 +119,7 @@ saved. Same model, signs flipped.
 - [ ] **Savings / visualization layer** (Pillar 3) — a frontend (or Streamlit) that consumes the
       `api.py` endpoints: per-event kWh/€/CO₂ bars, the 0/7→7/7 comfort story, the `/preheat` what-if slider.
 - [x] **Cooling-window backtest** — done: precool controller wired into `run_backtest("cooling")`;
-      the realistic multi-event lecture days validate at 15/15 on-time. ✅
+      the realistic multi-event lecture days validate at 13/15 on-time with two infeasible slots under the current 3 h lookback. ✅
 
 ### P2 — strong additions
 - [ ] **Anomaly detector** (Pillar 2) — the `build_anomaly_frame` is ready; build a detector on
