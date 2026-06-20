@@ -1,0 +1,68 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+  --font-mono: var(--font-mono), ui-monospace, monospace;
+
+  --color-graphite-950: #0b0d10;
+  --color-graphite-900: #0f1115;
+  --color-graphite-800: #161a20;
+  --color-graphite-700: #1f242c;
+  --color-graphite-600: #2b323c;
+
+  --color-canvas: #f6f7f9;
+  --color-line: #e7e9ed;
+
+  --color-ember-50: #eaf7ef;
+  --color-ember-500: #22c55e;
+  --color-ember-600: #16a34a;
+
+  --color-amber-50: #fef6e7;
+  --color-amber-500: #f59e0b;
+
+  --color-sky-50: #eaf1fe;
+  --color-sky-500: #3b82f6;
+
+  --color-coral-50: #fdeeee;
+  --color-coral-500: #ef4444;
+
+  --color-mist-400: #8b94a3;
+  --color-mist-300: #aab2bf;
+
+  --shadow-panel: 0 1px 2px 0 rgba(16, 24, 32, 0.04), 0 1px 1px 0 rgba(16, 24, 32, 0.02);
+}
+
+:root {
+  --font-inter: "Inter", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+}
+
+body {
+  background-color: #f6f7f9;
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* Pulse line used behind the energy chart's live series */
+@keyframes pulse-flow {
+  0% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: -200;
+  }
+}
+
+.pulse-line {
+  stroke-dasharray: 6 10;
+  animation: pulse-flow 6s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pulse-line {
+    animation: none;
+  }
+}
