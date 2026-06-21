@@ -21,7 +21,7 @@ function Page() {
           <Link
             key={building.id}
             href={`/dashboard/buildings/${encodeURIComponent(building.name)}`}
-            className="rounded-2xl border border-slate-200 bg-white p-5 shadow-panel transition hover:border-coral-500"
+            className="rounded-2xl border border-line bg-surface p-5 shadow-panel transition hover:border-coral-500"
           >
             <p className="text-sm font-semibold text-slate-900">{building.name}</p>
             <p className="mt-1 text-sm text-slate-500">{building.location}</p>

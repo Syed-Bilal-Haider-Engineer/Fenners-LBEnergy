@@ -14,6 +14,7 @@
   --color-graphite-600: #5b6470; /* secondary text */
 
   --color-canvas: #f6f7f8;
+  --color-surface: #ffffff;
   --color-line: #e4e6ea;
 
   /* Brand palette */
@@ -60,6 +61,7 @@ body {
    Surfaces (cards/panels) opt in with dark:* utilities. */
 .dark {
   --color-canvas: #0f1115;
+  --color-surface: #20242b;
   --color-line: #2b313a;
   --color-graphite-900: #f1f3f5; /* primary text */
   --color-graphite-600: #aab2bf; /* muted text */

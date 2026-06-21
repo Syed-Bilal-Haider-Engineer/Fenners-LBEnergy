@@ -94,7 +94,7 @@ export default function Home() {
               <button
                 key={r.role}
                 onClick={() => choose(r.role)}
-                className="group flex items-center gap-4 border border-line bg-white p-5 text-left shadow-panel transition-colors hover:border-coral-500"
+                className="group flex items-center gap-4 border border-line bg-surface p-5 text-left shadow-panel transition-colors hover:border-coral-500"
               >
                 <span className="flex h-12 w-12 flex-shrink-0 items-center justify-center bg-coral-50 text-coral-500 transition-colors group-hover:bg-coral-500 group-hover:text-white">
                   {r.icon}

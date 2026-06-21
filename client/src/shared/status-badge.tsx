@@ -7,7 +7,7 @@ const TONE_STYLES: Record<StatusTone, string> = {
   warning: "bg-amber-50 text-amber-700",
   critical: "bg-red-50 text-red-700",
   info: "bg-blue-50 text-blue-700",
-  idle: "bg-slate-100 text-slate-600",
+  idle: "bg-slate-100 text-slate-600 dark:bg-graphite-700 dark:text-graphite-600",
 };
 
 export function StatusBadge({ tone, label }: { tone: StatusTone; label: string }) {

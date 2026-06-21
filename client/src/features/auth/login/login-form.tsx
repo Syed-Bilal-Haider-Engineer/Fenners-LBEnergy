@@ -33,7 +33,7 @@ export function LoginForm() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="lukas@lbenergy.tech"
-          className="rounded-lg border border-line bg-white px-3.5 py-2.5 text-sm text-graphite-900 outline-none placeholder:text-graphite-600/40 focus:border-ember-500 focus:ring-2 focus:ring-ember-500/15"
+          className="rounded-lg border border-line bg-surface px-3.5 py-2.5 text-sm text-graphite-900 outline-none placeholder:text-graphite-600/40 focus:border-ember-500 focus:ring-2 focus:ring-ember-500/15"
         />
       </div>
 
@@ -49,7 +49,7 @@ export function LoginForm() {
             Forgot password?
           </button>
         </div>
-        <div className="flex items-center rounded-lg border border-line bg-white pr-2 focus-within:border-ember-500 focus-within:ring-2 focus-within:ring-ember-500/15">
+        <div className="flex items-center rounded-lg border border-line bg-surface pr-2 focus-within:border-ember-500 focus-within:ring-2 focus-within:ring-ember-500/15">
           <input
             id="password"
             type={showPassword ? "text" : "password"}
@@ -57,7 +57,7 @@ export function LoginForm() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="••••••••"
-            className="flex-1 rounded-l-lg bg-white px-3.5 py-2.5 text-sm text-graphite-900 outline-none placeholder:text-graphite-600/40"
+            className="flex-1 rounded-l-lg bg-surface px-3.5 py-2.5 text-sm text-graphite-900 outline-none placeholder:text-graphite-600/40"
           />
           <button
             type="button"

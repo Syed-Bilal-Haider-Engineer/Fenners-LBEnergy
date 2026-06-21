@@ -16,7 +16,7 @@ const SEVERITY_STYLE: Record<FaultSeverity, string> = {
   critical: "bg-coral-50 text-coral-600",
   high: "bg-amber-50 text-amber-600",
   medium: "bg-sky-50 text-sky-600",
-  low: "bg-slate-100 text-slate-600",
+  low: "bg-slate-100 text-slate-600 dark:bg-graphite-700 dark:text-graphite-600",
 };
 
 function shortDevice(id: string) {
@@ -77,7 +77,7 @@ export default function AlertsPage() {
               <Link
                 key={a.id}
                 href="/dashboard?role=technician"
-                className="flex items-center gap-3 rounded-lg border border-line bg-white p-3 transition hover:border-graphite-300"
+                className="flex items-center gap-3 rounded-lg border border-line bg-surface p-3 transition hover:border-coral-500"
               >
                 <span className={`px-2 py-1 text-[11px] font-semibold uppercase ${SEVERITY_STYLE[a.severity]}`}>
                   {a.severity}

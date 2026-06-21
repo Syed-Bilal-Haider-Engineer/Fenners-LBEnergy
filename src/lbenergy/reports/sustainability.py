@@ -17,6 +17,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import pandas as pd
 from reportlab.lib.units import cm
+from reportlab.lib.utils import ImageReader
 from reportlab.platypus import Flowable, Image
 
 from lbenergy.reports.builder import ReportBuilder
@@ -84,18 +85,17 @@ class SustainabilityReport(ReportBuilder):
                         "T at deadline\nwith model (°C)"),
             ),
             self.spacer(10),
-            self.section_heading("Method"),
+            self.section_heading("Explanation"),
             self.spacer(4),
             self.paragraph(
-                "Baseline (B1) follows the building's current fixed pre-heat "
-                "schedule. Model (B3) uses the calibrated RC controller to "
-                "start pre-heat at the optimal lead time. CO2 avoided is "
+                "Without model and with model figures are taken directly from "
+                "the backtest results for each event. CO2 avoided is "
                 "computed as kWh saved at the heat pump multiplied by a grid "
                 f"emission factor of {self.co2_factor:.2f} kg CO2/kWh "
-                "(static national-average assumption — a marginal or "
+                "(static national-average assumption, a marginal or "
                 "time-of-use factor would change the figure). Outside "
-                "temperature is the average over each event's pre-heat + "
-                "occupied window. Comfort delivery counts events whose room "
+                "temperature is taken from the backtest data for each event. "
+                "Comfort delivery counts events whose room "
                 "temperature reached the booked-start setpoint by the "
                 "deadline; comfort uplift is the average increase in deadline "
                 "temperature delivered by the controller. Equivalences "
@@ -176,7 +176,9 @@ class SustainabilityReport(ReportBuilder):
         ax.set_yticklabels(labels)
         ax.invert_yaxis()
         ax.set_xlabel("Room temperature at deadline (°C)")
-        ax.legend(loc="lower right", fontsize=8, frameon=False)
+        # Legend sits to the right of the plot so it never overlaps the bars.
+        ax.legend(loc="center left", bbox_to_anchor=(1.02, 0.5),
+                  fontsize=8, frameon=False)
         ax.spines["top"].set_visible(False)
         ax.spines["right"].set_visible(False)
 
@@ -185,7 +187,9 @@ class SustainabilityReport(ReportBuilder):
         plt.close(fig)
         buf.seek(0)
         img_w = 16 * cm
-        img_h = img_w * (height_in / 7.5)
+        px_w, px_h = ImageReader(buf).getSize()
+        buf.seek(0)
+        img_h = img_w * (px_h / px_w)
         img = Image(buf, width=img_w, height=img_h)
         img.hAlign = "LEFT"
         return img

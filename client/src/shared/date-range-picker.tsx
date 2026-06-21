@@ -109,14 +109,14 @@ export function DateRangePicker() {
               <button
                 key={w.id}
                 onClick={() => applyPreset(w)}
-                className="rounded-md border border-line px-2.5 py-1 text-xs font-medium text-graphite-700 hover:border-coral-500 hover:text-coral-600"
+                className="rounded-md border border-line px-2.5 py-1 text-xs font-medium text-graphite-700 dark:text-graphite-600 hover:border-coral-500 hover:text-coral-600"
               >
                 {w.label}
               </button>
             ))}
             <button
               onClick={() => applyPreset({ from: DATA_WINDOWS[0].from, to: DATA_WINDOWS[1].to })}
-              className="rounded-md border border-line px-2.5 py-1 text-xs font-medium text-graphite-700 hover:border-coral-500 hover:text-coral-600"
+              className="rounded-md border border-line px-2.5 py-1 text-xs font-medium text-graphite-700 dark:text-graphite-600 hover:border-coral-500 hover:text-coral-600"
             >
               All data
             </button>
@@ -176,8 +176,8 @@ export function DateRangePicker() {
                             endpoint
                               ? "bg-coral-500 font-semibold text-white"
                               : selected
-                                ? "bg-coral-50 text-graphite-900"
-                                : "text-graphite-700 hover:bg-canvas"
+                                ? "bg-coral-50 text-graphite-900 dark:bg-coral-500/15"
+                                : "text-graphite-700 dark:text-graphite-600 hover:bg-canvas"
                           }`}
                         >
                           {d.getDate()}

@@ -56,11 +56,11 @@ class FinancialReport(ReportBuilder):
                         "With model (kWh)", "Saved (kWh)"),
             ),
             self.spacer(10),
-            self.section_heading("Method"),
+            self.section_heading("Explanation"),
             self.spacer(4),
             self.paragraph(
-                "Baseline (B1) follows the building's current fixed pre-heat "
-                "schedule. Model (B3) uses the calibrated RC controller to "
+                "Without model case follows the building's current fixed pre-heat "
+                "schedule. The model uses the calibrated RC controller to "
                 "start pre-heat at the optimal lead time. Energy figures are "
                 "electrical kWh measured at the heat pump over the pre-heat "
                 f"window for each heating event in the source dataset. Cost "

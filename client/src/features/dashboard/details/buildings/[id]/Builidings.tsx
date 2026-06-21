@@ -58,7 +58,7 @@ export default function BuildingDetailPage({buildingKey}:{buildingKey:string}) {
             />
           </div>
 
-          <section className="rounded-2xl border border-slate-200 bg-white p-5">
+          <section className="rounded-2xl border border-line bg-surface p-5">
             <h2 className="mb-4 text-sm font-semibold text-slate-900">
               Units & Halls
             </h2>
@@ -67,7 +67,7 @@ export default function BuildingDetailPage({buildingKey}:{buildingKey:string}) {
                 const meta = UNIT_META[unit.status];
                 const onTarget = Math.abs(unit.temperature - unit.targetTemperature) < 0.5;
                 return (
-                  <StatusRailRow key={unit.id} tone={meta.rail} className="rounded-xl px-3 py-3.5 hover:bg-slate-50">
+                  <StatusRailRow key={unit.id} tone={meta.rail} className="rounded-xl px-3 py-3.5 hover:bg-slate-50 dark:hover:bg-graphite-700">
                     <div className="flex items-center justify-between gap-4">
                       <div>
                         <div className="flex items-center gap-2">
@@ -113,8 +113,8 @@ function StatCard({
   sub: string;
 }) {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-5">
-      <div className="mb-3 flex h-8 w-8 items-center justify-center rounded-lg bg-slate-50">
+    <div className="rounded-2xl border border-line bg-surface p-5">
+      <div className="mb-3 flex h-8 w-8 items-center justify-center rounded-lg bg-slate-50 dark:bg-graphite-700">
         {icon}
       </div>
       <p className="text-xs font-medium text-slate-400">{label}</p>

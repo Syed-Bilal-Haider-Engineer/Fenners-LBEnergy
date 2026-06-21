@@ -20,6 +20,7 @@ import {
   Wrench,
 } from "lucide-react";
 import { Card, CardHeader } from "@/src/components/ui/card";
+import { ThemeToggle } from "@/src/shared/theme-toggle";
 import { FaultAlert, FaultSeverity, FaultTimelineRow } from "@/src/@types/fault.type";
 import { useFaults, useFaultTimeline } from "./queries/useFaultQueries";
 
@@ -34,7 +35,7 @@ const SEVERITY_STYLE: Record<FaultSeverity, string> = {
   critical: "bg-coral-50 text-coral-600",
   high: "bg-amber-50 text-amber-600",
   medium: "bg-sky-50 text-sky-600",
-  low: "bg-slate-100 text-slate-600",
+  low: "bg-slate-100 text-slate-600 dark:bg-graphite-700 dark:text-graphite-600",
 };
 
 const EMPTY_TIMELINE: FaultTimelineRow[] = [];
@@ -213,9 +214,12 @@ export function TechnicianDashboard() {
             Fault triage, pump evidence, and fix confirmation for today&apos;s service work.
           </p>
         </div>
-        <div className="flex items-center gap-2 rounded-lg border border-line bg-white px-3 py-2 text-sm text-graphite-700 shadow-panel">
-          <Wrench className="h-4 w-4 text-coral-500" />
-          Field Technician
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 rounded-lg border border-line bg-surface px-3 py-2 text-sm text-graphite-700 dark:text-graphite-600 shadow-panel">
+            <Wrench className="h-4 w-4 text-coral-500" />
+            Field Technician
+          </div>
+          <ThemeToggle />
         </div>
       </header>
 
@@ -245,8 +249,8 @@ export function TechnicianDashboard() {
                     onClick={() => setSelectedId(alert.id)}
                     className={`border p-3 text-left transition ${
                       active
-                        ? "border-coral-500 bg-coral-50"
-                        : "border-line bg-white hover:border-graphite-300"
+                        ? "border-coral-500 bg-coral-50 dark:bg-coral-500/15"
+                        : "border-line bg-surface hover:border-coral-500"
                     }`}
                   >
                     <div className="mb-2 flex items-center justify-between gap-2">
@@ -287,7 +291,7 @@ export function TechnicianDashboard() {
                         value={`${Math.round((selected.confidence ?? 0.72) * 100)}%`}
                       />
                     </div>
-                    <div className="h-[290px] border border-line bg-white p-3">
+                    <div className="h-[290px] border border-line bg-surface p-3">
                       {timelineLoading ? (
                         <div className="flex h-full items-center justify-center text-sm text-graphite-600/70">
                           Loading timeline...
@@ -326,26 +330,26 @@ export function TechnicianDashboard() {
                   </div>
 
                   <aside className="flex flex-col gap-3">
-                    <div className="border border-line bg-slate-50 p-4">
+                    <div className="border border-line bg-slate-50 p-4 dark:bg-graphite-700">
                       <div className="mb-2 flex items-center gap-2 text-sm font-semibold text-graphite-900">
                         <PackageCheck className="h-4 w-4 text-coral-500" />
                         Parts to pick
                       </div>
                       <div className="flex flex-wrap gap-1.5">
                         {(selected.partsToPick ?? fallbackParts(selected)).map((part) => (
-                          <span key={part} className="bg-white px-2 py-1 text-xs font-medium text-graphite-700">
+                          <span key={part} className="bg-surface px-2 py-1 text-xs font-medium text-graphite-700 dark:text-graphite-600">
                             {part}
                           </span>
                         ))}
                       </div>
                     </div>
-                    <div className="border border-line bg-slate-50 p-4">
+                    <div className="border border-line bg-slate-50 p-4 dark:bg-graphite-700">
                       <p className="text-sm font-semibold text-graphite-900">Recommended action</p>
                       <p className="mt-2 text-sm leading-5 text-graphite-600">
                         {selected.recommendedAction ?? fallbackAction(selected)}
                       </p>
                     </div>
-                    <div className="border border-line bg-white p-4">
+                    <div className="border border-line bg-surface p-4">
                       <p className="text-sm font-semibold text-graphite-900">Resolve and confirm</p>
                       <p className="mt-2 text-sm leading-5 text-graphite-600">
                         {currentStatus === "Verified"
@@ -357,13 +361,13 @@ export function TechnicianDashboard() {
                       <div className="mt-4 flex gap-2">
                         <button
                           onClick={markPerformed}
-                          className="bg-graphite-900 px-3 py-2 text-xs font-semibold text-white"
+                          className="bg-graphite-900 px-3 py-2 text-xs font-semibold text-white dark:bg-coral-500 dark:hover:bg-coral-600"
                         >
                           Mark fix performed
                         </button>
                         <button
                           onClick={markVerified}
-                          className="border border-line px-3 py-2 text-xs font-semibold text-graphite-700"
+                          className="border border-line px-3 py-2 text-xs font-semibold text-graphite-700 dark:text-graphite-600"
                         >
                           Verify
                         </button>
@@ -380,7 +384,7 @@ export function TechnicianDashboard() {
               <CardHeader title="Pump health" subtitle={`${pumpRows.length} pumps with active evidence`} />
               <div className="overflow-hidden border border-line">
                 <table className="w-full text-left text-sm">
-                  <thead className="bg-slate-50 text-xs uppercase text-graphite-600">
+                  <thead className="bg-slate-50 text-xs uppercase text-graphite-600 dark:bg-graphite-700">
                     <tr>
                       <th className="px-3 py-2">Pump</th>
                       <th className="px-3 py-2">Status</th>
@@ -395,7 +399,7 @@ export function TechnicianDashboard() {
                       return (
                         <tr
                           key={row.deviceId}
-                          className={active ? "bg-coral-50/60" : "bg-white"}
+                          className={active ? "bg-coral-50/60 dark:bg-coral-500/10" : "bg-surface"}
                           onClick={() => setSelectedId(row.current.id)}
                         >
                           <td className="px-3 py-3 font-semibold text-graphite-900">{shortDevice(row.deviceId)}</td>
@@ -404,8 +408,8 @@ export function TechnicianDashboard() {
                               {row.current.severity}
                             </span>
                           </td>
-                          <td className="px-3 py-3 text-graphite-700">{row.workShare}</td>
-                          <td className="px-3 py-3 text-graphite-700">
+                          <td className="px-3 py-3 text-graphite-700 dark:text-graphite-600">{row.workShare}</td>
+                          <td className="px-3 py-3 text-graphite-700 dark:text-graphite-600">
                             {row.current.probableComponent ?? fallbackComponent(row.current)}
                           </td>
                           <td className="px-3 py-3 text-graphite-600">
@@ -451,7 +455,7 @@ function RiskTile({
 
 function EvidenceMetric({ label, value }: { label: string; value: string }) {
   return (
-    <div className="border border-line bg-slate-50 p-3">
+    <div className="border border-line bg-slate-50 p-3 dark:bg-graphite-700">
       <p className="text-[11px] font-semibold uppercase text-graphite-600/60">{label}</p>
       <p className="mt-1 text-sm font-semibold leading-5 text-graphite-900">{value}</p>
     </div>

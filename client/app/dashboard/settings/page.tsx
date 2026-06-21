@@ -11,7 +11,7 @@ function Page() {
         title="Settings"
         subtitle="Demo configuration"
       />
-      <main className="rounded-2xl border border-slate-200 bg-white p-6">
+      <main className="rounded-2xl border border-line bg-surface p-6">
         <p className="text-sm text-slate-500">
           Operational settings are intentionally static in the demo build.
         </p>

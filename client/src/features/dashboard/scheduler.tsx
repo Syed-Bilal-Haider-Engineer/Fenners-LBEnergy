@@ -108,7 +108,7 @@ export function Scheduler() {
         <Card padded={false}>
           <div className="overflow-hidden">
             <table className="w-full text-left text-sm">
-              <thead className="bg-slate-50 text-xs uppercase text-graphite-600">
+              <thead className="bg-slate-50 text-xs uppercase text-graphite-600 dark:bg-graphite-700">
                 <tr>
                   <th className="px-4 py-3">Morning</th>
                   <th className="px-4 py-3">Lecture · 06:30</th>
@@ -127,7 +127,7 @@ export function Scheduler() {
                   const startMin = EVENT_START_MIN - Math.round(d.leadH * 60);
                   const faulted = i === 0;
                   return (
-                    <tr key={d.date} className="bg-white">
+                    <tr key={d.date} className="bg-surface">
                       <td className="px-4 py-3 font-semibold text-graphite-900">
                         {fmtDate(d.date)}
                         {faulted && (
@@ -136,13 +136,13 @@ export function Scheduler() {
                           </span>
                         )}
                       </td>
-                      <td className="px-4 py-3 text-graphite-700">{d.lecture}</td>
-                      <td className="px-4 py-3 tabular text-graphite-700">{d.tOut.toFixed(1)}°C</td>
-                      <td className="px-4 py-3 tabular text-graphite-700">{d.tStart.toFixed(1)}°C</td>
+                      <td className="px-4 py-3 text-graphite-700 dark:text-graphite-600">{d.lecture}</td>
+                      <td className="px-4 py-3 tabular text-graphite-700 dark:text-graphite-600">{d.tOut.toFixed(1)}°C</td>
+                      <td className="px-4 py-3 tabular text-graphite-700 dark:text-graphite-600">{d.tStart.toFixed(1)}°C</td>
                       <td className="px-4 py-3 tabular font-medium text-graphite-900">
                         {minToHHMM(startMin)} <span className="text-graphite-600/50">→ 06:30</span>
                       </td>
-                      <td className="px-4 py-3 tabular text-graphite-700">{d.leadH.toFixed(1)} h</td>
+                      <td className="px-4 py-3 tabular text-graphite-700 dark:text-graphite-600">{d.leadH.toFixed(1)} h</td>
                       <td className="px-4 py-3">
                         <span className="inline-flex items-center gap-1.5">
                           <span className="tabular font-semibold text-emerald-600">{d.b3.toFixed(1)}°C</span>
@@ -173,7 +173,7 @@ export function Scheduler() {
                                 <span className={`tabular text-sm font-semibold ${scoreColor}`}>{b3s}%</span>
                                 <span className="tabular text-[11px] text-graphite-600/50">old {b1s}%</span>
                               </div>
-                              <div className="relative h-1.5 w-full rounded-full bg-slate-100">
+                              <div className="relative h-1.5 w-full rounded-full bg-slate-100 dark:bg-graphite-700">
                                 <div
                                   className={`absolute left-0 top-0 h-1.5 rounded-full ${barColor}`}
                                   style={{ width: `${b3s}%` }}

@@ -45,13 +45,13 @@ export default function SchedulePage() {
           <section key={day}>
             <h2 className="text-sm font-semibold mb-3">{day}</h2>
 
-            <div className="bg-white border rounded-2xl p-2">
+            <div className="bg-surface border rounded-2xl p-2">
               {entries.map((e) => {
                 const meta = STATUS_META[e.status];
 
                 return (
                   <Link key={e.id} href={`/dashboard/buildings/${encodeURIComponent(e.building)}`}>
-                    <StatusRailRow tone={meta.rail} className="p-3 hover:bg-slate-50 rounded-xl">
+                    <StatusRailRow tone={meta.rail} className="p-3 hover:bg-slate-50 dark:hover:bg-graphite-700 rounded-xl">
                       <div className="flex justify-between">
                         <div>
                           <p className="font-semibold">{e.hall}</p>

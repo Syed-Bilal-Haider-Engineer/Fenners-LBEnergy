@@ -105,7 +105,7 @@ export default function ReportsPage() {
           return (
             <section
               key={week.id}
-              className={`rounded-2xl bg-white ${
+              className={`rounded-2xl bg-surface ${
                 week.hasData ? "" : "opacity-60"
               }`}
             >
@@ -114,7 +114,7 @@ export default function ReportsPage() {
                 onClick={() => toggleWeek(week)}
                 disabled={!week.hasData}
                 className={`flex w-full items-center justify-between px-5 py-4 text-left ${
-                  week.hasData ? "cursor-pointer hover:bg-slate-50" : "cursor-not-allowed"
+                  week.hasData ? "cursor-pointer hover:bg-slate-50 dark:hover:bg-graphite-700" : "cursor-not-allowed"
                 } rounded-2xl`}
               >
                 <div className="flex items-center gap-3">
@@ -131,8 +131,8 @@ export default function ReportsPage() {
                 <span
                   className={`text-xs font-medium px-2 py-1 rounded-md ${
                     week.hasData
-                      ? "bg-green-50 text-green-600"
-                      : "bg-slate-100 text-slate-500"
+                      ? "bg-green-50 text-green-600 dark:bg-ember-500/15 dark:text-ember-500"
+                      : "bg-slate-100 text-slate-500 dark:bg-graphite-700 dark:text-graphite-600"
                   }`}
                 >
                   {week.hasData ? "Data available" : "No data"}
@@ -140,7 +140,7 @@ export default function ReportsPage() {
               </button>
 
               {isExpanded && week.hasData && (
-                <div className="border-t border-slate-100 px-5 pt-5 pb-5">
+                <div className="border-t border-line px-5 pt-5 pb-5">
                   <p className="mb-3 text-xs font-medium uppercase tracking-wide text-slate-500">
                     Choose a report type
                   </p>
@@ -154,13 +154,13 @@ export default function ReportsPage() {
                           onClick={() => setSelected(opt.value)}
                           className={`flex items-center gap-3 rounded-xl border px-4 py-3 text-left text-sm transition-colors ${
                             active
-                              ? "border-coral-500 bg-coral-50 text-graphite-900"
-                              : "border-slate-200 bg-white text-graphite-900 hover:border-slate-300"
+                              ? "border-coral-500 bg-coral-50 text-graphite-900 dark:bg-coral-500/15"
+                              : "border-line bg-surface text-graphite-900 hover:border-coral-500"
                           }`}
                         >
                           <span
                             className={`flex h-8 w-8 items-center justify-center rounded-full ${
-                              active ? "bg-coral-500 text-white" : "bg-slate-100 text-slate-500"
+                              active ? "bg-coral-500 text-white" : "bg-slate-100 text-slate-500 dark:bg-graphite-700 dark:text-graphite-600"
                             }`}
                           >
                             <FileText size={15} />
@@ -178,8 +178,8 @@ export default function ReportsPage() {
                       disabled={!selected || run.kind === "running"}
                       className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-colors ${
                         selected && run.kind !== "running"
-                          ? "bg-graphite-900 text-white hover:bg-graphite-700"
-                          : "bg-slate-200 text-slate-400 cursor-not-allowed"
+                          ? "bg-graphite-900 text-white hover:bg-graphite-700 dark:bg-coral-500 dark:hover:bg-coral-600"
+                          : "bg-slate-200 text-slate-400 cursor-not-allowed dark:bg-graphite-700 dark:text-graphite-600"
                       }`}
                     >
                       {run.kind === "running" ? (

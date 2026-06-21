@@ -13,7 +13,7 @@ export function Alerts() {
   const preview = ALERTS.filter((a) => !a.acknowledged).slice(0, 3);
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-5">
+    <div className="rounded-2xl border border-line bg-surface p-5">
       <div className="mb-4 flex items-center justify-between">
         <h2 className="text-sm font-semibold text-slate-900">Alerts</h2>
         <Link href="/dashboard/alerts" className="text-xs font-medium text-emerald-600 hover:text-emerald-700">

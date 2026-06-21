@@ -77,7 +77,7 @@ export function EnergySavings() {
             />
             <div className="grid grid-cols-2 gap-4">
               {/* Stream 1 — measured */}
-              <div className="rounded-lg border border-line bg-white p-4">
+              <div className="rounded-lg border border-line bg-surface p-4">
                 <div className="mb-2 flex items-center justify-between">
                   <span className="flex items-center gap-2 text-sm font-semibold text-graphite-900">
                     <Zap className="h-4 w-4 text-ember-600" /> Preheat optimization
@@ -97,7 +97,7 @@ export function EnergySavings() {
               </div>
 
               {/* Stream 2 — modeled */}
-              <div className="rounded-lg border border-line bg-white p-4">
+              <div className="rounded-lg border border-line bg-surface p-4">
                 <div className="mb-2 flex items-center justify-between">
                   <span className="flex items-center gap-2 text-sm font-semibold text-graphite-900">
                     <ShieldCheck className="h-4 w-4 text-coral-500" /> Avoided failure cost

@@ -7,7 +7,7 @@ const maxSavings = buildingList[0]?.savingsKwh ?? 1;
 
 export function TopBuildings() {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-5">
+    <div className="rounded-2xl border border-line bg-surface p-5">
       <div className="mb-4 flex items-center justify-between">
         <h2 className="text-sm font-semibold text-slate-900">Top Buildings by Savings</h2>
         <Link href="/dashboard/buildings" className="text-xs font-medium text-emerald-600 hover:text-emerald-700">
@@ -27,7 +27,7 @@ export function TopBuildings() {
                   {building.savingsKwh.toLocaleString()} kWh
                 </span>
               </div>
-              <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-100">
+              <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-graphite-700">
                 <div
                   className="h-full rounded-full bg-emerald-500"
                   style={{ width: `${(building.savingsKwh / maxSavings) * 100}%` }}
