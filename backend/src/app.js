@@ -7,6 +7,7 @@ const dotenv = require("dotenv");
 
 const { ensureDatabaseConnection } = require("./db/database");
 const authRoutes = require("./routes/auth.route");
+const faultRoutes = require("./routes/fault.route");
 
 dotenv.config();
 
@@ -74,5 +75,6 @@ app.get("/health", (req, res) => {
 
 // Routes
 app.use(`${BASE_URL}/auth`, ensureDatabaseConnection, authRoutes);
+app.use(`${BASE_URL}/faults`, faultRoutes);
 
 module.exports = app;

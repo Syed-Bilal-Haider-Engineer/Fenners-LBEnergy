@@ -11,11 +11,14 @@ interface ScheduleItem {
   accent: "ember" | "amber";
 }
 
+// Times in local CEST; first lecture 06:30 = 04:30 UTC (the real event start).
+// Duration column shows the predictive preheat lead. Hall A maps to pump BDAF0E14
+// (the faulted unit) — the breadcrumb into Alerts / the technician view.
 const ITEMS: ScheduleItem[] = [
-  { time: "07:00", duration: "02:00", hall: "Hall A", lecture: "Lecture: Mathematics 101", temp: "21°C", status: "Heating", accent: "ember" },
-  { time: "10:00", duration: "10:00", hall: "Hall B", lecture: "Lecture: Physics 201", temp: "21°C", status: "Heating", accent: "ember" },
-  { time: "13:00", duration: "—", hall: "Hall C", lecture: "Lecture: Engineering Basics", temp: "20°C", status: "Scheduled", accent: "amber" },
-  { time: "15:00", duration: "—", hall: "Hall D", lecture: "Lecture: Thermodynamics", temp: "21°C", status: "Scheduled", accent: "amber" },
+  { time: "06:30", duration: "−3.8h lead", hall: "Hall A", lecture: "Mathematics 101 · Pump BDAF0E14", temp: "21°C", status: "Heating", accent: "ember" },
+  { time: "09:00", duration: "−4.1h lead", hall: "Hall B", lecture: "Physics 201", temp: "21°C", status: "Heating", accent: "ember" },
+  { time: "11:30", duration: "−4.0h lead", hall: "Hall C", lecture: "Engineering Basics", temp: "20°C", status: "Scheduled", accent: "amber" },
+  { time: "14:00", duration: "−4.3h lead", hall: "Hall D", lecture: "Thermodynamics", temp: "21°C", status: "Scheduled", accent: "amber" },
 ];
 
 export function UpcomingSchedule() {

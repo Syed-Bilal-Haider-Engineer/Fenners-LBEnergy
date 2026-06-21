@@ -4,22 +4,38 @@ import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
+  LayoutDashboard,
   Calendar,
+  Zap,
   AlertTriangle,
   FileText,
   Settings,
   MapPin,
 } from "lucide-react";
+import { getRole } from "@/src/features/auth/role";
 
-const NAV_ITEMS: { href: string; label: string; icon: React.ElementType; badge?: number }[] = [
-  { href: "/dashboard/schedule", label: "Schedule", icon: Calendar },
-  { href: "/dashboard/alerts", label: "Alerts", icon: AlertTriangle, badge: 3 },
+type NavItem = { href: string; label: string; icon: React.ElementType; badge?: number; exact?: boolean };
+
+const MANAGER_NAV_ITEMS: NavItem[] = [
+  { href: "/dashboard", label: "Overview", icon: LayoutDashboard, exact: true },
+  { href: "/dashboard/schedule", label: "Scheduler", icon: Calendar },
+  { href: "/dashboard/energy", label: "Energy & Savings", icon: Zap },
   { href: "/dashboard/reports", label: "Reports", icon: FileText },
-  { href: "/dashboard/configuration", label: "Configuration", icon: Settings },
+  { href: "/dashboard/alerts", label: "Alerts", icon: AlertTriangle, badge: 3 },
+  { href: "/dashboard/settings", label: "Settings", icon: Settings },
+];
+
+const TECHNICIAN_NAV_ITEMS: NavItem[] = [
+  { href: "/dashboard", label: "Diagnostics", icon: LayoutDashboard, exact: true },
+  { href: "/dashboard/schedule", label: "Schedule", icon: Calendar },
+  { href: "/dashboard/alerts", label: "Faults", icon: AlertTriangle, badge: 3 },
+  { href: "/dashboard/settings", label: "Settings", icon: Settings },
 ];
 
 export function Sidebar() {
   const pathname = usePathname();
+  const role = getRole();
+  const navItems = role === "technician" ? TECHNICIAN_NAV_ITEMS : MANAGER_NAV_ITEMS;
 
   return (
     <aside className="flex h-screen w-[260px] shrink-0 flex-col justify-between bg-[#191919] px-4 py-6 text-white">
@@ -31,8 +47,8 @@ export function Sidebar() {
         </Link>
 
         <nav className="flex flex-col gap-1">
-          {NAV_ITEMS.map(({ href, label, icon: Icon, badge }) => {
-            const active = pathname?.startsWith(href);
+          {navItems.map(({ href, label, icon: Icon, badge, exact }) => {
+            const active = exact ? pathname === href : pathname?.startsWith(href);
             return (
               <Link
                 key={href}

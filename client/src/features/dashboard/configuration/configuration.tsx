@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { DetailTopbar } from "@/src/shared/detail-topbar";
+import { AppTopbar } from "@/src/shared/app-topbar";
 import { Card } from "@/src/components/ui/card";
 import { Flame, Repeat, Snowflake, Fan, Minus, Plus } from "lucide-react";
 
@@ -27,12 +27,7 @@ export default function ConfigurationPage() {
 
   return (
     <>
-      <DetailTopbar
-        backHref="/dashboard"
-        backLabel="Dashboard"
-        title="Configuration"
-        subtitle="Heat pump control"
-      />
+      <AppTopbar title="Configuration" subtitle="Heat pump control" />
 
       <main className="flex max-w-2xl flex-col gap-5">
         {/* Operating mode — connected segmented buttons, only one active */}

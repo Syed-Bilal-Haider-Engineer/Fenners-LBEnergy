@@ -4,9 +4,11 @@ import { createContext, useContext, useEffect, useState } from "react";
 
 export type Location = { id: string; name: string; units: number };
 
+// Primary = the demo campus (4 pumps) so KPIs resolve to the real backtest
+// totals (558 kWh / €167 / 0.22 t). Secondary kept for the location switcher.
 const SEED: Location[] = [
-  { id: "seed-1", name: "Main Campus", units: 8 },
-  { id: "seed-2", name: "Expo Hall A", units: 4 },
+  { id: "seed-1", name: "TUM Campus", units: 4 },
+  { id: "seed-2", name: "Expo Hall A", units: 6 },
 ];
 
 const KEY = "lb-locations";

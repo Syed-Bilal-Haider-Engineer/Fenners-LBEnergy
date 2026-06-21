@@ -1,11 +1,6 @@
-'use client'
-import SchedulePage from '@/src/features/dashboard/details/schedule/Schedule'
-import React from 'react'
+"use client";
+import { Scheduler } from "@/src/features/dashboard/scheduler";
 
-function Page() {
-  return (
-  <SchedulePage/>
-  )
+export default function Page() {
+  return <Scheduler />;
 }
-
-export default Page

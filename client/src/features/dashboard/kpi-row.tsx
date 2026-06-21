@@ -40,33 +40,40 @@ export function KpiRow() {
   const u = selected.units;
   const fmt = (n: number) => Math.round(n).toLocaleString("en-US");
 
-  const active = Math.round(u * 0.45);
-  const warnings = Math.max(0, Math.round(u * 0.1));
+  // Anchored to the real heating-window backtest (7 mornings, 4 pumps):
+  // 557.6 kWh / €167 / 223 kg CO2 saved vs blind preheat — see outputs/backtest_heating.csv.
+  // Expressed per-pump-week and scaled by the selected location's pump count.
+  const PER_PUMP_KWH = 558 / 4;
+  const PER_PUMP_EUR = 167 / 4;
+  const PER_PUMP_CO2_T = 0.223 / 4;
+
+  const warnings = 1; // the faulted pump (bdaf0e14) — see Alerts / technician view
+  const healthy = Math.max(0, u - warnings);
 
   const STATS = [
     {
       label: "Energy Saved",
-      value: fmt(u * 1568),
+      value: fmt(u * PER_PUMP_KWH),
       unit: "kWh",
-      delta: "18.6%",
-      footnote: "vs last week",
+      delta: "71%",
+      footnote: "vs blind preheat",
       icon: <Icon name="bolt" />,
       iconBg: "bg-ember-50 text-ember-600",
     },
     {
       label: "Cost Saved",
-      value: `€${fmt(u * 344)}`,
-      delta: "16.3%",
-      footnote: "vs last week",
+      value: `€${fmt(u * PER_PUMP_EUR)}`,
+      delta: "71%",
+      footnote: "vs blind preheat",
       icon: <Icon name="euro" />,
       iconBg: "bg-sky-50 text-sky-500",
     },
     {
       label: "CO₂ Saved",
-      value: (u * 0.78).toFixed(2),
+      value: (u * PER_PUMP_CO2_T).toFixed(2),
       unit: "t",
-      delta: "17.8%",
-      footnote: "vs last week",
+      delta: "71%",
+      footnote: "vs blind preheat",
       icon: <Icon name="leaf" />,
       iconBg: "bg-ember-50 text-ember-600",
     },
@@ -106,7 +113,7 @@ export function KpiRow() {
           <p className="text-[13px] text-graphite-600/80">Heat Pumps</p>
           <p className="tabular mt-0.5 text-[22px] font-semibold leading-none text-graphite-900">{u}</p>
           <p className="mt-1.5 text-xs text-graphite-600/70">
-            <span className="text-graphite-900">{active} Active</span> · {warnings} Warnings
+            <span className="text-graphite-900">{healthy} Healthy</span> · {warnings} Warning
           </p>
         </div>
       </Card>

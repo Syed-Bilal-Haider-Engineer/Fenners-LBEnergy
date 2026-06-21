@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { DetailTopbar } from "@/src/shared/detail-topbar";
+import { AppTopbar } from "@/src/shared/app-topbar";
+import { useFilters } from "@/src/features/dashboard/filters/filters-context";
+import { useLocations } from "@/src/features/dashboard/locations/locations-context";
 import { ChevronDown, ChevronRight, FileText, Loader2, Check, AlertCircle } from "lucide-react";
 
 type ReportType = "financial" | "sustainability";
@@ -33,6 +35,8 @@ export default function ReportsPage() {
   const [expanded, setExpanded] = useState<string | null>(null);
   const [selected, setSelected] = useState<ReportType | null>(null);
   const [run, setRun] = useState<RunState>({ kind: "idle" });
+  const { range } = useFilters();
+  const { selected: location } = useLocations();
 
   function toggleWeek(week: Week) {
     if (!week.hasData) return;
@@ -48,7 +52,13 @@ export default function ReportsPage() {
       const res = await fetch("/api/reports/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ report: selected }),
+        body: JSON.stringify({
+          report: selected,
+          location: location.name,
+          units: location.units,
+          from: range.from,
+          to: range.to,
+        }),
       });
 
       const contentType = res.headers.get("content-type") || "";
@@ -83,11 +93,9 @@ export default function ReportsPage() {
 
   return (
     <>
-      <DetailTopbar
-        backHref="/dashboard"
-        backLabel="Dashboard"
+      <AppTopbar
         title="Reports"
-        subtitle={`${WEEKS.length} weeks · ${WEEKS.filter((w) => w.hasData).length} with data`}
+        subtitle={`Financial & compliance reports · ${location.name}`}
       />
 
       <main className="flex flex-col gap-3">

@@ -34,7 +34,7 @@ const SEVERITY_STYLE: Record<FaultSeverity, string> = {
   critical: "bg-coral-50 text-coral-600",
   high: "bg-amber-50 text-amber-600",
   medium: "bg-sky-50 text-sky-600",
-  low: "bg-ember-50 text-ember-600",
+  low: "bg-slate-100 text-slate-600",
 };
 
 const EMPTY_TIMELINE: FaultTimelineRow[] = [];

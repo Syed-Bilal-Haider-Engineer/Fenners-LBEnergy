@@ -6,10 +6,12 @@ interface AlertItem {
   time: string;
 }
 
+// Mirrors the live technician fault inbox (outputs/anomaly_alerts_heating.json).
+// Row 1 is the same critical hardware alarm on pump BDAF0E14 the technician resolves.
 const ALERTS: AlertItem[] = [
-  { title: "Heat pump in Hall C", detail: "Temperature not reaching target", time: "5 min ago" },
-  { title: "Sensor in Hall D", detail: "Temperature sensor deviation detected", time: "1 h ago" },
-  { title: "Maintenance Reminder", detail: "Filter check recommended", time: "3 h ago" },
+  { title: "Critical: Pump BDAF0E14 (Hall A)", detail: "Controller alarm / error register set · 98%", time: "8 min ago" },
+  { title: "Setpoint miss — Hall A", detail: "Room not reaching 21°C target", time: "25 min ago" },
+  { title: "Sensor deviation — Hall D", detail: "Peer sensor outlier detected", time: "1 h ago" },
 ];
 
 function AlertIcon() {

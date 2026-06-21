@@ -18,14 +18,17 @@ interface EnergyData {
   lastWeek: number;
 }
 
+// Preheat-window electrical energy per morning, from outputs/backtest_heating.csv.
+// thisWeek = predictive controller (B3, flat Mode-1 ~32.9 kWh); lastWeek = blind
+// preheat baseline (B1) which fires the expensive electric boost. ~71% reduction.
 const data: EnergyData[] = [
-  { day: "Mon", thisWeek: 1450, lastWeek: 2200 },
-  { day: "Tue", thisWeek: 1900, lastWeek: 3000 },
-  { day: "Wed", thisWeek: 2950, lastWeek: 3650 },
-  { day: "Thu", thisWeek: 2550, lastWeek: 3350 },
-  { day: "Fri", thisWeek: 2300, lastWeek: 3050 },
-  { day: "Sat", thisWeek: 2500, lastWeek: 3200 },
-  { day: "Sun", thisWeek: 1500, lastWeek: 2150 },
+  { day: "Mon", thisWeek: 33, lastWeek: 53 },
+  { day: "Tue", thisWeek: 33, lastWeek: 83 },
+  { day: "Wed", thisWeek: 33, lastWeek: 95 },
+  { day: "Thu", thisWeek: 33, lastWeek: 157 },
+  { day: "Fri", thisWeek: 33, lastWeek: 155 },
+  { day: "Sat", thisWeek: 33, lastWeek: 127 },
+  { day: "Sun", thisWeek: 33, lastWeek: 117 },
 ];
 
 export function EnergyChart() {
@@ -33,16 +36,17 @@ export function EnergyChart() {
     <Card>
       <CardHeader
         title="Energy Consumption"
+        subtitle="Preheat-window kWh per morning"
         action={
           <div className="flex items-center gap-4 text-xs text-graphite-600/80">
             <span className="flex items-center gap-1.5">
               <span className="h-0.5 w-3.5 rounded-full bg-coral-500" />
-              This Week
+              Predictive
             </span>
 
             <span className="flex items-center gap-1.5">
               <span className="h-0.5 w-3.5 border-t-2 border-dashed border-gray-400" />
-              Last Week
+              Blind preheat
             </span>
           </div>
         }
@@ -76,11 +80,9 @@ export function EnergyChart() {
             />
 
             <YAxis
-              domain={[0, 4000]}
-              ticks={[0, 1000, 2000, 3000, 4000]}
-              tickFormatter={(value) =>
-                value === 0 ? "0" : `${value / 1000}k`
-              }
+              domain={[0, 180]}
+              ticks={[0, 60, 120, 180]}
+              tickFormatter={(value) => `${value}`}
               tickLine={false}
               axisLine={false}
               tick={{ fontSize: 12 }}

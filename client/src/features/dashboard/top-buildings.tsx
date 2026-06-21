@@ -1,11 +1,13 @@
 import { Card, CardHeader } from "../../components/ui/card";
 
+// Per-hall savings sum to the real backtest total (558 kWh). Hall A is the
+// visible laggard — its pump (BDAF0E14) is faulted, so it still runs hot and
+// saves least. This is the breadcrumb the manager follows into the Alerts card.
 const BUILDINGS = [
-  { name: "TUM Campus", kwh: 4250 },
-  { name: "Expo Hall A", kwh: 3120 },
-  { name: "Event Tent 3", kwh: 2310 },
-  { name: "Sports Hall", kwh: 1870 },
-  { name: "Dormitory Area", kwh: 990 },
+  { name: "Hall B", kwh: 152 },
+  { name: "Hall C", kwh: 148 },
+  { name: "Hall D", kwh: 140 },
+  { name: "Hall A · Pump BDAF0E14", kwh: 118 },
 ];
 
 const MAX = BUILDINGS[0].kwh;
